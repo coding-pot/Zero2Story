@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "zero2story"
+version = "0.1.0"
+description = ""
+authors = ["Sangjoon Han <jphan32@me.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+gradio = "^3.42.0"
+torch = {version = "^2.0.1+cu118", source = "pytorch"}
+torchvision = {version = "^0.15.2+cu118", source = "pytorch"}
+torchaudio = {version = "^2.0.2+cu118", source = "pytorch"}
+transformers = "^4.33.1"
+scipy = "^1.11.2"
+diffusers = "^0.20.2"
+numpy = ">=1.21,<1.25"
+numba = "^0.57.1"
+audiocraft = "^0.0.2"
+accelerate = "^0.22.0"
+
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "explicit"
+
+[tool.poetry.group.dev.dependencies]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
