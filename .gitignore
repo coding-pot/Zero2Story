@@ -5,6 +5,8 @@ Thumbs.db
 **/wandb/
 **/models/
 **/outputs/
+**/log/
+*.pid
 
 # Poetry
 poetry.lock
