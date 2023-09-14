@@ -9,6 +9,15 @@ from constants.init_values import (
 	places, moods, jobs, random_names, default_character_images
 )
 
+from modules import (
+	ImageMaker, MusicMaker
+)
+
+
+bg_img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors')
+ch_img_maker = ImageMaker('hellonijicute25d_V10b.safetensors')
+
+
 def get_random_name(cur_char_name, char_name1, char_name2, char_name3):
 	tmp_random_names = copy.deepcopy(random_names)
 	tmp_random_names.remove(cur_char_name)
@@ -18,7 +27,17 @@ def get_random_name(cur_char_name, char_name1, char_name2, char_name3):
 	return random.choice(tmp_random_names)
 
 def gen_character_image(gallery_images, name, age, mbti, personality, job):
-	gen_image = numpy.asarray(PIL.Image.open("assets/image.png"))
+	#img_filename = "assets/image.png"
+
+	prompt = ("cute cat, rust, epic, viking knotwork, wearing armor and shield, highly detailed, "
+			  "high budget, highly detailed, high budget, cinemascope, moody, gorgeous, film grain, grainy")
+	
+	neg_prompt = ("nsfw, twins, blurry, boring, lowres, bad anatomy, bad hands, text, error, missing fingers, "
+				  "extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark")
+
+	img_filename = ch_img_maker.text2image(prompt, neg_prompt=neg_prompt)
+
+	gen_image = numpy.asarray(PIL.Image.open(img_filename))
 
 	gallery_images.insert(0, gen_image)
 

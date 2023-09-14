@@ -236,4 +236,4 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[name_txt4],
 	)
 
-demo.launch()
+demo.launch(share=True)
