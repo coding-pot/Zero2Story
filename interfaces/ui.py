@@ -2,6 +2,9 @@ import copy
 import random
 import gradio as gr
 
+import numpy
+import PIL
+
 from constants.init_values import (
 	places, moods, jobs, random_names, default_character_images
 )
@@ -14,14 +17,14 @@ def get_random_name(cur_char_name, char_name1, char_name2, char_name3):
 	tmp_random_names.remove(char_name3)
 	return random.choice(tmp_random_names)
 
-def gen_character_image(name, age, mbti, personality, job):
-	print(name, age, mbti, personality, job)
-	images = copy.deepcopy(default_character_images)
-	images.insert(0, "assets/image.png")
+def gen_character_image(gallery_images, name, age, mbti, personality, job):
+	gen_image = numpy.asarray(PIL.Image.open("assets/image.png"))
 
-	return gr.update(value=images)
+	gallery_images.insert(0, gen_image)
 
-def update_on_age(evt: gr.SelectData):  # SelectData is a subclass of EventData
+	return gr.update(value=gallery_images), gallery_images
+
+def update_on_age(evt: gr.SelectData): 
 	job_list = jobs[evt.value]
 
 	return (

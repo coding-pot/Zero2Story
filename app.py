@@ -11,6 +11,11 @@ from constants.init_values import (
 from interfaces import ui
 
 with gr.Blocks(css=STYLE) as demo:
+	gallery_images1 = gr.State(default_character_images)
+	gallery_images2 = gr.State(default_character_images)
+	gallery_images3 = gr.State(default_character_images)
+	gallery_images4 = gr.State(default_character_images)
+
 	with gr.Row():
 		with gr.Column(scale=2):
 			with gr.Tab("background setup"):
@@ -185,26 +190,26 @@ with gr.Blocks(css=STYLE) as demo:
 
 	gen_char_btn1.click(
 		ui.gen_character_image,
-		inputs=[name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1],
-		outputs=[char_gallery1]
+		inputs=[gallery_images1, name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1],
+		outputs=[char_gallery1, gallery_images1]
 	)
 
 	gen_char_btn2.click(
 		ui.gen_character_image,
-		inputs=[name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2],
-		outputs=[char_gallery2]
+		inputs=[gallery_images2, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2],
+		outputs=[char_gallery2, gallery_images2]
 	)
 
 	gen_char_btn3.click(
 		ui.gen_character_image,
-		inputs=[name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3],
-		outputs=[char_gallery3]
+		inputs=[gallery_images3, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3],
+		outputs=[char_gallery3, gallery_images3]
 	)
 
 	gen_char_btn4.click(
 		ui.gen_character_image,
-		inputs=[name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4],
-		outputs=[char_gallery4]
+		inputs=[gallery_images4, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4],
+		outputs=[char_gallery4, gallery_images4]
 	)
 
 	random_name_btn1.click(
