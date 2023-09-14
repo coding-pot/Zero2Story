@@ -9,8 +9,7 @@ import torch
 from diffusers import StableDiffusionPipeline
 from diffusers import DPMSolverMultistepScheduler, DDPMScheduler, DPMSolverSinglestepScheduler, DPMSolverSDEScheduler
 
-from utils import set_all_seeds
-
+from .utils import set_all_seeds
 
 class ImageMaker:
     # TODO: DocString...
@@ -54,9 +53,16 @@ class ImageMaker:
 
         if self.device != 'cpu':
             self.__sd_model = self.__sd_model.to(self.device)
+        
+        output_dir = Path('.') / 'outputs'
+        if not output_dir.exists():
+            output_dir.mkdir(parents=True, exist_ok=True)
+        elif output_dir.is_file():
+            assert False, f"A file with the same name as the desired directory ('{str(output_dir)}') already exists."
 
     
-    def text2image(prompt: str, neg_prompt: str = None,
+    def text2image(self,
+                   prompt: str, neg_prompt: str = None,
                    ratio: Literal['3:2', '4:3', '16:9', '1:1', '9:16', '3:4', '2:3'] = '1:1',
                    step: int = 20,
                    cfg: float = 7.5,
@@ -67,7 +73,7 @@ class ImageMaker:
             seed = torch.randint(0, 2**32 - 1, (1,)).item()
         set_all_seeds(seed)
 
-        width, height = __ratio[ratio]
+        width, height = self.__ratio[ratio]
 
         img = self.__sd_model(prompt,
                               negative_prompt=neg_prompt,

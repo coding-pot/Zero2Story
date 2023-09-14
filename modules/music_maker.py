@@ -11,7 +11,8 @@ from audiocraft.models import MusicGen
 from audiocraft.data.audio import audio_write
 from pydub import AudioSegment
 
-from utils import set_all_seeds
+from .utils import set_all_seeds
+
 
 class MusicMaker:
     # TODO: DocString...
@@ -31,9 +32,15 @@ class MusicMaker:
                                             temperature=1.0,
                                             cfg_coef=3.0
                                             )
+        
+        output_dir = Path('.') / 'outputs'
+        if not output_dir.exists():
+            output_dir.mkdir(parents=True, exist_ok=True)
+        elif output_dir.is_file():
+            assert False, f"A file with the same name as the desired directory ('{str(output_dir)}') already exists."
     
 
-    def text2music(prompt: str, length: int = 60, seed: int = None) -> str:
+    def text2music(self, prompt: str, length: int = 60, seed: int = None) -> str:
         def wavToMp3(src_file: str, dest_file: str) -> None:
             sound = AudioSegment.from_wav(src_file)  
             sound.export(dest_file, format="mp3")
