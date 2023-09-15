@@ -5,8 +5,8 @@ if [[ -f "$PID" ]]; then
     kill -9 `cat $PID`
 fi
 
-mkdir -p ./log
-rm -rf ./log/gradio.log
+mkdir -p ./logs
+rm -rf ./logs/app.log
 
-nohup python app.py 1>./log/gradio.log 2>&1 &
+nohup python -u app.py > ./logs/app.log 2>&1 &
 echo $! > $PID

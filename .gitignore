@@ -5,7 +5,7 @@ Thumbs.db
 **/wandb/
 **/models/
 **/outputs/
-**/log/
+**/logs/
 *.pid
 
 # Poetry
