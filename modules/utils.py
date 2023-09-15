@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import random
 
@@ -14,3 +15,7 @@ def set_all_seeds(random_seed: int) -> None:
     np.random.seed(random_seed)
     random.seed(random_seed)
     print(f"Using seed {random_seed}")
+
+
+def get_palm_api_key() -> str:
+    return os.environ.get('PALM_API_KEY')
