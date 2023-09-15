@@ -8,6 +8,9 @@ Thumbs.db
 **/logs/
 *.pid
 
+# Confidentials
+.palm_api_key.txt
+
 # Poetry
 poetry.lock
 

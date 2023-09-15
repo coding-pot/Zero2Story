@@ -3,16 +3,28 @@ from tempfile import NamedTemporaryFile
 from pathlib import Path
 
 import uuid
+import json
 
 import torch
 
 from diffusers import StableDiffusionPipeline
-from diffusers import DPMSolverMultistepScheduler, DDPMScheduler, DPMSolverSinglestepScheduler, DPMSolverSDEScheduler
+from diffusers import (
+    DPMSolverMultistepScheduler,
+    DDPMScheduler,
+    DPMSolverSinglestepScheduler,
+    DPMSolverSDEScheduler
+)
 
-from .utils import set_all_seeds
+import google.generativeai as palm
+
+from .utils import (
+    set_all_seeds,
+    get_palm_api_key
+)
 
 class ImageMaker:
     # TODO: DocString...
+    """Class for generating images from prompts."""
 
     __ratio = {'3:2':  [768, 512],
                '4:3':  [680, 512],
@@ -27,6 +39,16 @@ class ImageMaker:
                        sampling: Literal['sde-dpmsolver++'] = 'sde-dpmsolver++',
                        safety: bool = True,
                        device: str = None) -> None:
+        """Initialize the ImageMaker class.
+
+        Args:
+            model_base (str): Filename of the model base.
+            clip_skip (int, optional): Number of layers to skip in the clip model. Defaults to 2.
+            sampling (Literal['sde-dpmsolver++'], optional): Sampling method. Defaults to 'sde-dpmsolver++'.
+            safety (bool, optional): Whether to use the safety checker. Defaults to True.
+            device (str, optional): Device to use for the model. Defaults to None.
+        """
+
         self.__device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if not device else device
         self.__model_base = model_base
         self.__clip_skip = clip_skip
@@ -67,6 +89,20 @@ class ImageMaker:
                    step: int = 20,
                    cfg: float = 7.5,
                    seed: int = None) -> str:
+        """Generate an image from the prompt.
+
+        Args:
+            prompt (str): Prompt for the image generation.
+            neg_prompt (str, optional): Negative prompt for the image generation. Defaults to None.
+            ratio (Literal['3:2', '4:3', '16:9', '1:1', '9:16', '3:4', '2:3'], optional): Ratio of the generated image. Defaults to '1:1'.
+            step (int, optional): Number of iterations for the diffusion. Defaults to 20.
+            cfg (float, optional): Configuration for the diffusion. Defaults to 7.5.
+            seed (int, optional): Seed for the random number generator. Defaults to None.
+
+        Returns:
+            str: Path to the generated image.
+        """
+
         output_filename = Path('.') / 'outputs' / str(uuid.uuid4())
 
         if not seed or seed == -1:
@@ -86,23 +122,96 @@ class ImageMaker:
 
         return str(output_filename.with_suffix('.png'))
     
+
+    def generate_prompts_from_keywords(self, keywords: list[str], character_name) -> tuple[str, str]:
+        """Generate prompts from keywords.
+
+        Args:
+            keywords (list[str]): List of keywords.
+            character_name (str): Character's name.
+
+        Returns:
+            tuple[str, str]: A tuple of positive and negative prompts.
+        """
+        palm.configure(api_key=get_palm_api_key())
+        positive = ''
+        negative = ''
+
+        defaults = {
+            'model': 'models/chat-bison-001',
+            'temperature': 0.5,
+            'candidate_count': 1,
+            'top_k': 40,
+            'top_p': 0.95,
+        }
+        context = "Create a list of inspirational short words based on the following keywords, output only the 'keywords' section in JSON format."
+        examples = [
+            [
+                "The keywords are, \"Romance, Starlit Bridge, Dreamy, teen, ENTJ, Ambitious, Traveler, Character's name is Catherine\".",
+                "{\"keywords\":[\"Ethereal beauty\",\"1girl\",\"Starry-eyed\",\"Wanderlust\",\"scarf\",\"floating hair\",\"whimsical\",\"graceful poise\",\"celestial allure\",\"delicate\",\"close-up\",\"warm soft lighting\",\"luminescent glow\",\"gentle aura\",\"mystic charm\",\"smug\",\"smirk\",\"enigmatic presence\",\"serene\",\"Dreamy Landscape\",\"fantastical essence\",\"poetic demeanor\"]}"
+            ],
+            [
+                "The keywords are, \"Science Fiction, Space Station, Technological Advancement, 20s, INFP, Ambitious, Generous, Character's name is Claire\".",
+                "{\"keywords\":[\"1girl\",\"editorial close-up portrait\",\"cyborg\",\"sci-fi\",\"techno-savvy\",\"visionary engineer\",\"sharp focus\",\"bokeh\",\"extremely detailed\",\"intricate circuitry\",\"robotic grace\",\"rich colors\",\"vivid contrasts\",\"dramatic lighting\",\"Futuristic flair\",\"avant-garde\",\"high-tech allure\",\"Engineer with ingenuity\",\"innovative mind\",\"mechanical sophistication\",\"futuristic femme fatale\"]}"
+            ],
+            [
+                "The keywords are, \"Thriller, Underground Warehouse, Darkness, Secret Agent, 40s, ESTP, Ambitious, Generous, Character's name is Liam\".",
+                "{\"keywords\":[\"1man\",\"absurdres\",\"dramatic lighting\",\"muscular adult male\",\"chiseled physique\",\"intense brown eyes\",\"raven-black hair\",\"stylish layer cut\",\"determined gaze\",\"looking at viewer\",\"enigmatic presence\",\"secret agent with a stealthy demeanor\",\"cunning strategist\",\"advanced techwear equipped with high-tech gadgets\",\"sleek\",\"night operative\",\"shadowy figure\",\"night cinematic atmosphere\",\"under the moonlight operation\",\"mysterious and captivating aura\"]}"
+            ]
+        ]
+
+        response = palm.chat(
+            **defaults,
+            context=context,
+            examples=examples,
+            messages=[f"The keywords are, \"{', '.join(keywords)}, Character's name is {character_name}\"."]
+        )
+        print(positive := ', '.join(json.loads(response.last)['keywords']))
+
+        return (positive, negative)
+    
     
     @property
     def model_base(self):
+        """Model base
+
+        Returns:
+            str: The model base (read-only)
+        """
         return self.__model_base
 
     @property
     def clip_skip(self):
+        """Clip Skip
+
+        Returns:
+            int: The number of layers to skip in the clip model (read-only)
+        """
         return self.__clip_skip
 
     @property
     def sampling(self):
+        """Sampling method
+
+        Returns:
+            Literal['sde-dpmsolver++']: The sampling method (read-only)
+        """
         return self.__sampling
 
     @property
     def safety(self):
+        """Safety checker
+
+        Returns:
+            bool: Whether to use the safety checker (read-only)
+        """
         return self.__safety
 
     @property
     def device(self):
+        """Device
+
+        Returns:
+            str: The device (read-only)
+        """
         return self.__device

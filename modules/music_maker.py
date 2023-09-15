@@ -13,13 +13,21 @@ from pydub import AudioSegment
 
 from .utils import set_all_seeds
 
-
 class MusicMaker:
     # TODO: DocString...
+    """Class for generating music from prompts."""
 
     def __init__(self, model_size: Literal['small', 'medium', 'melody', 'large'] = 'large',
                        format: Literal['wav', 'mp3'] = 'mp3',
                        device: str = None) -> None:
+        """Initialize the MusicMaker class.
+
+        Args:
+            model_size (Literal['small', 'medium', 'melody', 'large'], optional): Model size. Defaults to 'large'.
+            format (Literal['wav', 'mp3'], optional): Format of the output file. Defaults to 'mp3'.
+            device (str, optional): Device to use for the model. Defaults to None.
+        """
+
         self.__model_size = model_size
         self.__device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if not device else device
         self.format = format
@@ -41,6 +49,17 @@ class MusicMaker:
     
 
     def text2music(self, prompt: str, length: int = 60, seed: int = None) -> str:
+        """Generate a music from the prompt.
+
+        Args:
+            prompt (str): Prompt to generate the music from.
+            length (int, optional): Length of the music in seconds. Defaults to 60.
+            seed (int, optional): Seed to use for the generation. Defaults to None.
+
+        Returns:
+            str: Path to the generated music.
+        """
+
         def wavToMp3(src_file: str, dest_file: str) -> None:
             sound = AudioSegment.from_wav(src_file)  
             sound.export(dest_file, format="mp3")
@@ -66,8 +85,18 @@ class MusicMaker:
 
     @property
     def model_size(self):
+        """Model size
+
+        Returns:
+            Literal['small', 'medium', 'melody', 'large']: The model size (read-only)
+        """
         return self.__model_size
 
     @property
     def device(self):
+        """device
+
+        Returns:
+            str: The device (read-only)
+        """
         return self.__device
