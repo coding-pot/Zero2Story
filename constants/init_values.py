@@ -45,3 +45,5 @@ random_names = ['Annie', 'Ava', 'Catherine', 'Aisha', 'Brooke', 'Chloe', 'Chloe'
 personalities = ['Optimistic', 'Kind', 'Resilient', 'Generous', 'Humorous', 'Creative', 'Empathetic', 'Ambitious', 'Adventurous']
 
 default_character_images = ["assets/image.png", "assets/image.png", "assets/image.png", "assets/image.png"]
+
+styles = ["sd character", "cartoon", "realistic"]

@@ -5,7 +5,7 @@ import gradio as gr
 
 from constants.css import STYLE
 from constants.init_values import (
-	times, places, moods, jobs, ages, mbtis, random_names, personalities, default_character_images
+	times, places, moods, jobs, ages, mbtis, random_names, personalities, default_character_images, styles
 )
 
 from interfaces import ui
@@ -47,6 +47,8 @@ with gr.Blocks(css=STYLE) as demo:
 									with gr.Row():
 										gr.Markdown("job", elem_classes=["markdown-left"], scale=1)
 										job_dd1 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=3)
+										gr.Markdown("style", elem_classes=["markdown-left"], scale=1)
+										creative_dd1 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=3)
 										gen_char_btn1 = gr.Button("gen character", elem_classes=["wrap", "control-button"], scale=3)
 
 						with gr.Tab("side character 1"):
@@ -70,6 +72,8 @@ with gr.Blocks(css=STYLE) as demo:
 									with gr.Row():
 										gr.Markdown("job", elem_classes=["markdown-left"], scale=1)
 										job_dd2 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=3)
+										gr.Markdown("style", elem_classes=["markdown-left"], scale=1)
+										creative_dd2 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=3)
 										gen_char_btn2 = gr.Button("gen character", elem_classes=["wrap", "control-button"], scale=3)
 
 
@@ -94,6 +98,8 @@ with gr.Blocks(css=STYLE) as demo:
 									with gr.Row():
 										gr.Markdown("job", elem_classes=["markdown-left"], scale=1)
 										job_dd3 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=3)
+										gr.Markdown("style", elem_classes=["markdown-left"], scale=1)
+										creative_dd3 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=3)
 										gen_char_btn3 = gr.Button("gen character", elem_classes=["wrap", "control-button"], scale=3)
 
 						with gr.Tab("3"):
@@ -117,6 +123,8 @@ with gr.Blocks(css=STYLE) as demo:
 									with gr.Row():
 										gr.Markdown("job", elem_classes=["markdown-left"], scale=1)
 										job_dd4 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=3)
+										gr.Markdown("style", elem_classes=["markdown-left"], scale=1)
+										creative_dd4 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=3)
 										gen_char_btn4 = gr.Button("gen character", elem_classes=["wrap", "control-button"], scale=3)
 
 				with gr.Column(elem_classes=["ninty-five-width"]):
@@ -190,25 +198,26 @@ with gr.Blocks(css=STYLE) as demo:
 
 	gen_char_btn1.click(
 		ui.gen_character_image,
-		inputs=[gallery_images1, name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1, time_dd, place_dd, mood_dd],
+		inputs=[
+			gallery_images1, name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1, time_dd, place_dd, mood_dd, creative_dd1],
 		outputs=[char_gallery1, gallery_images1]
 	)
 
 	gen_char_btn2.click(
 		ui.gen_character_image,
-		inputs=[gallery_images2, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2, time_dd, place_dd, mood_dd],
+		inputs=[gallery_images2, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2, time_dd, place_dd, mood_dd, creative_dd2],
 		outputs=[char_gallery2, gallery_images2]
 	)
 
 	gen_char_btn3.click(
 		ui.gen_character_image,
-		inputs=[gallery_images3, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3, time_dd, place_dd, mood_dd],
+		inputs=[gallery_images3, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3, time_dd, place_dd, mood_dd, creative_dd3],
 		outputs=[char_gallery3, gallery_images3]
 	)
 
 	gen_char_btn4.click(
 		ui.gen_character_image,
-		inputs=[gallery_images4, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4, time_dd, place_dd, mood_dd],
+		inputs=[gallery_images4, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4, time_dd, place_dd, mood_dd, creative_dd4],
 		outputs=[char_gallery4, gallery_images4]
 	)
 

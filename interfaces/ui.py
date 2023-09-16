@@ -26,7 +26,12 @@ def get_random_name(cur_char_name, char_name1, char_name2, char_name3):
 	tmp_random_names.remove(char_name3)
 	return random.choice(tmp_random_names)
 
-def gen_character_image(gallery_images, name, age, mbti, personality, job, time_dd, place_dd, mood_dd):
+def gen_character_image(
+  gallery_images, 
+  time, place, mood, 
+  name, age, mbti, personality, job, 
+  time, place, mood, creative_mode
+):
 	prompt, neg_prompt = ch_img_maker.generate_prompts_from_keywords([mbti, personality, time_dd, place_dd, mood_dd], job, age, name)
 	print(f"Image Prompt: {prompt}")
 	print(f"Negative Prompt: {neg_prompt}")
