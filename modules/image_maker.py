@@ -124,7 +124,7 @@ class ImageMaker:
         return str(output_filename.with_suffix('.png'))
     
 
-    def generate_prompts_from_keywords(self, keywords: list[str], character_name) -> tuple[str, str]:
+    def generate_prompts_from_keywords(self, keywords: list[str], job, age, character_name) -> tuple[str, str]:
         """Generate prompts from keywords.
 
         Args:
@@ -145,23 +145,37 @@ class ImageMaker:
             'top_k': 40,
             'top_p': 0.95,
         }
-        context = "Create a list of inspirational 'short words' based on the following 'keywords', output only the 'words' section in JSON format. Output template is as follows: {\"words\":[\"word1\",\"word2\",\"word3\"]}. Do not output anything other than JSON values."
+        context = ("Based on a few short sentences describing the character, recommend 'short words' that can visualize their image. "
+                   "Output only the 'words' section in JSON format. Output template is as follows: {\"words\":[\"word1\",\"word2\",\"word3\"]}. "
+                   "Do not output anything other than JSON values. Not exceeding 75 words.")
         examples = [
             [
-                "The keywords are, \"Romance, Starlit Bridge, Dreamy, teen, ENTJ, Ambitious, Traveler, Character's name is Catherine\". Print out the words in JSON format.",
+                "The character's name is Catherine, their job is as a Traveler, and they are in their 10s. "
+                "And the keywords that help in associating with the character are "
+                "\"Romance, Starlit Bridge, Dreamy, ENTJ, Ambitious\". "
+                "Print out the words in JSON format.",
                 "{\"words\":[\"Ethereal beauty\",\"1girl\",\"Starry-eyed\",\"Wanderlust\",\"scarf\",\"floating hair\",\"whimsical\",\"graceful poise\",\"celestial allure\",\"delicate\",\"close-up\",\"warm soft lighting\",\"luminescent glow\",\"gentle aura\",\"mystic charm\",\"smug\",\"smirk\",\"enigmatic presence\",\"serene\",\"Dreamy Landscape\",\"fantastical essence\",\"poetic demeanor\"]}"
             ],
             [
-                "The keywords are, \"Science Fiction, Space Station, Technological Advancement, 20s, INFP, Ambitious, Generous, Character's name is Claire\". Print out the words in JSON format.",
+                "The character's name is Claire, their job is as a Technological Advancement, and they are in their 20s. "
+                "And the keywords that help in associating with the character are "
+                "\"Science Fiction, Space Station, INFP, Ambitious, Generous\". "
+                "Print out the words in JSON format.",
                 "{\"words\":[\"1girl\",\"editorial close-up portrait\",\"cyborg\",\"sci-fi\",\"techno-savvy\",\"visionary engineer\",\"sharp focus\",\"bokeh\",\"extremely detailed\",\"intricate circuitry\",\"robotic grace\",\"rich colors\",\"vivid contrasts\",\"dramatic lighting\",\"Futuristic flair\",\"avant-garde\",\"high-tech allure\",\"Engineer with ingenuity\",\"innovative mind\",\"mechanical sophistication\",\"futuristic femme fatale\"]}"
             ],
             [
-                "The keywords are, \"Thriller, Underground Warehouse, Darkness, Secret Agent, 40s, ESTP, Ambitious, Generous, Character's name is Liam\". Print out the words in JSON format.",
+                "The character's name is Liam, their job is as a Secret Agent, and they are in their 40s. "
+                "And the keywords that help in associating with the character are "
+                "\"Thriller, Underground Warehouse, Darkness, ESTP, Ambitious, Generous\". "
+                "Print out the words in JSON format.",
                 "{\"words\":[\"1man\",\"absurdres\",\"dramatic lighting\",\"muscular adult male\",\"chiseled physique\",\"intense brown eyes\",\"raven-black hair\",\"stylish layer cut\",\"determined gaze\",\"looking at viewer\",\"enigmatic presence\",\"secret agent with a stealthy demeanor\",\"cunning strategist\",\"advanced techwear equipped with high-tech gadgets\",\"sleek\",\"night operative\",\"shadowy figure\",\"night cinematic atmosphere\",\"under the moonlight operation\",\"mysterious and captivating aura\"]}"
             ]
         ]
 
-        messages = [f"The keywords are, \"{', '.join(keywords)}, Character's name is {character_name}\". Print out the words in JSON format."]
+        messages = [f"The character's name is {character_name}, their job is as a {job}, and they are in their {age}. " +
+                    "And the keywords that help in associating with the character are " +
+                    f"\"{', '.join(keywords)}\". " +
+                    "Print out the words in JSON format."]
         response = palm.chat(
             **defaults,
             context=context,
@@ -170,9 +184,9 @@ class ImageMaker:
         )
 
         try:
-            print(positive := ', '.join(json.loads(response.last)['words']))
+            print(positive := ', '.join(json.loads(response.last)['words'][:77]))
         except:
-            print(positive := ', '.join(re.findall(r'\*\s(\w+)', response.last)))
+            print(positive := ', '.join(re.findall(r'\*\s(\w+)', response.last)[:77]))
 
         return (positive, negative)
     
