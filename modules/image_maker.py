@@ -8,12 +8,13 @@ import re
 
 import torch
 
-from diffusers import StableDiffusionPipeline
 from diffusers import (
+    StableDiffusionPipeline,
+    AutoencoderKL,
     DPMSolverMultistepScheduler,
     DDPMScheduler,
     DPMSolverSinglestepScheduler,
-    DPMSolverSDEScheduler
+    DPMSolverSDEScheduler,
 )
 
 import google.generativeai as palm
@@ -38,6 +39,7 @@ class ImageMaker:
     def __init__(self, model_base: str,
                        clip_skip: int = 2,
                        sampling: Literal['sde-dpmsolver++'] = 'sde-dpmsolver++',
+                       vae: str = None,
                        safety: bool = True,
                        device: str = None) -> None:
         """Initialize the ImageMaker class.
@@ -46,6 +48,7 @@ class ImageMaker:
             model_base (str): Filename of the model base.
             clip_skip (int, optional): Number of layers to skip in the clip model. Defaults to 2.
             sampling (Literal['sde-dpmsolver++'], optional): Sampling method. Defaults to 'sde-dpmsolver++'.
+            vae (str, optional): Filename of the VAE model. Defaults to None.
             safety (bool, optional): Whether to use the safety checker. Defaults to True.
             device (str, optional): Device to use for the model. Defaults to None.
         """
@@ -54,10 +57,13 @@ class ImageMaker:
         self.__model_base = model_base
         self.__clip_skip = clip_skip
         self.__sampling = sampling
+        self.__vae = vae
         self.__safety = safety
 
         print("Loading the Stable Diffusion model into memory...")
-        self.__sd_model = StableDiffusionPipeline.from_single_file(self.model_base, torch_dtype=torch.float16, use_safetensors=True)
+        self.__sd_model = StableDiffusionPipeline.from_single_file(self.model_base,
+                                                                   custom_pipeline="lpw_stable_diffusion",
+                                                                   use_safetensors=True)
 
         # Clip Skip
         self.__sd_model.text_encoder.text_model.encoder.layers = self.__sd_model.text_encoder.text_model.encoder.layers[:12 - (self.clip_skip - 1)]
@@ -69,6 +75,11 @@ class ImageMaker:
             self.__sd_model.scheduler = scheduler
         
         # TODO: Use LoRA
+
+        # VAE
+        if self.vae:
+            vae_model = AutoencoderKL.from_single_file(self.vae)
+            self.__sd_model.vae = vae_model
 
         if not self.safety:
             self.__sd_model.safety_checker = None
@@ -87,8 +98,8 @@ class ImageMaker:
     def text2image(self,
                    prompt: str, neg_prompt: str = None,
                    ratio: Literal['3:2', '4:3', '16:9', '1:1', '9:16', '3:4', '2:3'] = '1:1',
-                   step: int = 20,
-                   cfg: float = 7.5,
+                   step: int = 28,
+                   cfg: float = 7,
                    seed: int = None) -> str:
         """Generate an image from the prompt.
 
@@ -112,6 +123,7 @@ class ImageMaker:
 
         width, height = self.__ratio[ratio]
 
+        # Generate the image
         img = self.__sd_model(prompt,
                               negative_prompt=neg_prompt,
                               guidance_scale=cfg,
@@ -124,7 +136,7 @@ class ImageMaker:
         return str(output_filename.with_suffix('.png'))
     
 
-    def generate_prompts_from_keywords(self, keywords: list[str], character_name) -> tuple[str, str]:
+    def generate_prompts_from_keywords(self, keywords: list[str], job, age, character_name) -> tuple[str, str]:
         """Generate prompts from keywords.
 
         Args:
@@ -135,9 +147,12 @@ class ImageMaker:
             tuple[str, str]: A tuple of positive and negative prompts.
         """
         palm.configure(api_key=get_palm_api_key())
-        positive = ''
-        negative = ''
-
+        positive = "masterpiece, best quality, dramatic, solo, "  # Add chibi, cute : Cute 3D Chracter style
+        quality_prompt = ", extremely detailed, highly detailed, high budget, cinemascope, film grain, grainy, finely detailed eyes and face"
+        negative = ("nsfw, worst quality, low quality, lowres, bad anatomy,bad hands, text, watermark, signature, error, missing fingers, "
+                    "extra digit, fewer digits, cropped, worst quality, normal quality, blurry, username, extra limbs, "
+                    "twins, boring, jpeg artifacts ")
+        
         defaults = {
             'model': 'models/chat-bison-001',
             'temperature': 0.5,
@@ -145,23 +160,37 @@ class ImageMaker:
             'top_k': 40,
             'top_p': 0.95,
         }
-        context = "Create a list of inspirational 'short words' based on the following 'keywords', output only the 'words' section in JSON format. Output template is as follows: {\"words\":[\"word1\",\"word2\",\"word3\"]}. Do not output anything other than JSON values."
+        context = ("Based on a few short sentences describing the character, recommend 'short words' that can visualize their image. "
+                   "Output only the 'words' section in JSON format. Output template is as follows: {\"words\":[\"word1\",\"word2\",\"word3\"]}. "
+                   "Do not output anything other than JSON values. Not exceeding 30 words.")
         examples = [
             [
-                "The keywords are, \"Romance, Starlit Bridge, Dreamy, teen, ENTJ, Ambitious, Traveler, Character's name is Catherine\". Print out the words in JSON format.",
-                "{\"words\":[\"Ethereal beauty\",\"1girl\",\"Starry-eyed\",\"Wanderlust\",\"scarf\",\"floating hair\",\"whimsical\",\"graceful poise\",\"celestial allure\",\"delicate\",\"close-up\",\"warm soft lighting\",\"luminescent glow\",\"gentle aura\",\"mystic charm\",\"smug\",\"smirk\",\"enigmatic presence\",\"serene\",\"Dreamy Landscape\",\"fantastical essence\",\"poetic demeanor\"]}"
+                "The character's name is Catherine, their job is as a Traveler, and they are in their 10s. "
+                "And the keywords that help in associating with the character are "
+                "\"Romance, Starlit Bridge, Dreamy, ENTJ, Ambitious\". "
+                "Print out the words in JSON format.",
+                "{\"words\":[\"1girl\",\"teenage\",\"Ethereal beauty\",\"Starry-eyed\",\"Wanderlust\",\"scarf\",\"floating hair\",\"whimsical\",\"graceful poise\",\"celestial allure\",\"delicate\",\"close-up\",\"warm soft lighting\",\"luminescent glow\",\"gentle aura\",\"mystic charm\",\"smug\",\"smirk\",\"enigmatic presence\",\"serene\",\"Dreamy Landscape\",\"fantastical essence\",\"poetic demeanor\"]}"
             ],
             [
-                "The keywords are, \"Science Fiction, Space Station, Technological Advancement, 20s, INFP, Ambitious, Generous, Character's name is Claire\". Print out the words in JSON format.",
-                "{\"words\":[\"1girl\",\"editorial close-up portrait\",\"cyborg\",\"sci-fi\",\"techno-savvy\",\"visionary engineer\",\"sharp focus\",\"bokeh\",\"extremely detailed\",\"intricate circuitry\",\"robotic grace\",\"rich colors\",\"vivid contrasts\",\"dramatic lighting\",\"Futuristic flair\",\"avant-garde\",\"high-tech allure\",\"Engineer with ingenuity\",\"innovative mind\",\"mechanical sophistication\",\"futuristic femme fatale\"]}"
+                "The character's name is Claire, their job is as a Technological Advancement, and they are in their 20s. "
+                "And the keywords that help in associating with the character are "
+                "\"Science Fiction, Space Station, INFP, Ambitious, Generous\". "
+                "Print out the words in JSON format.",
+                "{\"words\":[\"1girl\",\"twenty\",\"editorial close-up portrait\",\"cyborg\",\"sci-fi\",\"techno-savvy\",\"visionary engineer\",\"sharp focus\",\"bokeh\",\"extremely detailed\",\"intricate circuitry\",\"robotic grace\",\"rich colors\",\"vivid contrasts\",\"dramatic lighting\",\"Futuristic flair\",\"avant-garde\",\"high-tech allure\",\"Engineer with ingenuity\",\"innovative mind\",\"mechanical sophistication\",\"futuristic femme fatale\"]}"
             ],
             [
-                "The keywords are, \"Thriller, Underground Warehouse, Darkness, Secret Agent, 40s, ESTP, Ambitious, Generous, Character's name is Liam\". Print out the words in JSON format.",
-                "{\"words\":[\"1man\",\"absurdres\",\"dramatic lighting\",\"muscular adult male\",\"chiseled physique\",\"intense brown eyes\",\"raven-black hair\",\"stylish layer cut\",\"determined gaze\",\"looking at viewer\",\"enigmatic presence\",\"secret agent with a stealthy demeanor\",\"cunning strategist\",\"advanced techwear equipped with high-tech gadgets\",\"sleek\",\"night operative\",\"shadowy figure\",\"night cinematic atmosphere\",\"under the moonlight operation\",\"mysterious and captivating aura\"]}"
+                "The character's name is Liam, their job is as a Secret Agent, and they are in their 40s. "
+                "And the keywords that help in associating with the character are "
+                "\"Thriller, Underground Warehouse, Darkness, ESTP, Ambitious, Generous\". "
+                "Print out the words in JSON format.",
+                "{\"words\":[\"1man\",\"middle-aged\",\"absurdres\",\"dramatic lighting\",\"muscular adult male\",\"chiseled physique\",\"intense brown eyes\",\"raven-black hair\",\"stylish layer cut\",\"determined gaze\",\"looking at viewer\",\"enigmatic presence\",\"secret agent with a stealthy demeanor\",\"cunning strategist\",\"advanced techwear equipped with high-tech gadgets\",\"sleek\",\"night operative\",\"shadowy figure\",\"night cinematic atmosphere\",\"under the moonlight operation\",\"mysterious and captivating aura\"]}"
             ]
         ]
 
-        messages = [f"The keywords are, \"{', '.join(keywords)}, Character's name is {character_name}\". Print out the words in JSON format."]
+        messages = [f"The character's name is {character_name}, their job is as a {job}, and they are in their {age}. " +
+                    "And the keywords that help in associating with the character are " +
+                    f"\"{', '.join(keywords)}\". " +
+                    "Print out the words in JSON format."]
         response = palm.chat(
             **defaults,
             context=context,
@@ -169,10 +198,18 @@ class ImageMaker:
             messages=messages
         )
 
+        print('PaLM Response:', response.last)
+        response.last = response.last.replace(',\n  ]\n}', '\n  ]\n}')
         try:
-            print(positive := ', '.join(json.loads(response.last)['words']))
+            positive += ', '.join(json.loads(response.last)['words'][:32])
         except:
-            print(positive := ', '.join(re.findall(r'\*\s(\w+)', response.last)))
+            start, end = response.last.find('{'), response.last.rfind('}') + 1
+            if end - start >= 12:
+                json_str = response.last[start:end]
+                positive += ', '.join(json.loads(json_str)['words'][:32])
+            else:
+                positive += ', '.join(re.findall(r'\*\s(\w+)', response.last.replace('**', ''))[:32])
+        positive += quality_prompt
 
         return (positive, negative)
     
@@ -203,6 +240,15 @@ class ImageMaker:
             Literal['sde-dpmsolver++']: The sampling method (read-only)
         """
         return self.__sampling
+
+    @property
+    def vae(self):
+        """VAE
+
+        Returns:
+            str: The VAE (read-only)
+        """
+        return self.__vae
 
     @property
     def safety(self):
