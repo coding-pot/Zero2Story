@@ -32,7 +32,7 @@ def gen_character_image(
   name, age, mbti, personality, job, 
   time, place, mood, creative_mode
 ):
-	prompt, neg_prompt = ch_img_maker.generate_prompts_from_keywords([mbti, personality, time_dd, place_dd, mood_dd], job, age, name)
+	prompt, neg_prompt = ch_img_maker.generate_prompts_from_keywords([mbti, personality, time, place, mood], job, age, name)
 	print(f"Image Prompt: {prompt}")
 	print(f"Negative Prompt: {neg_prompt}")
 	img_filename = ch_img_maker.text2image(prompt, neg_prompt=neg_prompt)
