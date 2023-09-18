@@ -279,7 +279,7 @@ with gr.Blocks(css=STYLE) as demo:
  
 	clear_btn.click(
 		ui.chat_reset,
-		inputs=[chat_mode],
+		inputs=[chat_mode, chat_state],
 		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	)
 

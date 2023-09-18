@@ -100,9 +100,11 @@ async def chat(user_input, chat_mode, chat_state):
     response_txt = await _get_chat_response(prompt)
     ppm.replace_last_pong(response_txt)
     
+    chat_state[chat_mode] = ppm
+
     return (
         "", 
-        {chat_mode: ppm}, 
+        chat_state, 
         ppm.build_uis(), 
         gr.update(interactive=True)
     )
@@ -120,15 +122,19 @@ async def chat_regen(chat_mode, chat_state):
     response_txt = await _get_chat_response(prompt)
     ppm.replace_last_pong(response_txt)
     
+    chat_state[chat_mode] = ppm
+
     return (
-        {chat_mode: ppm}, 
+        chat_state,
         ppm.build_uis()
     )
 
-def chat_reset(chat_mode):
+def chat_reset(chat_mode, chat_state):
+    chat_state[chat_mode] = palmchat.GradioPaLMChatPPManager()
+
     return (
         "", 
-        {chat_mode: palmchat.GradioPaLMChatPPManager()}, 
+        chat_state, 
         [], 
         gr.update(interactive=False)
     )
