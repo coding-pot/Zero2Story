@@ -143,8 +143,6 @@ def chat_reset(chat_mode, chat_state):
 # for tabbing
 
 def update_on_main_tabs(chat_state, evt: gr.SelectData):
-    print(chat_state)
-    print(chat_state.keys())
     chat_mode = "plot_chat"
 
     if evt.value.lower() == "background setup":
