@@ -153,7 +153,7 @@ with gr.Blocks(css=STYLE) as demo:
 						gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
 
 					with gr.Row():
-						gr.Slider(label="temperature")
+						gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
 						gr.Button("gen plot", elem_classes=["control-button"])
 						gr.Button("confirm", elem_classes=["control-button"])
 
@@ -193,8 +193,8 @@ with gr.Blocks(css=STYLE) as demo:
 			chat_input_txt = gr.Textbox(placeholder="enter...", interactive=True, elem_classes=["no-label"])
 
 			with gr.Row():
-				gr.Button("regen", elem_classes=["control-button"])
-				gr.Button("clear", elem_classes=["control-button"])
+				regen_btn = gr.Button("regen", elem_classes=["control-button"])
+				clear_btn = gr.Button("clear", elem_classes=["control-button"])
 
 	time_dd.select(
 		ui.update_on_age,
@@ -253,7 +253,22 @@ with gr.Blocks(css=STYLE) as demo:
 	chat_input_txt.submit(
 		ui.chat,
 		inputs=[chat_input_txt, chat_state],
-		outputs=[chat_state, chatbot]
+		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
+	)
+ 
+	regen_btn.click(
+		ui.rollback_last_ui,
+		inputs=[chatbot], outputs=[chatbot]
+	).then(
+		ui.chat_regen,
+		inputs=[chat_state],
+		outputs=[chat_state, chatbot]		
+	)
+ 
+	clear_btn.click(
+		ui.chat_reset,
+		inputs=None,
+		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	)
 
 demo.launch(share=True)

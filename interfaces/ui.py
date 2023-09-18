@@ -84,4 +84,37 @@ async def chat(user_input, chat_state):
     )
     ppm.replace_last_pong(response_txt)
     
+    return "", {"ppmanager_type": ppm}, ppm.build_uis(), gr.update(interactive=True)
+
+def rollback_last_ui(history):
+    return history[:-1]
+
+async def chat_regen(chat_state):
+    ppm = chat_state["ppmanager_type"]
+    
+    user_input = ppm.pingpongs[-1].ping
+    ppm.pingpongs = ppm.pingpongs[:-1]
+    ppm.add_pingpong(
+        PingPong(user_input, '')
+    )    
+    prompt = _build_prompts(ppm)
+
+    parameters = {
+		'model': 'models/chat-bison-001',
+		'candidate_count': 1,
+		'context': "",
+		'temperature': 1.0,
+		'top_k': 50,
+		'top_p': 0.9,
+    }
+    
+    _, response_txt = await palmchat.gen_text(
+        prompt, 
+        parameters=parameters
+    )
+    ppm.replace_last_pong(response_txt)
+    
     return {"ppmanager_type": ppm}, ppm.build_uis()
+
+def chat_reset():
+    return "", {"ppmanager_type": palmchat.GradioPaLMChatPPManager()}, [], gr.update(interactive=False)
