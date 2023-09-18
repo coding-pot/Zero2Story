@@ -193,7 +193,7 @@ with gr.Blocks(css=STYLE) as demo:
 			chat_input_txt = gr.Textbox(placeholder="enter...", interactive=True, elem_classes=["no-label"])
 
 			with gr.Row():
-				regen_btn = gr.Button("regen", elem_classes=["control-button"])
+				regen_btn = gr.Button("regen", interactive=False, elem_classes=["control-button"])
 				clear_btn = gr.Button("clear", elem_classes=["control-button"])
 
 	time_dd.select(
