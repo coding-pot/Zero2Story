@@ -9,8 +9,13 @@ from constants.init_values import (
 )
 
 from interfaces import ui
+from palmchat import GradioPaLMChatPPManager
 
 with gr.Blocks(css=STYLE) as demo:
+	chat_state = gr.State({
+		"ppmanager_type": GradioPaLMChatPPManager
+	})
+
 	gallery_images1 = gr.State(default_character_images)
 	gallery_images2 = gr.State(default_character_images)
 	gallery_images3 = gr.State(default_character_images)
@@ -180,12 +185,12 @@ with gr.Blocks(css=STYLE) as demo:
 				gr.Markdown("hello")
 
 		with gr.Column(scale=1):
-			gr.Chatbot(
-				[("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world")], 
+			chatbot = gr.Chatbot(
+				[], 
 				avatar_images=("assets/user.png", "assets/ai.png"), 
 				elem_id="chatbot", 
 				elem_classes=["no-label-chatbot"])
-			gr.Textbox(placeholder="enter...", interactive=True, elem_classes=["no-label"])
+			chat_input_txt = gr.Textbox(placeholder="enter...", interactive=True, elem_classes=["no-label"])
 
 			with gr.Row():
 				gr.Button("regen", elem_classes=["control-button"])
@@ -243,6 +248,12 @@ with gr.Blocks(css=STYLE) as demo:
 		ui.get_random_name,
 		inputs=[name_txt4, name_txt1, name_txt2, name_txt4],
 		outputs=[name_txt4],
+	)
+
+	chat_prompt_txt.submit(
+		ui.chat,
+		inputs=[chat_input_txt, chat_state],
+		outputs=[chat_state, chatbot]
 	)
 
 demo.launch(share=True)
