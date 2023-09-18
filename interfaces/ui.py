@@ -57,8 +57,8 @@ def update_on_age(evt: gr.SelectData):
     gr.update(value=job_list[0], choices=job_list)
 	)
 
-def _build_prompts(ppmanager, win_size=3):
-    dummy_ppm = copy.deepcopy(ppmanager)
+def _build_prompts(ppm, win_size=3):
+    dummy_ppm = copy.deepcopy(ppm)
     lws = CtxLastWindowStrategy(win_size)
     return lws(dummy_ppm)
 
@@ -67,7 +67,7 @@ async def chat(user_input, chat_state):
     ppm.add_pingpong(
         PingPong(user_input, '')
     )    
-    prompt = _build_prompts(chat_state)
+    prompt = _build_prompts(ppm)
 
     parameters = {
 		'model': 'models/chat-bison-001',
