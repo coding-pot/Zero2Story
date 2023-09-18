@@ -90,7 +90,14 @@ def update_on_age(evt: gr.SelectData):
 def rollback_last_ui(history):
     return history[:-1]
 
-async def chat(user_input, chat_mode, chat_state):
+async def chat(
+    user_input, chat_mode, chat_state,
+    time, place, mood,
+    main_character, side_character1,
+    side_character2, side_character3
+):
+    print(main_character)
+
     ppm = chat_state[chat_mode]
     ppm.add_pingpong(
         PingPong(user_input, '')
