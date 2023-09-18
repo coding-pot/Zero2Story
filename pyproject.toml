@@ -19,6 +19,7 @@ numba = "^0.57.1"
 audiocraft = "^0.0.2"
 accelerate = "^0.22.0"
 google-generativeai = "^0.1.0"
+bingbong = "^0.4.2"
 
 [[tool.poetry.source]]
 name = "pytorch"
