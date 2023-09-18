@@ -9,7 +9,7 @@ from constants.init_values import (
 )
 
 from interfaces import ui
-from palmchat import GradioPaLMChatPPManager
+from modules.palmchat import GradioPaLMChatPPManager
 
 with gr.Blocks(css=STYLE) as demo:
 	chat_state = gr.State({

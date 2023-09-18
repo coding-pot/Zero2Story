@@ -10,10 +10,9 @@ from constants.init_values import (
 )
 
 from modules import (
-	ImageMaker, MusicMaker
+	ImageMaker, MusicMaker, palmchat
 )
 
-import palmchat
 from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
