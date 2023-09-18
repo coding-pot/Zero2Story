@@ -1,7 +1,4 @@
 import os
-import json
-import requests
-import sseclient
 import google.generativeai as palm_api
 
 from pingpong import PingPong

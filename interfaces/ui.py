@@ -10,8 +10,11 @@ from constants.init_values import (
 )
 
 from modules import (
-	ImageMaker, MusicMaker
+	ImageMaker, MusicMaker, palmchat
 )
+
+from pingpong import PingPong
+from pingpong.context import CtxLastWindowStrategy
 
 # TODO: Replace checkpoint filename to Huggingface URL
 bg_img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', safety=False)
@@ -53,3 +56,65 @@ def update_on_age(evt: gr.SelectData):
     gr.update(value=job_list[0], choices=job_list),
     gr.update(value=job_list[0], choices=job_list)
 	)
+
+def _build_prompts(ppm, win_size=3):
+    dummy_ppm = copy.deepcopy(ppm)
+    lws = CtxLastWindowStrategy(win_size)
+    return lws(dummy_ppm)
+
+async def chat(user_input, chat_state):
+    ppm = chat_state["ppmanager_type"]
+    ppm.add_pingpong(
+        PingPong(user_input, '')
+    )    
+    prompt = _build_prompts(ppm)
+
+    parameters = {
+		'model': 'models/chat-bison-001',
+		'candidate_count': 1,
+		'context': "",
+		'temperature': 1.0,
+		'top_k': 50,
+		'top_p': 0.9,
+    }
+    
+    _, response_txt = await palmchat.gen_text(
+        prompt, 
+        parameters=parameters
+    )
+    ppm.replace_last_pong(response_txt)
+    
+    return "", {"ppmanager_type": ppm}, ppm.build_uis(), gr.update(interactive=True)
+
+def rollback_last_ui(history):
+    return history[:-1]
+
+async def chat_regen(chat_state):
+    ppm = chat_state["ppmanager_type"]
+    
+    user_input = ppm.pingpongs[-1].ping
+    ppm.pingpongs = ppm.pingpongs[:-1]
+    ppm.add_pingpong(
+        PingPong(user_input, '')
+    )    
+    prompt = _build_prompts(ppm)
+
+    parameters = {
+		'model': 'models/chat-bison-001',
+		'candidate_count': 1,
+		'context': "",
+		'temperature': 1.0,
+		'top_k': 50,
+		'top_p': 0.9,
+    }
+    
+    _, response_txt = await palmchat.gen_text(
+        prompt, 
+        parameters=parameters
+    )
+    ppm.replace_last_pong(response_txt)
+    
+    return {"ppmanager_type": ppm}, ppm.build_uis()
+
+def chat_reset():
+    return "", {"ppmanager_type": palmchat.GradioPaLMChatPPManager()}, [], gr.update(interactive=False)

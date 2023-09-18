@@ -9,8 +9,13 @@ from constants.init_values import (
 )
 
 from interfaces import ui
+from modules.palmchat import GradioPaLMChatPPManager
 
 with gr.Blocks(css=STYLE) as demo:
+	chat_state = gr.State({
+		"ppmanager_type": GradioPaLMChatPPManager()
+	})
+
 	gallery_images1 = gr.State(default_character_images)
 	gallery_images2 = gr.State(default_character_images)
 	gallery_images3 = gr.State(default_character_images)
@@ -148,7 +153,7 @@ with gr.Blocks(css=STYLE) as demo:
 						gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
 
 					with gr.Row():
-						gr.Slider(label="temperature")
+						gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
 						gr.Button("gen plot", elem_classes=["control-button"])
 						gr.Button("confirm", elem_classes=["control-button"])
 
@@ -180,16 +185,16 @@ with gr.Blocks(css=STYLE) as demo:
 				gr.Markdown("hello")
 
 		with gr.Column(scale=1):
-			gr.Chatbot(
-				[("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world")], 
+			chatbot = gr.Chatbot(
+				[], 
 				avatar_images=("assets/user.png", "assets/ai.png"), 
 				elem_id="chatbot", 
 				elem_classes=["no-label-chatbot"])
-			gr.Textbox(placeholder="enter...", interactive=True, elem_classes=["no-label"])
+			chat_input_txt = gr.Textbox(placeholder="enter...", interactive=True, elem_classes=["no-label"])
 
 			with gr.Row():
-				gr.Button("regen", elem_classes=["control-button"])
-				gr.Button("clear", elem_classes=["control-button"])
+				regen_btn = gr.Button("regen", interactive=False, elem_classes=["control-button"])
+				clear_btn = gr.Button("clear", elem_classes=["control-button"])
 
 	time_dd.select(
 		ui.update_on_age,
@@ -243,6 +248,27 @@ with gr.Blocks(css=STYLE) as demo:
 		ui.get_random_name,
 		inputs=[name_txt4, name_txt1, name_txt2, name_txt4],
 		outputs=[name_txt4],
+	)
+
+	chat_input_txt.submit(
+		ui.chat,
+		inputs=[chat_input_txt, chat_state],
+		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
+	)
+ 
+	regen_btn.click(
+		ui.rollback_last_ui,
+		inputs=[chatbot], outputs=[chatbot]
+	).then(
+		ui.chat_regen,
+		inputs=[chat_state],
+		outputs=[chat_state, chatbot]		
+	)
+ 
+	clear_btn.click(
+		ui.chat_reset,
+		inputs=None,
+		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	)
 
 demo.launch(share=True)
