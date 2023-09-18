@@ -13,7 +13,7 @@ from modules.palmchat import GradioPaLMChatPPManager
 
 with gr.Blocks(css=STYLE) as demo:
 	chat_state = gr.State({
-		"ppmanager_type": GradioPaLMChatPPManager
+		"ppmanager_type": GradioPaLMChatPPManager()
 	})
 
 	gallery_images1 = gr.State(default_character_images)

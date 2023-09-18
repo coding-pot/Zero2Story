@@ -63,7 +63,8 @@ def _build_prompts(ppmanager, win_size=3):
     return lws(dummy_ppm)
 
 async def chat(user_input, chat_state):
-    chat_state.add_pingpong(
+    ppm = chat_state["ppmanager_type"]
+    ppm.add_pingpong(
         PingPong(user_input, '')
     )    
     prompt = _build_prompts(chat_state)
@@ -81,6 +82,6 @@ async def chat(user_input, chat_state):
         prompt, 
         parameters=parameters
     )
-    chat_state.replace_last_pong(response_txt)
+    ppm.replace_last_pong(response_txt)
     
-    return chat_state, chat_state.build_uis()
+    return {"ppmanager_type": ppm}, ppm.build_uis()
