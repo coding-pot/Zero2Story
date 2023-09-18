@@ -250,7 +250,7 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[name_txt4],
 	)
 
-	chat_prompt_txt.submit(
+	chat_input_txt.submit(
 		ui.chat,
 		inputs=[chat_input_txt, chat_state],
 		outputs=[chat_state, chatbot]
