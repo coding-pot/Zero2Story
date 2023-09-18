@@ -13,6 +13,7 @@ from modules import (
 	ImageMaker, MusicMaker
 )
 
+import palmchat
 from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
@@ -77,10 +78,10 @@ async def chat(user_input, chat_state):
 		'top_p': 0.9,
     }
     
-    _, response_txt = await gen_text(
+    _, response_txt = await palmchat.gen_text(
         prompt, 
         parameters=parameters
     )
-	chat_state.replace_last_pong(response_txt)
-
-	return chat_state, chat_state.build_uis()
+    chat_state.replace_last_pong(response_txt)
+    
+    return chat_state, chat_state.build_uis()
