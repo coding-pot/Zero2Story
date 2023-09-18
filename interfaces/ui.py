@@ -28,11 +28,11 @@ def _build_prompts(ppm, win_size=3):
     lws = CtxLastWindowStrategy(win_size)
     return lws(dummy_ppm)
 
-async def _get_chat_response(prompt):
+async def _get_chat_response(prompt, ctx=None):
     parameters = {
 		'model': 'models/chat-bison-001',
 		'candidate_count': 1,
-		'context': "",
+		'context': "" if ctx is None else ctx,
 		'temperature': 1.0,
 		'top_k': 50,
 		'top_p': 0.9,
@@ -93,10 +93,51 @@ def rollback_last_ui(history):
 async def chat(
     user_input, chat_mode, chat_state,
     time, place, mood,
-    main_character, side_character1,
-    side_character2, side_character3
+    name1, age1, mbti1, personality1, job1,
+    name2, age2, mbti2, personality2, job2,
+    name3, age3, mbti3, personality3, job3,
+    name4, age4, mbti4, personality4, job4,
 ):
-    print(main_character)
+    ctx = f"""You are a professional writing advisor, especially specialized in developing ideas on plotting stories and creating characters. I provide when, where, and mood along with the rough description of one main character and three side characters. 
+
+Give creative responses based on the following information.
+
+when: {time}
+where: {place}
+mood: {mood}
+
+main character: {{
+name: {name1},
+job: {job1},
+age: {age1},
+mbti: {mbti1},
+personality: {personality1} 
+}}
+
+side character1: {{
+name: {name2},
+job: {job2},
+age: {age2},
+mbti: {mbti2},
+personality: {personality2} 
+}}
+
+side character2: {{
+name: {name3},
+job: {job3},
+age: {age3},
+mbti: {mbti3},
+personality: {personality3} 
+}}
+
+side character3: {{
+name: {name4},
+job: {job4},
+age: {age4},
+mbti: {mbti4},
+personality: {personality4} 
+}}
+"""
 
     ppm = chat_state[chat_mode]
     ppm.add_pingpong(
@@ -104,7 +145,7 @@ async def chat(
     )    
     prompt = _build_prompts(ppm)
 
-    response_txt = await _get_chat_response(prompt)
+    response_txt = await _get_chat_response(prompt, ctx)
     ppm.replace_last_pong(response_txt)
     
     chat_state[chat_mode] = ppm
