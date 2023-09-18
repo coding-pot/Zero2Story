@@ -66,18 +66,18 @@ async def chat(user_input, chat_state):
     chat_state.add_pingpong(
         PingPong(user_input, '')
     )    
-    prompt = _build_prompts(ppm)
+    prompt = _build_prompts(chat_state)
 
     parameters = {
-        'model': 'models/chat-bison-001',
-        'candidate_count': 1,
-        'context': global_context,
-        'temperature': res_temp,
-        'top_k': res_topk,
-        'top_p': res_topp,
+		'model': 'models/chat-bison-001',
+		'candidate_count': 1,
+		'context': "",
+		'temperature': 1.0,
+		'top_k': 50,
+		'top_p': 0.9,
     }
     
-    palm_if, response_txt = await gen_text(
+    _, response_txt = await gen_text(
         prompt, 
         parameters=parameters
     )
