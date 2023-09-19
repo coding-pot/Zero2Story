@@ -264,8 +264,18 @@ personality: {personality4}
         PingPong(user_input, '')
     )
     prompt = _build_prompts(ppm)
-    response_txt = await _get_chat_response(prompt, ctx=ctx)
-    response_json = utils.parse_first_json_code_snippet(response_txt)
+
+    response_json = None
+    while response_json is None:
+        response_txt = await _get_chat_response(prompt, ctx=ctx)
+        print(response_txt)
+
+        try:
+            response_json = utils.parse_first_json_code_snippet(response_txt)
+        except:
+             pass
+        
+    print(response_json)
 
     return (
         response_json["introduction"],
