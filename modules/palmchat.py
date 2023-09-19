@@ -71,29 +71,46 @@ class GradioPaLMChatPPManager(PaLMChatPPManager):
 
 async def gen_text(
     prompt,
+    mode="chat", #chat or text
     parameters=None
 ):
     if parameters is None:
         temperature = 0.7
         top_k = 40
         top_p = 0.95
-    
-        parameters = {
-            'model': 'models/chat-bison-001',
-            'candidate_count': 1,
-            'context': "",
-            'temperature': temperature,
-            'top_k': top_k,
-            'top_p': top_p,
-        }
+        max_output_tokens = 1024
+        
+        if mode == "chat":
+            parameters = {
+                'model': 'models/chat-bison-001',
+                'candidate_count': 1,
+                'context': "",
+                'temperature': temperature,
+                'top_k': top_k,
+                'top_p': top_p,
+            }
+        else:
+            parameters = {
+                'model': 'models/text-bison-001',
+                'candidate_count': 1,
+                'temperature': temperature,
+                'top_k': top_k,
+                'top_p': top_p,
+                'max_output_tokens': max_output_tokens,
+            }            
 
-    response = await palm_api.chat_async(**parameters, messages=prompt)
+    if mode == "chat":
+        response = await palm_api.chat_async(**parameters, messages=prompt)
+    else:
+        response = palm_api.generate_text(**parameters, prompt=prompt)
     
     if len(response.filters) > 0 and \
         response.filters[0]['reason'] == 2:
         response_txt = "your request is blocked for some reasons"
-    
     else:
-        response_txt = response.last
+        if mode == "chat":
+            response_txt = response.last
+        else:
+            response_txt = response.result
     
     return response, response_txt

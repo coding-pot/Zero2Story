@@ -8,7 +8,7 @@ from constants.init_values import (
 	times, places, moods, jobs, ages, mbtis, random_names, personalities, default_character_images, styles
 )
 
-from interfaces import ui, story_gen_ui
+from interfaces import ui, chat_ui, plot_gen_ui, story_gen_ui 
 from modules.palmchat import GradioPaLMChatPPManager
 
 with gr.Blocks(css=STYLE) as demo:
@@ -25,6 +25,8 @@ with gr.Blocks(css=STYLE) as demo:
 	gallery_images2 = gr.State(default_character_images)
 	gallery_images3 = gr.State(default_character_images)
 	gallery_images4 = gr.State(default_character_images)
+
+	title = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"])
 
 	with gr.Row():
 		with gr.Column(scale=2):
@@ -144,19 +146,28 @@ with gr.Blocks(css=STYLE) as demo:
 							chapter1_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row(elem_classes=["left-margin"]):
-							chapter1_first_paragraph = gr.Textbox(placeholder="The first paragraph of the first chapter will be generated here", elem_classes=["no-label"])
+							chapter1_plot = gr.Textbox(placeholder="The plot of the first chapter will be generated here", elem_classes=["no-label"])
 
 						with gr.Row():
 							gr.Textbox("Chapter 2.", elem_classes=["no-label"], scale=1)
 							chapter2_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
+       
+						with gr.Row(elem_classes=["left-margin"]):
+							chapter2_plot = gr.Textbox(placeholder="The plot of the second chapter will be generated here", elem_classes=["no-label"])
 
 						with gr.Row():
 							gr.Textbox("Chapter 3.", elem_classes=["no-label"], scale=1)
 							chapter3_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
+       
+						with gr.Row(elem_classes=["left-margin"]):
+							chapter3_plot = gr.Textbox(placeholder="The plot of the third chapter will be generated here", elem_classes=["no-label"])
 
 						with gr.Row():
 							gr.Textbox("Chapter 4.", elem_classes=["no-label"], scale=1)
 							chapter4_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
+
+						with gr.Row(elem_classes=["left-margin"]):
+							chapter4_plot = gr.Textbox(placeholder="The plot of the fourth chapter will be generated here", elem_classes=["no-label"])
 
 						with gr.Row():
 							gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
@@ -267,7 +278,7 @@ with gr.Blocks(css=STYLE) as demo:
 	### Plot generation
 
 	plot_gen_btn.click(
-		ui.plot_gen,
+		plot_gen_ui.plot_gen,
 		inputs= [
 			time_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
@@ -275,41 +286,33 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
 		],
-		outputs = [chapter1_title, chapter2_title, chapter3_title, chapter4_title]
-	).then(
-		ui.first_paragrph_gen,
-		inputs = [
-			time_dd, place_dd, mood_dd, 
-			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-			chapter1_title, chapter2_title, chapter3_title, chapter4_title
-		],
-		outputs = [chapter1_first_paragraph, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
+		outputs = [
+			title,
+    		chapter1_title, chapter2_title, chapter3_title, chapter4_title,
+      		chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
+    	]
 	)
- 
 	### Story generation
  
-	chapter1_action1.click(
-		story_gen_ui.next_paragraph_gen,
-		inputs = [
-      		chapter1_action1,
-			chapter1_progress,
-			time_dd, place_dd, mood_dd, 
-			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-			chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
-		],
-		outputs = [chapter1_progress, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
-	)
+	# chapter1_action1.click(
+	# 	story_gen_ui.next_paragraph_gen,
+	# 	inputs = [
+    #   		chapter1_action1,
+	# 		chapter1_progress,
+	# 		time_dd, place_dd, mood_dd, 
+	# 		name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+	# 		name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+	# 		name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+	# 		name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+	# 		chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
+	# 	],
+	# 	outputs = [chapter1_progress, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
+	# )
  
 	### Chatbot
 
 	chat_input_txt.submit(
-		ui.chat,
+		chat_ui.chat,
 		inputs=[
 			chat_input_txt, chat_mode, chat_state,
 			time_dd, place_dd, mood_dd, 
@@ -317,22 +320,23 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-			chapter1_title, chapter1_first_paragraph,chapter2_title, chapter3_title, chapter4_title
+			chapter1_title, chapter2_title, chapter3_title, chapter4_title,
+			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
 		],
 		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	)
  
 	regen_btn.click(
-		ui.rollback_last_ui,
+		chat_ui.rollback_last_ui,
 		inputs=[chatbot], outputs=[chatbot]
 	).then(
-		ui.chat_regen,
+		chat_ui.chat_regen,
 		inputs=[chat_mode, chat_state],
 		outputs=[chat_state, chatbot]		
 	)
  
 	clear_btn.click(
-		ui.chat_reset,
+		chat_ui.chat_reset,
 		inputs=[chat_mode, chat_state],
 		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	)
