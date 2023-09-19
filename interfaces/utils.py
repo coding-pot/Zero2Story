@@ -18,4 +18,4 @@ def parse_first_json_code_snippet(string):
 
   json_code_snippet = string[json_start_index + 7:json_end_index]
 
-  return json.loads(json_code_snippet)
+  return json.loads(json_code_snippet, strict=False)
