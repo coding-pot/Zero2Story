@@ -218,6 +218,9 @@ async def first_paragrph_gen(
 ):
     ctx = f"""Based on the given information as follows, give me one possible first paragraph of the introduction of the plot.
 
+Output template is as follows: ```json{{\"paragraph\": \"paragraph\"}}```. 
+DO NOT output anything other than JSON values. ONLY JSON is allowed.    
+    
 when: {time}
 where: {place}
 mood: {mood}
@@ -253,10 +256,6 @@ age: {age4},
 mbti: {mbti4},
 personality: {personality4} 
 }}
-
-Output template is as follows: ```json{{"paragraph": "paragraph"}}```. 
-
-DO NOT output anything other than JSON values. ONLY JSON is allowed.
 """
 
     user_input = f"""
@@ -282,7 +281,7 @@ plot: {{
         try:
             response_json = utils.parse_first_json_code_snippet(response_txt)
         except:
-             pass
+            pass
 
     return response_json["paragraph"]
 
