@@ -30,15 +30,17 @@ def _build_prompts(ppm, win_size=3):
     lws = CtxLastWindowStrategy(win_size)
     return lws(dummy_ppm)
 
-async def _get_chat_response(prompt, ctx=None):
-    parameters = {
-		'model': 'models/chat-bison-001',
-		'candidate_count': 1,
-		'context': "" if ctx is None else ctx,
-		'temperature': 1.0,
-		'top_k': 50,
-		'top_p': 0.9,
-    }
+async def _get_chat_response(prompt, ctx=None, parameters=None):
+    if parameters is None:
+        parameters = {
+            'model': 'models/chat-bison-001',
+            'candidate_count': 1,
+            'temperature': 1.0,
+            'top_k': 50,
+            'top_p': 0.9,
+        }
+
+    parameters['context'] = "" if ctx is None else ctx,
     
     _, response_txt = await palmchat.gen_text(
         prompt, 
@@ -259,13 +261,12 @@ mbti: {mbti4},
 personality: {personality4} 
 }}    
 """
-
     ppm = palmchat.GradioPaLMChatPPManager()
     ppm.add_pingpong(
         PingPong(user_input, '')
     )
     prompt = _build_prompts(ppm)
-    response_txt = await _get_chat_response(prompt)
+    response_txt = await _get_chat_response(prompt, ctx)
     response_json = utils.parse_first_json_code_snippet(response_txt)
 
     return (
