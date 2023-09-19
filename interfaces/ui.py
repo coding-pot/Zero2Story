@@ -241,7 +241,7 @@ async def first_paragrph_gen(
     name2, age2, mbti2, personality2, job2,
     name3, age3, mbti3, personality3, job3,
     name4, age4, mbti4, personality4, job4,
-    chapter1_title, chapter2_title, chapter3_title, chapter4_title    
+    chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
 ):
     ctx = f"""Based on the background information below, suggest me a possible first paragraph of the introduction part in the given plot in JSON format.
 
@@ -310,7 +310,7 @@ plot: {{
         except:
             pass
 
-    return response_json["paragraph"]
+    return response_json["paragraph"], response_json["paragraph"]
 
 async def plot_gen(
     time, place, mood,
