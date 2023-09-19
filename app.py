@@ -8,7 +8,7 @@ from constants.init_values import (
 	times, places, moods, jobs, ages, mbtis, random_names, personalities, default_character_images, styles
 )
 
-from interfaces import ui
+from interfaces import ui, story_gen_ui
 from modules.palmchat import GradioPaLMChatPPManager
 
 with gr.Blocks(css=STYLE) as demo:
@@ -208,6 +208,8 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[chat_mode, chatbot]
 	)
 
+	#### Setups
+
 	time_dd.select(
 		ui.update_on_age,
 		outputs=[place_dd, mood_dd, job_dd1, job_dd2, job_dd3, job_dd4]
@@ -261,6 +263,8 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[name_txt4, name_txt1, name_txt2, name_txt4],
 		outputs=[name_txt4],
 	)
+ 
+	### Plot generation
 
 	plot_gen_btn.click(
 		ui.plot_gen,
@@ -274,7 +278,7 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs = [chapter1_title, chapter2_title, chapter3_title, chapter4_title]
 	).then(
 		ui.first_paragrph_gen,
-		inputs= [
+		inputs = [
 			time_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
@@ -284,6 +288,24 @@ with gr.Blocks(css=STYLE) as demo:
 		],
 		outputs = [chapter1_first_paragraph, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
 	)
+ 
+	### Story generation
+ 
+	chapter1_action1.click(
+		story_gen_ui.next_paragraph_gen,
+		inputs = [
+      		chapter1_action1,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+			chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
+		],
+		outputs = [chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
+	)
+ 
+	### Chatbot
 
 	chat_input_txt.submit(
 		ui.chat,

@@ -1,4 +1,8 @@
+import copy
 import json 
+
+from modules import palmchat
+from pingpong.context import CtxLastWindowStrategy
 
 def parse_first_json_code_snippet(string):
   """Parses the first JSON code snippet in a string.
@@ -19,3 +23,25 @@ def parse_first_json_code_snippet(string):
   json_code_snippet = string[json_start_index + 7:json_end_index]
 
   return json.loads(json_code_snippet, strict=False)
+
+def build_prompts(ppm, win_size=3):
+    dummy_ppm = copy.deepcopy(ppm)
+    lws = CtxLastWindowStrategy(win_size)
+    return lws(dummy_ppm)
+
+async def get_chat_response(prompt, ctx=None):
+    parameters = {
+        'model': 'models/chat-bison-001',
+        'candidate_count': 1,
+        'context': "" if ctx is None else ctx,
+        'temperature': 1.0,
+        'top_k': 50,
+        'top_p': 0.9,
+    }
+    
+    _, response_txt = await palmchat.gen_text(
+        prompt, 
+        parameters=parameters
+    )
+
+    return response_txt
