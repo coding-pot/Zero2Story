@@ -208,6 +208,84 @@ def update_on_main_tabs(chat_state, evt: gr.SelectData):
 #############
 # for plot generation
 
+async def first_paragrph_gen(
+    time, place, mood,
+    name1, age1, mbti1, personality1, job1,
+    name2, age2, mbti2, personality2, job2,
+    name3, age3, mbti3, personality3, job3,
+    name4, age4, mbti4, personality4, job4,
+    chapter1_title, chapter2_title, chapter3_title, chapter4_title    
+):
+    ctx = f"""Based on the given information as follows, give me one possible first paragraph of the introduction of the plot.
+
+when: {time}
+where: {place}
+mood: {mood}
+
+main character: {{
+name: {name1},
+job: {job1},
+age: {age1},
+mbti: {mbti1},
+personality: {personality1} 
+}}
+
+side character1: {{
+name: {name2},
+job: {job2},
+age: {age2},
+mbti: {mbti2},
+personality: {personality2} 
+}}
+
+side character2: {{
+name: {name3},
+job: {job3},
+age: {age3},
+mbti: {mbti3},
+personality: {personality3} 
+}}
+
+side character3: {{
+name: {name4},
+job: {job4},
+age: {age4},
+mbti: {mbti4},
+personality: {personality4} 
+}}
+
+Output template is as follows: ```json{"paragraph": "paragraph"}```. 
+
+DO NOT output anything other than JSON values. ONLY JSON is allowed.
+"""
+
+    user_input = f"""
+plot: {{
+    "introduction": "{chapter1_title}",
+    "development": "{chapter2_title}",
+    "turn": "{chapter3_title}",
+    "conclusion": "{chapter4_title}"
+}}
+"""
+
+    ppm = palmchat.GradioPaLMChatPPManager()
+    ppm.add_pingpong(
+        PingPong(user_input, '')
+    )
+    prompt = _build_prompts(ppm)
+
+    response_json = None
+    while response_json is None:
+        response_txt = await _get_chat_response(prompt, ctx=ctx)
+        print(response_txt)
+
+        try:
+            response_json = utils.parse_first_json_code_snippet(response_txt)
+        except:
+             pass
+
+    return response_json["paragraph"]
+
 async def plot_gen(
     time, place, mood,
     name1, age1, mbti1, personality1, job1,
@@ -217,7 +295,7 @@ async def plot_gen(
 ):
     ctx = """Based on the given information about the story to be developed, give me one possible titles of the four chapters in JSON format. 
 
-Output template is as follows: ```{"introduction": "title", "development": "title", "turn": "title", "conclusion": "title"}```. 
+Output template is as follows: ```json{"introduction": "title", "development": "title", "turn": "title", "conclusion": "title"}```. 
 
 DO NOT output anything other than JSON values. ONLY JSON is allowed. DO NOT give any further explanations about the titles.
 """
