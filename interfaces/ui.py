@@ -30,17 +30,15 @@ def _build_prompts(ppm, win_size=3):
     lws = CtxLastWindowStrategy(win_size)
     return lws(dummy_ppm)
 
-async def _get_chat_response(prompt, ctx=None, parameters=None):
-    if parameters is None:
-        parameters = {
-            'model': 'models/chat-bison-001',
-            'candidate_count': 1,
-            'temperature': 1.0,
-            'top_k': 50,
-            'top_p': 0.9,
-        }
-
-    parameters['context'] = "" if ctx is None else ctx,
+async def _get_chat_response(prompt, ctx=None):
+    parameters = {
+        'model': 'models/chat-bison-001',
+        'candidate_count': 1,
+        'context': "" if ctx is None else ctx,
+        'temperature': 1.0,
+        'top_k': 50,
+        'top_p': 0.9,
+    }
     
     _, response_txt = await palmchat.gen_text(
         prompt, 
