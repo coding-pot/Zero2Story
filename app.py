@@ -294,20 +294,20 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 	### Story generation
  
-	chapter1_action1.click(
-		story_gen_ui.next_paragraph_gen,
-		inputs = [
-      		chapter1_action1,
-			chapter1_progress,
-			time_dd, place_dd, mood_dd, 
-			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-			chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
-		],
-		outputs = [chapter1_progress, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
-	)
+	# chapter1_action1.click(
+	# 	story_gen_ui.next_paragraph_gen,
+	# 	inputs = [
+    #   		chapter1_action1,
+	# 		chapter1_progress,
+	# 		time_dd, place_dd, mood_dd, 
+	# 		name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+	# 		name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+	# 		name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+	# 		name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+	# 		chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
+	# 	],
+	# 	outputs = [chapter1_progress, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
+	# )
  
 	### Chatbot
 

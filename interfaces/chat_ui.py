@@ -1,3 +1,5 @@
+import gradio as gr
+
 from interfaces import utils
 from modules import palmchat
 
