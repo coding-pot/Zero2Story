@@ -44,6 +44,6 @@ mbtis = ["ESTJ", "ENTJ", "ESFJ", "ENFJ", "ISTJ", "ISFJ", "INTJ", "INFJ", "ESTP",
 random_names = ['Annie', 'Ava', 'Catherine', 'Aisha', 'Brooke', 'Chloe', 'Chloe', 'Catherine', 'Autumn', 'Aaliyah', 'Ava', 'Ariana', 'Charlotte', 'Allison', 'Adele', 'Catherine', 'Chelsea', 'Ariana', 'Bella', 'Clara', 'Autumn', 'Acacia', 'Ciara', 'Christine', 'Chloe', 'Autumn', 'Amber', 'Annie', 'Aja', 'Adele', 'Annie', 'Ashley', 'Angelina', 'Claire', 'Andrea', 'Acacia', 'Amelia', 'Clara', 'Chloe', 'Ciara', 'Anna', 'Amanda', 'Ariana', 'Clara', 'Charlotte', 'Amber', 'Ciara', 'Amelia', 'Ariana', 'Amanda', 'Cassandra', 'Charlotte', 'Aja', 'Christine', 'Clara', 'Brooke', 'Catherine', 'Catherine', 'Christine', 'Amelia', 'Charlotte', 'Chloe', 'Chloe', 'Amy', 'Beatrice', 'Chloe', 'Amy', 'Chloe', 'Cassandra', 'Annie', 'Clara', 'Allison', 'Ana', 'Catherine', 'Allison', 'Aisha', 'Anna', 'Chelsea', 'Cassandra', 'Clara', 'Ciara', 'Brianna', 'Acacia', 'Anna', 'Charlotte', 'Ashley', 'Brooke', 'Angelina', 'Aaliyah', 'Avery', 'Amber', 'Claire', 'Adriana', 'Ciara', 'Abigail', 'Aisha', 'Ariana', 'Adriana', 'Acacia', 'Clara']
 personalities = ['Optimistic', 'Kind', 'Resilient', 'Generous', 'Humorous', 'Creative', 'Empathetic', 'Ambitious', 'Adventurous']
 
-default_character_images = ["assets/image.png", "assets/image.png", "assets/image.png", "assets/image.png"]
+default_character_images = ["assets/image.png"]
 
 styles = ["sd character", "cartoon", "realistic"]

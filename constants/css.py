@@ -76,7 +76,7 @@ textarea {
 }
 
 #chatbot {
-  height: 660px !important;
+  height: 800px !important;
 }
 
 .small-big-textarea > label > textarea {
