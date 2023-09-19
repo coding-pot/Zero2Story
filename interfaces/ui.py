@@ -41,7 +41,8 @@ async def _get_chat_response(prompt, ctx=None):
     }
     
     _, response_txt = await palmchat.gen_text(
-        prompt, 
+        prompt,
+        mode="chat",
         parameters=parameters
     )
 
@@ -325,14 +326,12 @@ async def plot_gen(
     name3, age3, mbti3, personality3, job3,
     name4, age4, mbti4, personality4, job4,
 ):
-    ctx = """Based on the given information about the story to be developed, give me one possible titles of the four chapters in JSON format. 
+    prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. As you write, you need to follow Ronald Tobias's plot theory. You also need to create a basic outline for your novel based on the input we give you, and generate a title based on the outline.
 
-Output template is as follows: ```json{"introduction": "title", "development": "title", "turn": "title", "conclusion": "title"}```. 
+Output template is as follows: ```json{{"title": "title", "plot": [{{"chapter_title" : "chapter_title", "chapter_plot" : "chapter_plot"}}]}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
 
-DO NOT output anything other than JSON values. ONLY JSON is allowed. DO NOT give any further explanations about the titles.
-"""
+You must create only four chapters, no more, no less. 
 
-    user_input = f"""
 when: {time}
 where: {place}
 mood: {mood}
@@ -369,27 +368,10 @@ mbti: {mbti4},
 personality: {personality4} 
 }}    
 """
-    ppm = palmchat.GradioPaLMChatPPManager()
-    ppm.add_pingpong(
-        PingPong(user_input, '')
-    )
-    prompt = _build_prompts(ppm)
 
-    response_json = None
-    while response_json is None:
-        response_txt = await _get_chat_response(prompt, ctx=ctx)
-        print(response_txt)
-
-        try:
-            response_json = utils.parse_first_json_code_snippet(response_txt)
-        except:
-             pass
-        
-    print(response_json)
+    _, response_txt = await palmchat.gen_text(prompt, mode="text")
+    print(response_txt)
 
     return (
-        response_json["introduction"],
-        response_json["development"],
-        response_json["turn"],
-        response_json["conclusion"],
+        "","","",""
     )
