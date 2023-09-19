@@ -62,7 +62,7 @@ personality: {personality4}
             pass
 
     return (
-        response_json["title"],
+        f"# {response_json['title']}",
         response_json["plot"][0]["chapter_title"],
         response_json["plot"][1]["chapter_title"],
         response_json["plot"][2]["chapter_title"],
