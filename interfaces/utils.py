@@ -1,3 +1,5 @@
+import json 
+
 def parse_first_json_code_snippet(string):
   """Parses the first JSON code snippet in a string.
 
