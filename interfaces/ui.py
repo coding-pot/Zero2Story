@@ -99,10 +99,35 @@ async def chat(
     name2, age2, mbti2, personality2, job2,
     name3, age3, mbti3, personality3, job3,
     name4, age4, mbti4, personality4, job4,
+    chapter1_title, chapter1_first_paragraph, chapter2_title, chapter3_title, chapter4_title
 ):
+    chapter_title_ctx = ""
+    if chapter1_title != "":
+        chapter_title_ctx = f"""
+chapter1 {{
+    title: {chapter1_title},
+    content: {chapter1_first_paragraph}
+}}
+
+chapter2 {{
+    title: {chapter2_title},
+    content: not determined yet
+}}
+
+chapter3 {{
+    title: {chapter3_title},
+    content: not determined yet
+}}
+
+chapter4 {{
+    title: {chapter4_title},
+    content: not determined yet
+}}
+"""
+
     ctx = f"""You are a professional writing advisor, especially specialized in developing ideas on plotting stories and creating characters. I provide when, where, and mood along with the rough description of one main character and three side characters. 
 
-Give creative responses based on the following information.
+Give creative but not too long responses based on the following information.
 
 when: {time}
 where: {place}
@@ -139,6 +164,8 @@ age: {age4},
 mbti: {mbti4},
 personality: {personality4} 
 }}
+
+{chapter_title_ctx}
 """
 
     ppm = chat_state[chat_mode]

@@ -141,22 +141,22 @@ with gr.Blocks(css=STYLE) as demo:
 					with gr.Column(elem_classes=["ninty-five-width"]):
 						with gr.Row(elem_classes=["no-border"]):
 							gr.Textbox("Chapter 1.", elem_classes=["no-label"], scale=1)
-							chapter1_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter1_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row(elem_classes=["left-margin"]):
-							chapter1_first_paragraph = gr.Textbox("The first paragraph is generated. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vulputate rhoncus massa. Nullam eget volutpat eros, id gravida arcu. Donec semper leo convallis, tempus lacus vel, dictum libero. Suspendisse nec odio quis urna viverra vestibulum…………", elem_classes=["no-label"])
+							chapter1_first_paragraph = gr.Textbox(placeholder="The first paragraph of the first chapter will be generated here", elem_classes=["no-label"])
 
 						with gr.Row():
 							gr.Textbox("Chapter 2.", elem_classes=["no-label"], scale=1)
-							chapter2_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter2_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row():
 							gr.Textbox("Chapter 3.", elem_classes=["no-label"], scale=1)
-							chapter3_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter3_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row():
 							gr.Textbox("Chapter 4.", elem_classes=["no-label"], scale=1)
-							chapter4_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter4_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row():
 							gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
@@ -294,6 +294,7 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+			chapter1_title, chapter1_first_paragraph,chapter2_title, chapter3_title, chapter4_title
 		],
 		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	)
