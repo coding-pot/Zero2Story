@@ -13,6 +13,8 @@ from modules import (
 	ImageMaker, MusicMaker, palmchat
 )
 
+from interfaces import utils
+
 from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
@@ -202,3 +204,73 @@ def update_on_main_tabs(chat_state, evt: gr.SelectData):
 
     ppm = chat_state[chat_mode]
     return chat_mode, ppm.build_uis()
+
+#############
+# for plot generation
+
+async def plot_gen(
+    time, place, mood,
+    name1, age1, mbti1, personality1, job1,
+    name2, age2, mbti2, personality2, job2,
+    name3, age3, mbti3, personality3, job3,
+    name4, age4, mbti4, personality4, job4,
+):
+    ctx = """Based on the given information about the story to be developed, give me one possible titles of the four chapters in JSON format. 
+
+Output template is as follows: ```{"introduction": "title", "development": "title", "turn": "title", "conclusion": "title"}```. 
+
+DO NOT output anything other than JSON values. ONLY JSON is allowed. DO NOT give any further explanations about the titles.
+"""
+
+    user_input = f"""
+when: {time}
+where: {place}
+mood: {mood}
+
+main character: {{
+name: {name1},
+job: {job1},
+age: {age1},
+mbti: {mbti1},
+personality: {personality1} 
+}}
+
+side character1: {{
+name: {name2},
+job: {job2},
+age: {age2},
+mbti: {mbti2},
+personality: {personality2} 
+}}
+
+side character2: {{
+name: {name3},
+job: {job3},
+age: {age3},
+mbti: {mbti3},
+personality: {personality3} 
+}}
+
+side character3: {{
+name: {name4},
+job: {job4},
+age: {age4},
+mbti: {mbti4},
+personality: {personality4} 
+}}    
+"""
+
+    ppm = palmchat.GradioPaLMChatPPManager()
+    ppm.add_pingpong(
+        PingPong(user_input, '')
+    )
+    prompt = _build_prompts(ppm)
+    response_txt = await _get_chat_response(prompt)
+    response_json = utils.parse_first_json_code_snippet(response_txt)
+
+    return (
+        response_txt["introduction"],
+        response_txt["development"],
+        response_txt["turn"],
+        response_txt["conclusion"],
+    )
