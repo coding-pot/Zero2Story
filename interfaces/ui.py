@@ -243,9 +243,9 @@ async def first_paragrph_gen(
     name4, age4, mbti4, personality4, job4,
     chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
 ):
-    ctx = f"""Based on the background information below, suggest me a possible first paragraph of the introduction part in the given plot in JSON format.
+    ctx = f"""Based on the background information below, suggest me a possible first paragraph of the introduction part and the three actions to choose to continue after the first paragraph in the given plot in JSON format.
 
-Output template is as follows: ```json{{"paragraph": "gen_paragraph"}}```. fill in the gen_paragraph section ONLY.
+Output template is as follows: ```json{{"paragraph": "gen_paragraph", "actions":["action1", "action2", "action3"]}}```. fill in the gen_paragraph section ONLY.
 DO NOT output anything other than JSON values. ONLY JSON is allowed.    
     
 when: {time}
@@ -310,7 +310,13 @@ plot: {{
         except:
             pass
 
-    return response_json["paragraph"], response_json["paragraph"]
+    return (
+        response_json["paragraph"], 
+        response_json["paragraph"],
+        response_json["actions"][0],
+        response_json["actions"][1],
+        response_json["actions"][2]
+    )
 
 async def plot_gen(
     time, place, mood,
