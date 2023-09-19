@@ -141,26 +141,26 @@ with gr.Blocks(css=STYLE) as demo:
 					with gr.Column(elem_classes=["ninty-five-width"]):
 						with gr.Row(elem_classes=["no-border"]):
 							gr.Textbox("Chapter 1.", elem_classes=["no-label"], scale=1)
-							gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter1_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row(elem_classes=["left-margin"]):
-							gr.Textbox("The first paragraph is generated. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vulputate rhoncus massa. Nullam eget volutpat eros, id gravida arcu. Donec semper leo convallis, tempus lacus vel, dictum libero. Suspendisse nec odio quis urna viverra vestibulum…………", elem_classes=["no-label"])
+							chapter1_first_paragraph = gr.Textbox("The first paragraph is generated. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vulputate rhoncus massa. Nullam eget volutpat eros, id gravida arcu. Donec semper leo convallis, tempus lacus vel, dictum libero. Suspendisse nec odio quis urna viverra vestibulum…………", elem_classes=["no-label"])
 
 						with gr.Row():
 							gr.Textbox("Chapter 2.", elem_classes=["no-label"], scale=1)
-							gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter2_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row():
 							gr.Textbox("Chapter 3.", elem_classes=["no-label"], scale=1)
-							gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter3_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row():
 							gr.Textbox("Chapter 4.", elem_classes=["no-label"], scale=1)
-							gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter4_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row():
 							gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
-							gr.Button("gen plot", elem_classes=["control-button"])
+							plot_gen_btn = gr.Button("gen plot", elem_classes=["control-button"])
 							gr.Button("confirm", elem_classes=["control-button"])
 
 				with gr.TabItem("story generation", idx=1):
@@ -260,6 +260,29 @@ with gr.Blocks(css=STYLE) as demo:
 		ui.get_random_name,
 		inputs=[name_txt4, name_txt1, name_txt2, name_txt4],
 		outputs=[name_txt4],
+	)
+
+	plot_gen_btn.click(
+		ui.plot_gen,
+		inputs= [
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs = [chapter1_title, chapter2_title, chapter3_title, chapter4_title]
+	).then(
+		ui.first_paragrph_gen,
+		inputs= [
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+			chapter1_title, chapter2_title, chapter3_title, chapter4_title
+		],
+		outputs = [chapter1_first_paragraph]
 	)
 
 	chat_input_txt.submit(
