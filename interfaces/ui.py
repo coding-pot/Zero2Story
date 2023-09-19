@@ -216,9 +216,9 @@ async def first_paragrph_gen(
     name4, age4, mbti4, personality4, job4,
     chapter1_title, chapter2_title, chapter3_title, chapter4_title    
 ):
-    ctx = f"""Based on the given information as follows, give me one possible first paragraph of the introduction of the plot.
+    ctx = f"""Based on the information as below, give me one possible first paragraph of the introduction in the given plot.
 
-Output template is as follows: ```json{{\"paragraph\": \"paragraph\"}}```. 
+Output template is as follows: ```json{{"paragraph": "gen_paragraph"}}```. fill in the gen_paragraph section ONLY.
 DO NOT output anything other than JSON values. ONLY JSON is allowed.    
     
 when: {time}
