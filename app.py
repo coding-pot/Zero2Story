@@ -174,9 +174,9 @@ with gr.Blocks(css=STYLE) as demo:
 						)
 
 						with gr.Row():
-							gr.Button("Action Choice 1", elem_classes=["control-button"])
-							gr.Button("Action Choice 2", elem_classes=["control-button"])
-							gr.Button("Action Choice 3", elem_classes=["control-button"])
+							chapter1_action1 = gr.Button("Action Choice 1", elem_classes=["control-button"])
+							chapter1_action2 = gr.Button("Action Choice 2", elem_classes=["control-button"])
+							chapter1_action3 = gr.Button("Action Choice 3", elem_classes=["control-button"])
 
 					with gr.Tab("2"):
 						gr.Video("assets/recording.mp4")
@@ -282,7 +282,7 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
 			chapter1_title, chapter2_title, chapter3_title, chapter4_title
 		],
-		outputs = [chapter1_first_paragraph, chapter1_content]
+		outputs = [chapter1_first_paragraph, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
 	)
 
 	chat_input_txt.submit(
