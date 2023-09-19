@@ -254,7 +254,7 @@ mbti: {mbti4},
 personality: {personality4} 
 }}
 
-Output template is as follows: ```json{"paragraph": "paragraph"}```. 
+Output template is as follows: ```json{{"paragraph": "paragraph"}}```. 
 
 DO NOT output anything other than JSON values. ONLY JSON is allowed.
 """
