@@ -264,7 +264,14 @@ with gr.Blocks(css=STYLE) as demo:
 
 	chat_input_txt.submit(
 		ui.chat,
-		inputs=[chat_input_txt, chat_mode, chat_state],
+		inputs=[
+			chat_input_txt, chat_mode, chat_state,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
 		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	)
  
