@@ -241,9 +241,9 @@ async def first_paragrph_gen(
     name2, age2, mbti2, personality2, job2,
     name3, age3, mbti3, personality3, job3,
     name4, age4, mbti4, personality4, job4,
-    chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
+    chapter1_title, chapter2_title, chapter3_title, chapter4_title
 ):
-    ctx = f"""Based on the background information below, suggest me a possible first paragraph of the introduction part and the three actions to choose to continue after the first paragraph in the given plot in JSON format.
+    ctx = f"""Based on the background information below, suggest me a possible first paragraph of the introduction part in JSON format. Also suggest three specific actions that the characters to choose to continue the story after the next paragraph.
 
 Output template is as follows: ```json{{"paragraph": "gen_paragraph", "actions":["action1", "action2", "action3"]}}```. fill in the gen_paragraph section ONLY.
 DO NOT output anything other than JSON values. ONLY JSON is allowed.    
