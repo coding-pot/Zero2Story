@@ -268,8 +268,8 @@ personality: {personality4}
     response_json = utils.parse_first_json_code_snippet(response_txt)
 
     return (
-        response_txt["introduction"],
-        response_txt["development"],
-        response_txt["turn"],
-        response_txt["conclusion"],
+        response_json["introduction"],
+        response_json["development"],
+        response_json["turn"],
+        response_json["conclusion"],
     )
