@@ -149,7 +149,7 @@ personality: {personality4}
     )    
     prompt = _build_prompts(ppm)
 
-    response_txt = await _get_chat_response(prompt, ctx)
+    response_txt = await _get_chat_response(prompt, ctx=ctx)
     ppm.replace_last_pong(response_txt)
     
     chat_state[chat_mode] = ppm
@@ -266,7 +266,7 @@ personality: {personality4}
         PingPong(user_input, '')
     )
     prompt = _build_prompts(ppm)
-    response_txt = await _get_chat_response(prompt, ctx)
+    response_txt = await _get_chat_response(prompt, ctx=ctx)
     response_json = utils.parse_first_json_code_snippet(response_txt)
 
     return (
