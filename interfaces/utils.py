@@ -4,6 +4,26 @@ import json
 from modules import palmchat
 from pingpong.context import CtxLastWindowStrategy
 
+def get_progress_md(idx):
+  if idx == 0:
+    return "🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️"
+  elif idx == 1:
+    return "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️"
+  elif idx == 2:
+    return "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️"
+  else:
+    return "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘"
+
+def get_progress_from_md(md):
+  if md == "🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️":
+    return 0
+  elif md == "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️":
+    return 1
+  elif md == "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️":
+    return 2
+  else:
+    return 3
+
 def parse_first_json_code_snippet(string):
   """Parses the first JSON code snippet in a string.
 

@@ -165,7 +165,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 				with gr.TabItem("story generation", idx=1):
 					with gr.Tab("Chapter 1"):
-						gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
+						chapter1_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
 						gr.Video("assets/recording.mp4", elem_classes=["no-label-gallery"])
 						chapter1_content = gr.Textbox(
 								"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
@@ -295,6 +295,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_paragraph_gen,
 		inputs = [
       		chapter1_action1,
+			chapter1_progress,
 			time_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
@@ -302,7 +303,7 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
 			chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
 		],
-		outputs = [chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
+		outputs = [chapter1_progress, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
 	)
  
 	### Chatbot

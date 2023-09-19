@@ -9,7 +9,7 @@ from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
 async def next_paragraph_gen(
-    action,
+    action, progress,
     time, place, mood,
     name1, age1, mbti1, personality1, job1,
     name2, age2, mbti2, personality2, job2,
@@ -18,6 +18,9 @@ async def next_paragraph_gen(
     chapter1_title, chapter2_title, chapter3_title, chapter4_title,
     chapter1_content
 ):
+    cur_progress = utils.get_progress_from_md(progress)
+    nxt_progress = cur_progress + 1
+    
     ctx = f"""Based on the given information as follows, give me the next paragraph of the chapter1 in JSON format. Also suggest three specific actions that the characters to choose to continue the story after the next paragraph. 
 
 Output template is as follows: ```json{{"paragraph": "paragraph", actions:["action1", action2", action3"]}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed.
@@ -102,6 +105,7 @@ Continue the story based on the choice "{action}"
     print(response_json)
 
     return (
+        utils.get_progress_md(nxt_progress),
         f"""{chapter1_content}
 
 {response_json["paragraph"]}
