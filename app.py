@@ -141,22 +141,22 @@ with gr.Blocks(css=STYLE) as demo:
 					with gr.Column(elem_classes=["ninty-five-width"]):
 						with gr.Row(elem_classes=["no-border"]):
 							gr.Textbox("Chapter 1.", elem_classes=["no-label"], scale=1)
-							chapter1_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter1_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row(elem_classes=["left-margin"]):
-							chapter1_first_paragraph = gr.Textbox("The first paragraph is generated. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vulputate rhoncus massa. Nullam eget volutpat eros, id gravida arcu. Donec semper leo convallis, tempus lacus vel, dictum libero. Suspendisse nec odio quis urna viverra vestibulum…………", elem_classes=["no-label"])
+							chapter1_first_paragraph = gr.Textbox(placeholder="The first paragraph of the first chapter will be generated here", elem_classes=["no-label"])
 
 						with gr.Row():
 							gr.Textbox("Chapter 2.", elem_classes=["no-label"], scale=1)
-							chapter2_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter2_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row():
 							gr.Textbox("Chapter 3.", elem_classes=["no-label"], scale=1)
-							chapter3_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter3_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row():
 							gr.Textbox("Chapter 4.", elem_classes=["no-label"], scale=1)
-							chapter4_title = gr.Textbox("Placeholder", elem_classes=["no-label"], scale=5)
+							chapter4_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
 
 						with gr.Row():
 							gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
@@ -167,7 +167,7 @@ with gr.Blocks(css=STYLE) as demo:
 					with gr.Tab("Chapter 1"):
 						gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
 						gr.Video("assets/recording.mp4", elem_classes=["no-label-gallery"])
-						gr.Textbox(
+						chapter1_content = gr.Textbox(
 								"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
 								lines=12,
 								elem_classes=["no-label", "small-big-textarea"]
@@ -282,7 +282,7 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
 			chapter1_title, chapter2_title, chapter3_title, chapter4_title
 		],
-		outputs = [chapter1_first_paragraph]
+		outputs = [chapter1_first_paragraph, chapter1_content]
 	)
 
 	chat_input_txt.submit(
@@ -294,6 +294,7 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+			chapter1_title, chapter1_first_paragraph,chapter2_title, chapter3_title, chapter4_title
 		],
 		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	)
