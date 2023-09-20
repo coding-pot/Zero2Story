@@ -208,7 +208,15 @@ with gr.Blocks(css=STYLE) as demo:
 			chapter1_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
 
 			chapter1_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
-			gr.Video("assets/recording.mp4", elem_classes=["no-label-gallery"])
+   
+			with gr.Row():
+				chapter1_image_gen_btn = gr.Button("🏞️")
+				chapter1_audio_gen_btn = gr.Button("🔊")
+				chapter1_image_audio_combine_btn = gr.Button("📀")
+       
+			chapter1_image = gr.Image("assets/background.png", visible=False, type="filepath")
+			chapter1_audio = gr.Audio("assets/music.wav", visible=False, type="filepath")
+			chapter1_video = gr.Video("assets/recording.mp4", visible=False, elem_classes=["no-label-gallery"])
 			chapter1_content = gr.Textbox(
 					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
 					lines=12,
@@ -360,6 +368,24 @@ with gr.Blocks(css=STYLE) as demo:
     	]
 	)
 	### Story generation
+ 
+	chapter1_image_gen_btn.click(
+		story_gen_ui.image_gen,
+		inputs=None, 
+		outputs=[chapter1_image]
+	)
+ 
+	chapter1_audio_gen_btn.click(
+		story_gen_ui.audio_gen,
+		inputs=None, 
+		outputs=[chapter1_audio]		
+	)
+ 
+	chapter1_image_audio_combine_btn.click(
+		story_gen_ui.video_gen,
+		inputs=[chapter1_image, chapter1_audio],
+  		outputs=[chapter1_image, chapter1_audio, chapter1_video],
+	)
  
 	# chapter1_action1.click(
 	# 	story_gen_ui.next_paragraph_gen,

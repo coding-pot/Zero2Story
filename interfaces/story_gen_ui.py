@@ -1,12 +1,15 @@
 import copy
 import random
 import gradio as gr
+from gradio_client import Client
 
 from modules import palmchat
 from interfaces import utils
 
 from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
+
+video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
 async def next_paragraph_gen(
     action, progress,
@@ -114,3 +117,26 @@ Continue the story based on the choice "{action}"
         response_json["actions"][1],
         response_json["actions"][2]
     )
+    
+def video_gen(image, audio, title):
+    client = Client(video_gen_client_url)
+    
+    result = client.predict(
+        title,
+        audio,
+        image,
+        f"{title}.mp4",
+        api_name="/predict"
+    )
+
+    return (
+        gr.update(visible=False),
+        gr.update(visible=False),
+        gr.update(value=result[0], visible=True)
+    )
+    
+def image_gen():
+    return gr.update(visible=True)
+
+def audio_gen():
+    return gr.update(visible=True)
