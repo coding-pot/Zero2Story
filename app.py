@@ -242,7 +242,7 @@ with gr.Blocks(css=STYLE) as demo:
 	with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
 		with gr.Column(scale=1):
 			chatbot = gr.Chatbot(
-				[("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world"), ("hello", "world")], 
+				[],
 				avatar_images=("assets/user.png", "assets/ai.png"), 
 				elem_id="chatbot", 
 				elem_classes=["no-label-chatbot"])
