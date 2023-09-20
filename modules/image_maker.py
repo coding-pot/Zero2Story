@@ -24,6 +24,8 @@ from .utils import (
     get_palm_api_key
 )
 
+_gpus = 0
+
 class ImageMaker:
     # TODO: DocString...
     """Class for generating images from prompts."""
@@ -53,7 +55,7 @@ class ImageMaker:
             device (str, optional): Device to use for the model. Defaults to None.
         """
 
-        self.__device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if not device else device
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if not device else device
         self.__model_base = model_base
         self.__clip_skip = clip_skip
         self.__sampling = sampling
@@ -62,6 +64,7 @@ class ImageMaker:
 
         print("Loading the Stable Diffusion model into memory...")
         self.__sd_model = StableDiffusionPipeline.from_single_file(self.model_base,
+                                                                   torch_dtype=torch.float16,
                                                                    custom_pipeline="lpw_stable_diffusion",
                                                                    use_safetensors=True)
 
@@ -85,8 +88,8 @@ class ImageMaker:
             self.__sd_model.safety_checker = None
             self.__sd_model.requires_safety_checker = False
 
-        if self.device != 'cpu':
-            self.__sd_model = self.__sd_model.to(self.device)
+        print(f"Loaded model to {self.device}")
+        self.__sd_model = self.__sd_model.to(self.device)
         
         output_dir = Path('.') / 'outputs'
         if not output_dir.exists():
@@ -258,7 +261,7 @@ class ImageMaker:
             bool: Whether to use the safety checker (read-only)
         """
         return self.__safety
-
+    
     @property
     def device(self):
         """Device
@@ -267,3 +270,13 @@ class ImageMaker:
             str: The device (read-only)
         """
         return self.__device
+
+    @device.setter
+    def device(self, value):
+        if value == 'cpu':
+            self.__device = value
+        else:
+            global _gpus
+            self.__device = f'{value}:{_gpus}'
+            max_gpu = torch.cuda.device_count()
+            _gpus = (_gpus + 1) if (_gpus + 1) < max_gpu else 0
