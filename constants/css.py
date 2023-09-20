@@ -154,5 +154,9 @@ textarea {
     width: 100% !important;
     margin: auto;
   }
+  
+  #chat-section {
+    width: 100%;
+  }
 }
 """
