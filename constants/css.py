@@ -156,7 +156,7 @@ textarea {
   }
   
   #chat-section {
-    width: 100%;
+    width: 95%;
   }
 }
 """
