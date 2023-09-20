@@ -17,7 +17,8 @@ from interfaces import utils
 
 # TODO: Replace checkpoint filename to Huggingface URL
 bg_img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', safety=False)
-ch_img_maker = ImageMaker('hellonijicute25d_V10b.safetensors', vae="kl-f8-anime2.vae.safetensors", safety=False)
+#ch_img_maker = ImageMaker('hellonijicute25d_V10b.safetensors', vae="kl-f8-anime2.vae.safetensors", safety=False)
+ch_img_maker = ImageMaker('hellonijicute25d_V10b.safetensors', safety=False) # without_VAE
 
 ############
 # for plotting
