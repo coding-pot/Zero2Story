@@ -337,7 +337,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 	random_name_btn4.click(
 		ui.get_random_name,
-		inputs=[name_txt4, name_txt1, name_txt2, name_txt4],
+		inputs=[name_txt4, name_txt1, name_txt2, name_txt3],
 		outputs=[name_txt4],
 	)
  
