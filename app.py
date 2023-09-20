@@ -383,7 +383,7 @@ with gr.Blocks(css=STYLE) as demo:
  
 	chapter1_image_audio_combine_btn.click(
 		story_gen_ui.video_gen,
-		inputs=[chapter1_image, chapter1_audio],
+		inputs=[chapter1_image, chapter1_audio, chapter1_title_display],
   		outputs=[chapter1_image, chapter1_audio, chapter1_video],
 	)
  
