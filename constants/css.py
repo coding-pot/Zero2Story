@@ -148,4 +148,11 @@ textarea {
   width: 90%;
   margin: auto;
 }
+
+@media only screen and (max-width: 500px) {
+  .main {
+    width: 100% !important;
+    margin: auto;
+  }
+}
 """
