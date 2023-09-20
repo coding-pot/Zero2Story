@@ -407,4 +407,4 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	)
 
-demo.launch()
+demo.launch(share=True)
