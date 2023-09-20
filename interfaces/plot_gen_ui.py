@@ -63,10 +63,15 @@ personality: {personality4}
 
     return (
         f"# {response_json['title']}",
+        f"# {response_json['title']}",
         response_json["plot"][0]["chapter_title"],
         response_json["plot"][1]["chapter_title"],
         response_json["plot"][2]["chapter_title"],
         response_json["plot"][3]["chapter_title"],
+        f"## {response_json['plot'][0]['chapter_title']}",
+        f"## {response_json['plot'][1]['chapter_title']}",
+        f"## {response_json['plot'][2]['chapter_title']}",
+        f"## {response_json['plot'][3]['chapter_title']}",        
         response_json["plot"][0]["chapter_plot"],
         response_json["plot"][1]["chapter_plot"],
         response_json["plot"][2]["chapter_plot"],
