@@ -1,4 +1,9 @@
 STYLE = """
+.main {
+  width: 75% !important;
+  margin: auto;
+}
+
 .ninty-five-width {
   width: 95% !important;
   margin: auto;
@@ -14,10 +19,6 @@ STYLE = """
 }
 
 .no-label > label > span {
-  display: none;
-}
-
-.no-label-gallery > div:nth-child(2) {
   display: none;
 }
 
@@ -77,6 +78,13 @@ textarea {
 
 #chatbot {
   height: 800px !important;
+  box-shadow: 6px 5px 10px 1px rgba(255, 221, 71, 0.15);
+  border-color: beige;
+  border-width: 2px;  
+}
+
+#chatbot .wrapper {
+  height: 660px;
 }
 
 .small-big-textarea > label > textarea {
@@ -96,5 +104,48 @@ textarea {
 
 .no-label-chatbot > div > div:nth-child(1) {
   display: none;
+}
+
+#chat-section {
+  position: fixed;
+  align-self: end;
+  width: 65%;
+  z-index: 10000;
+  border: none !important;
+  background: none;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+#chat-section > div:nth-child(3) {
+  # background: white;
+}
+
+#chat-section .form {
+  position: relative !important;
+  bottom: 130px;
+  width: 90%;
+  margin: auto;
+  border-radius: 20px;
+}
+
+#chat-section .icon {
+  display: none;
+}
+
+#chat-section .label-wrap {
+  text-align: right;
+  display: block;
+}
+
+#chat-section .label-wrap span {
+  font-size: 30px;
+}
+
+#chat-buttons {
+  position: relative !important;
+  bottom: 130px;
+  width: 90%;
+  margin: auto;
 }
 """
