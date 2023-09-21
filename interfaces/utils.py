@@ -1,8 +1,13 @@
 import copy
-import json 
+import json
+import string
+import random
 
 from modules import palmchat
 from pingpong.context import CtxLastWindowStrategy
+
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+  return ''.join(random.choice(chars) for _ in range(size))
 
 def get_progress_md(idx):
   if idx == 0:
