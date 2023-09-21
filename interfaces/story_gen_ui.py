@@ -122,10 +122,10 @@ def video_gen(image, audio, title):
     client = Client(video_gen_client_url)
     
     result = client.predict(
-        "",
+        title,
         audio,
         image,
-        f"dummy.mp4",
+        f"{utils.id_generator()}.mp4",
         api_name="/predict"
     )
 
