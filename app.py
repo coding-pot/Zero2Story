@@ -231,17 +231,74 @@ with gr.Blocks(css=STYLE) as demo:
 		with gr.Tab("Chapter 2"):
 			chapter2_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
 
-			gr.Video("assets/recording.mp4")
+			chapter2_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
+   
+			with gr.Row():
+				chapter2_image_gen_btn = gr.Button("🏞️")
+				chapter2_audio_gen_btn = gr.Button("🔊")
+				chapter2_image_audio_combine_btn = gr.Button("📀")
+       
+			chapter2_image = gr.Image("assets/background.png", visible=False, type="filepath")
+			chapter2_audio = gr.Audio("assets/music.wav", visible=False, type="filepath")
+			chapter2_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
+			chapter2_content = gr.Textbox(
+					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
+					lines=12,
+					elem_classes=["no-label", "small-big-textarea"]
+			)
+
+			with gr.Row():
+				chapter2_action1 = gr.Button("Action Choice 1", elem_classes=["control-button"])
+				chapter2_action2 = gr.Button("Action Choice 2", elem_classes=["control-button"])
+				chapter2_action3 = gr.Button("Action Choice 3", elem_classes=["control-button"])
 
 		with gr.Tab("Chapter 3"):
 			chapter3_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
 
-			gr.Video("assets/recording.mp4")
+			chapter3_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
+   
+			with gr.Row():
+				chapter3_image_gen_btn = gr.Button("🏞️")
+				chapter3_audio_gen_btn = gr.Button("🔊")
+				chapter3_image_audio_combine_btn = gr.Button("📀")
+       
+			chapter3_image = gr.Image("assets/background.png", visible=False, type="filepath")
+			chapter3_audio = gr.Audio("assets/music.wav", visible=False, type="filepath")
+			chapter3_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
+			chapter3_content = gr.Textbox(
+					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
+					lines=12,
+					elem_classes=["no-label", "small-big-textarea"]
+			)
+
+			with gr.Row():
+				chapter3_action1 = gr.Button("Action Choice 1", elem_classes=["control-button"])
+				chapter3_action2 = gr.Button("Action Choice 2", elem_classes=["control-button"])
+				chapter3_action3 = gr.Button("Action Choice 3", elem_classes=["control-button"])
 
 		with gr.Tab("Chapter 4"):
 			chapter4_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
 
-			gr.Video("assets/recording.mp4")
+			chapter4_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
+   
+			with gr.Row():
+				chapter4_image_gen_btn = gr.Button("🏞️")
+				chapter4_audio_gen_btn = gr.Button("🔊")
+				chapter4_image_audio_combine_btn = gr.Button("📀")
+       
+			chapter4_image = gr.Image("assets/background.png", visible=False, type="filepath")
+			chapter4_audio = gr.Audio("assets/music.wav", visible=False, type="filepath")
+			chapter4_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
+			chapter4_content = gr.Textbox(
+					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
+					lines=12,
+					elem_classes=["no-label", "small-big-textarea"]
+			)
+
+			with gr.Row():
+				chapter4_action1 = gr.Button("Action Choice 1", elem_classes=["control-button"])
+				chapter4_action2 = gr.Button("Action Choice 2", elem_classes=["control-button"])
+				chapter4_action3 = gr.Button("Action Choice 3", elem_classes=["control-button"])
 
 	gr.Markdown("### 📤 Export output")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
