@@ -380,8 +380,11 @@ with gr.Blocks(css=STYLE) as demo:
  
 	chapter1_audio_gen_btn.click(
 		story_gen_ui.audio_gen,
-		inputs=None, 
-		outputs=[chapter1_audio]		
+		inputs=[
+			time_dd, place_dd, mood_dd,
+			title, chapter1_title, chapter1_plot,
+		], 
+		outputs=[chapter1_audio]
 	)
  
 	chapter1_image_audio_combine_btn.click(
