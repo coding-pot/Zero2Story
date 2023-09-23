@@ -1,0 +1,49 @@
+[image_gen]
+neg_prompt="nsfw, worst quality, low quality, lowres, bad anatomy, bad hands, text, watermark, signature, error, missing fingers, extra digit, fewer digits, cropped, worst quality, normal quality, blurry, username, extra limbs, twins, boring, jpeg artifacts"
+
+[image_gen.character]
+gen_prompt = """Based on a few short sentences about the character I'm describing, suggest "Short words" and "The Main descriptive sentence" to visualize the character's gender, age, appearance, occupation, clothing, posture, facial expression, and mood.
+Only the "words" section and a single "main_sentence" should be output in syntactically valid JSON format.
+The output template is as follows: {{"main_sentence":"Main description of the character","words":["Word1","Word2","Word3"]}}.
+You can enhance the quality of a character's detailed description or expression using words like the following examples. Of course, you can still suggest similar words not included here: "Ecstatic", "Melancholic", "Furious", "Startled", "Bewildered", "Pensive", "Overjoyed", "Crushed", "Elated", "Panicked", "Satisfied", "Cynical", "Apathetic", "Delighted", "Terrified", "Desperate", "Triumphant", "Mortified", "Envious", "Appreciative", "Blissful", "Heartbroken", "Livid", "Astounded", "Baffled", "Smiling", "Frowning", "Grinning", "Crying", "Pouting", "Glaring", "Blinking", "Winking", "Smirking", "Whistling", "masterpiece", "cinematic lighting", "detailed lighting", "tyndall effect", "soft lighting", "volumetric lighting", "close up", "wide shot", "glossy", "beautiful lighting", "warm lighting", "Extreme", "Ultimate", "Best", "Supreme", "Ultra", "Intense", "Powerful", "Exceptional", "Remarkable", "Strong", "Vigorous", "upper body", "very long hair", "looking at viewer", "thick lips", "skin spots", "acnes", "skin blemishes", "age spot", "dramatic", "sparkling", "waist up", "dynamic angle", "front view person", "bangs", "perfect eyes", "detailed eyes", "realistic eyes", "dynamic standing", "beautiful face", "necklace", "high detailed skin", "hair ornament", "blush", "shiny skin", "long sleeves", "cleavage", "rubber suit", "Bokeh".
+Do not exceed 35 words.
+Exclude words from the suggestion that are redundant or have conflicting meanings.
+Especially, Exclude words that conflict with the meaning of "main_sentence".
+Do not output anything other than JSON values.
+Do not provide any additional explanation of the following.
+Only JSON is allowed.
+===
+This is some examples.
+Q:
+The character's name is Liam, their job is as the Secret Agent, and they are in their 50s. And the keywords that help in associating with the character are "Thriller, Underground Warehouse, Darkness, ESTP, Ambitious, Generous".
+Print out no more than 35 words in syntactically valid JSON format.
+A:
+{{"main_sentence":"Middle-aged man pointing a gun in an underground warehouse","words":["1man","middle-aged","solo","masterpiece","best quality","secret agent","black suit","pistol in hand","absurdres","dramatic lighting","muscular adult male","chiseled physique","intense brown eyes","raven-black hair","stylish layer cut","age spot","determined gaze","looking at viewer","enigmatic presence","secret agent with a stealthy demeanor","cunning strategist","advanced techwear equipped with high-tech gadgets","sleek","night operative","shadowy figure","night cinematic atmosphere","under the moonlight operation","mysterious and captivating aura","highly detailed","film grain","finely detailed eyes and face"]}}
+
+Q:
+The character's name is Catherine, their job is as the Traveler, and they are in their 10s. And the keywords that help in associating with the character are "Romance, Starlit Bridge, Dreamy, ENTJ, Ambitious".
+Print out no more than 35 words in syntactically valid JSON format.
+A:
+{{"main_sentence":"A dreamy teenage girl standing on a starlit bridge with romantic ambitions","words":["1girl","teenage","solo","masterpiece","best quality","flowing skirt","sun hat","daydreaming","bright-eyed","nomadic","Map in hand","Ethereal beauty","Starry-eyed","Wanderlust","scarf","floating hair","whimsical","graceful poise","celestial allure","close-up","warm soft lighting","luminescent glow","gentle aura","mystic charm","smug","smirk","enigmatic presence","serene","Dreamy Landscape","fantastical essence","poetic demeanor","cinematic lighting","Extreme detailed","film grain","finely detailed eyes and face"]}}
+
+Q:
+The character's name is Claire, their job is as the Technological Advancement, and they are in their 20s. And the keywords that help in associating with the character are "Science Fiction, Space Station, INFP, Ambitious, Generous".
+Print out no more than 35 words in syntactically valid JSON format.
+A:
+{{"main_sentence":"A young ambitious woman tech expert aboard a futuristic space station","words":["1girl","twenty","solo","masterpiece","best quality","Sleek silver jumpsuit","Futuristic heels","Contemplative","Tech visionary","editorial close-up portrait","dynamic angle","cyborg","sci-fi","techno-savvy","sharp focus","bokeh","beautiful lighting","intricate circuitry","robotic grace","rich colors","vivid contrasts","dramatic lighting","Futuristic flair","avant-garde","high-tech allure","Engineer with ingenuity","innovative mind","mechanical sophistication","futuristic femme fatale","extremely detailed","highly detailed","film grain","finely detailed eyes and face"]}}
+===
+This is my request.
+Q:
+{input}
+A:
+"""
+query = """
+The character's name is {character_name}, their job is as the {job}, and they are in their {age}. And the keywords that help in associating with the character are "{keywords}".
+Print out no more than 35 words in syntactically valid JSON format.
+"""
+
+[image_gen.background]
+gen_prompt = "Get a sentence."
+
+[music_gen]
+gen_prompt = "Get a sentence."

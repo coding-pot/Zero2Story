@@ -36,12 +36,17 @@ def gen_character_image(
   name, age, mbti, personality, job, 
   time, place, mood, creative_mode
 ):
-	prompt, neg_prompt = ch_img_maker.generate_prompts_from_keywords([
-            mbti, personality, time, place, mood], job, age, name
-        )
-	print(f"Image Prompt: {prompt}")
-	print(f"Negative Prompt: {neg_prompt}")
-	img_filename = ch_img_maker.text2image(prompt, neg_prompt=neg_prompt)
+	# generate prompts for character image with PaLM
+	for _ in range(3):
+		try:
+			prompt, neg_prompt = ch_img_maker.generate_character_prompts(name, age, job, keywords=[mbti, personality, time, place, mood], creative_mode=creative_mode)
+			print(f"Image Prompt: {prompt}")
+			print(f"Negative Prompt: {neg_prompt}")
+		except Exception as e:
+			print(e)
+			raise ValueError("Failed to generate prompts for character image.")
+
+	img_filename = ch_img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='3:4', cfg=4.5)
 	gen_image = numpy.asarray(PIL.Image.open(img_filename))
 	gallery_images.insert(0, gen_image)
 

@@ -1,4 +1,6 @@
 import os
+import toml
+from pathlib import Path
 import google.generativeai as palm_api
 
 from pingpong import PingPong
@@ -7,12 +9,14 @@ from pingpong.pingpong import PromptFmt
 from pingpong.pingpong import UIFmt
 from pingpong.gradio import GradioChatUIFmt
 
+from .utils import set_palm_api_key
 
-palm_api_token = os.getenv("PALM_API_KEY")
-if palm_api_token is None:
-    raise ValueError("PaLM API Token is not set")
-else:
-    palm_api.configure(api_key=palm_api_token)
+
+# Set PaLM API Key
+set_palm_api_key()
+
+# Load PaLM Prompt Templates
+palm_prompts = toml.load(Path('.') / 'assets' / 'palm_prompts.toml')
 
 class PaLMChatPromptFmt(PromptFmt):
     @classmethod
@@ -72,7 +76,8 @@ class GradioPaLMChatPPManager(PaLMChatPPManager):
 async def gen_text(
     prompt,
     mode="chat", #chat or text
-    parameters=None
+    parameters=None,
+    use_filter=True
 ):
     if parameters is None:
         temperature = 0.7
@@ -104,7 +109,7 @@ async def gen_text(
     else:
         response = palm_api.generate_text(**parameters, prompt=prompt)
     
-    if len(response.filters) > 0 and \
+    if use_filter and len(response.filters) > 0 and \
         response.filters[0]['reason'] == 2:
         response_txt = "your request is blocked for some reasons"
     else:
