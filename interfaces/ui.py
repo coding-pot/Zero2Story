@@ -44,12 +44,14 @@ def gen_character_image(
 			print(f"Negative Prompt: {neg_prompt}")
 		except Exception as e:
 			print(e)
-			raise ValueError("Failed to generate prompts for character image.")
 
-    # generate image
+	if not prompt:
+		raise ValueError("Failed to generate prompts for character image.")
+
+	# generate image
 	img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='3:4', cfg=4.5)
 
-    # update gallery
+	# update gallery
 	gen_image = numpy.asarray(PIL.Image.open(img_filename))
 	gallery_images.insert(0, gen_image)
 

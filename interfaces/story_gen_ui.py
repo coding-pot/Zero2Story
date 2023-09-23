@@ -13,6 +13,7 @@ from pingpong.context import CtxLastWindowStrategy
 
 # TODO: Replace checkpoint filename to Huggingface URL
 img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', safety=False)
+bgm_maker = MusicMaker(model_size='large', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
@@ -151,7 +152,9 @@ def image_gen(time, place, mood, title, chapter_title, chapter_plot):
             print(f"Negative Prompt: {neg_prompt}")
         except Exception as e:
             print(e)
-            raise ValueError("Failed to generate prompts for background image.")
+            
+    if not prompt:
+        raise ValueError("Failed to generate prompts for background image.")
 
     # generate image
     img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='16:9', cfg=4.5)
@@ -159,5 +162,19 @@ def image_gen(time, place, mood, title, chapter_title, chapter_plot):
     return  gr.update(visible=True, value=img_filename)
 
 
-def audio_gen():
-    return gr.update(visible=True)
+def audio_gen(time, place, mood, title, chapter_title, chapter_plot):
+    # generate prompt for background music with PaLM
+    for _ in range(3):
+        try:
+            prompt = bgm_maker.generate_prompt(time, place, mood, title, chapter_title, chapter_plot)
+            print(f"Music Prompt: {prompt}")
+        except Exception as e:
+            print(e)
+
+    if not prompt:
+        raise ValueError("Failed to generate prompt for background music.")
+
+    # generate music
+    bgm_filename = bgm_maker.text2music(prompt, length=60)
+
+    return gr.update(visible=True, value=bgm_filename)

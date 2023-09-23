@@ -80,7 +80,46 @@ A:
 """
 query = """
 {time} {place} {mood} {title} {chapter_title} {chapter_plot}
+Print out no more than 35 words in syntactically valid JSON format.
 """
 
 [music_gen]
-gen_prompt = "Get a sentence."
+gen_prompt = """Based on a few short sentences about the character I'm describing, suggest "Short words" and "The Main descriptive sentence" to visualize the character's gender, age, appearance, occupation, clothing, posture, facial expression, and mood.
+Only the "words" section and a single "main_sentence" should be output in syntactically valid JSON format.
+The output template is as follows: {{"main_sentence":"Main description of the character"}}.
+You can enhance the quality of a character's detailed description or expression using words like the following examples. Of course, you can still suggest similar words not included here: "Ecstatic", "Melancholic", "Furious", "Startled", "Bewildered", "Pensive", "Overjoyed", "Crushed", "Elated", "Panicked", "Satisfied", "Cynical", "Apathetic", "Delighted", "Terrified", "Desperate", "Triumphant", "Mortified", "Envious", "Appreciative", "Blissful", "Heartbroken", "Livid", "Astounded", "Baffled", "Smiling", "Frowning", "Grinning", "Crying", "Pouting", "Glaring", "Blinking", "Winking", "Smirking", "Whistling", "masterpiece", "cinematic lighting", "detailed lighting", "tyndall effect", "soft lighting", "volumetric lighting", "close up", "wide shot", "glossy", "beautiful lighting", "warm lighting", "Extreme", "Ultimate", "Best", "Supreme", "Ultra", "Intense", "Powerful", "Exceptional", "Remarkable", "Strong", "Vigorous", "upper body", "very long hair", "looking at viewer", "thick lips", "skin spots", "acnes", "skin blemishes", "age spot", "dramatic", "sparkling", "waist up", "dynamic angle", "front view person", "bangs", "perfect eyes", "detailed eyes", "realistic eyes", "dynamic standing", "beautiful face", "necklace", "high detailed skin", "hair ornament", "blush", "shiny skin", "long sleeves", "cleavage", "rubber suit", "Bokeh".
+Do not exceed 35 words.
+Exclude words from the suggestion that are redundant or have conflicting meanings.
+Especially, Exclude words that conflict with the meaning of "main_sentence".
+Do not output anything other than JSON values.
+Do not provide any additional explanation of the following.
+Only JSON is allowed.
+===
+This is some examples.
+Q:
+The character's name is Liam, their job is as the Secret Agent, and they are in their 50s. And the keywords that help in associating with the character are "Thriller, Underground Warehouse, Darkness, ESTP, Ambitious, Generous".
+Print out only one main_sentence in syntactically valid JSON format.
+A:
+{{"main_sentence":"Middle-aged man pointing a gun in an underground warehouse"}}
+
+Q:
+The character's name is Catherine, their job is as the Traveler, and they are in their 10s. And the keywords that help in associating with the character are "Romance, Starlit Bridge, Dreamy, ENTJ, Ambitious".
+Print out only one main_sentence in syntactically valid JSON format.
+A:
+{{"main_sentence":"A dreamy teenage girl standing on a starlit bridge with romantic ambitions"}}
+
+Q:
+The character's name is Claire, their job is as the Technological Advancement, and they are in their 20s. And the keywords that help in associating with the character are "Science Fiction, Space Station, INFP, Ambitious, Generous".
+Print out only one main_sentence in syntactically valid JSON format.
+A:
+{{"main_sentence":"A young ambitious woman tech expert aboard a futuristic space station"}}
+===
+This is my request.
+Q:
+{input}
+A:
+"""
+query = """
+{time} {place} {mood} {title} {chapter_title} {chapter_plot}
+Print out only one main_sentence in syntactically valid JSON format.
+"""
