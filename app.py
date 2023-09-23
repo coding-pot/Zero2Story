@@ -368,7 +368,7 @@ with gr.Blocks(css=STYLE) as demo:
     	]
 	)
 	### Story generation
- 
+	###### Chapter 1
 	chapter1_image_gen_btn.click(
 		story_gen_ui.image_gen,
 		inputs=[
@@ -390,7 +390,82 @@ with gr.Blocks(css=STYLE) as demo:
 	chapter1_image_audio_combine_btn.click(
 		story_gen_ui.video_gen,
 		inputs=[chapter1_image, chapter1_audio, chapter1_title],
-  		outputs=[chapter1_image, chapter1_audio, chapter1_video],
+		outputs=[chapter1_image, chapter1_audio, chapter1_video],
+	)
+
+	###### Chapter 2
+	chapter2_image_gen_btn.click(
+		story_gen_ui.image_gen,
+		inputs=[
+			time_dd, place_dd, mood_dd,
+			title, chapter2_title, chapter2_plot,
+		],
+		outputs=[chapter2_image]
+	)
+
+	chapter2_audio_gen_btn.click(
+		story_gen_ui.audio_gen,
+		inputs=[
+			time_dd, place_dd, mood_dd,
+			title, chapter2_title, chapter2_plot,
+		],
+		outputs=[chapter2_audio]
+	)
+
+	chapter2_image_audio_combine_btn.click(
+		story_gen_ui.video_gen,
+		inputs=[chapter2_image, chapter2_audio, chapter2_title],
+		outputs=[chapter2_image, chapter2_audio, chapter2_video],
+	)
+
+	###### Chapter 3
+	chapter3_image_gen_btn.click(
+		story_gen_ui.image_gen,
+		inputs=[
+			time_dd, place_dd, mood_dd,
+			title, chapter3_title, chapter3_plot,
+		],
+		outputs=[chapter3_image]
+	)
+
+	chapter3_audio_gen_btn.click(
+		story_gen_ui.audio_gen,
+		inputs=[
+			time_dd, place_dd, mood_dd,
+			title, chapter3_title, chapter3_plot,
+		],
+		outputs=[chapter3_audio]
+	)
+
+	chapter3_image_audio_combine_btn.click(
+		story_gen_ui.video_gen,
+		inputs=[chapter3_image, chapter3_audio, chapter3_title],
+		outputs=[chapter3_image, chapter3_audio, chapter3_video],
+	)
+
+	###### Chapter 4
+	chapter4_image_gen_btn.click(
+		story_gen_ui.image_gen,
+		inputs=[
+			time_dd, place_dd, mood_dd,
+			title, chapter4_title, chapter4_plot,
+		],
+		outputs=[chapter4_image]
+	)
+
+	chapter4_audio_gen_btn.click(
+		story_gen_ui.audio_gen,
+		inputs=[
+			time_dd, place_dd, mood_dd,
+			title, chapter4_title, chapter4_plot,
+		],
+		outputs=[chapter4_audio]
+	)
+
+	chapter4_image_audio_combine_btn.click(
+		story_gen_ui.video_gen,
+		inputs=[chapter4_image, chapter4_audio, chapter4_title],
+		outputs=[chapter4_image, chapter4_audio, chapter4_video],
 	)
  
 	# chapter1_action1.click(
