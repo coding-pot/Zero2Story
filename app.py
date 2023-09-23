@@ -371,7 +371,10 @@ with gr.Blocks(css=STYLE) as demo:
  
 	chapter1_image_gen_btn.click(
 		story_gen_ui.image_gen,
-		inputs=None, 
+		inputs=[
+			time_dd, place_dd, mood_dd,
+			title, chapter1_title, chapter1_plot,
+		], 
 		outputs=[chapter1_image]
 	)
  

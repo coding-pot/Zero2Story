@@ -190,6 +190,56 @@ class ImageMaker:
         return (positive, negative)
 
 
+    def generate_background_prompts(self, time:str, place:str, mood:str,
+                                          title:str, chapter_title:str, chapter_plot:str) -> tuple[str, str]:
+        """Generate positive and negative prompts for a background image based on given attributes.
+
+        Args:
+            time (str): Time of the day.
+            place (str): Place of the story.
+            mood (str): Mood of the story.
+            title (str): Title of the story.
+            chapter_title (str): Title of the chapter.
+            chapter_plot (str): Plot of the chapter.
+
+        Returns:
+            tuple[str, str]: A tuple of positive and negative prompts.
+        """
+
+        positive = "" # add static prompt for background if needed (e.g. "chibi, cute, anime")
+        negative = palm_prompts['image_gen']['neg_prompt']
+
+        # Generate prompts with PaLM
+        t = palm_prompts['image_gen']['background']['gen_prompt']
+        q = palm_prompts['image_gen']['background']['query']
+        query_string = t.format(input=q.format(time=time,
+                                               place=place,
+                                               mood=mood,
+                                               title=title,
+                                               chapter_title=chapter_title,
+                                               chapter_plot=chapter_plot))
+        try:
+            response, response_txt = asyncio.run(asyncio.wait_for(
+                                                    gen_text(query_string, mode="text", use_filter=False),
+                                                    timeout=10)
+                                                )
+        except asyncio.TimeoutError:
+            raise TimeoutError("The response time for PaLM API exceeded the limit.")
+        
+        try: 
+            res_json = json.loads(response_txt)
+            positive = (res_json['main_sentence'] if not positive else f"{positive}, {res_json['main_sentence']}") + ", "
+            positive += ', '.join(res_json['words'])
+        except:
+            print("=== PaLM Response ===")
+            print(response.filters)
+            print(response_txt)
+            print("=== PaLM Response ===")            
+            raise ValueError("The response from PaLM API is not in the expected format.")
+            
+        return (positive, negative)
+
+
     @property
     def model_base(self):
         """Model base

@@ -3,11 +3,16 @@ import random
 import gradio as gr
 from gradio_client import Client
 
-from modules import palmchat
+from modules import (
+	ImageMaker, MusicMaker, palmchat
+)
 from interfaces import utils
 
 from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
+
+# TODO: Replace checkpoint filename to Huggingface URL
+img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', safety=False)
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
@@ -117,7 +122,8 @@ Continue the story based on the choice "{action}"
         response_json["actions"][1],
         response_json["actions"][2]
     )
-    
+
+
 def video_gen(image, audio, title):
     client = Client(video_gen_client_url)
     
@@ -134,9 +140,24 @@ def video_gen(image, audio, title):
         gr.update(visible=False),
         gr.update(value=result[0], visible=True)
     )
-    
-def image_gen():
-    return gr.update(visible=True)
+
+
+def image_gen(time, place, mood, title, chapter_title, chapter_plot):
+    # generate prompts for background image with PaLM
+    for _ in range(3):
+        try:
+            prompt, neg_prompt = img_maker.generate_background_prompts(time, place, mood, title, chapter_title, chapter_plot)
+            print(f"Image Prompt: {prompt}")
+            print(f"Negative Prompt: {neg_prompt}")
+        except Exception as e:
+            print(e)
+            raise ValueError("Failed to generate prompts for background image.")
+
+    # generate image
+    img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='16:9', cfg=4.5)
+
+    return  gr.update(visible=True, value=img_filename)
+
 
 def audio_gen():
     return gr.update(visible=True)
