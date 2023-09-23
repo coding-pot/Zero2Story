@@ -5,6 +5,9 @@ from pathlib import Path
 import uuid
 import json
 import re
+import asyncio
+
+import toml
 
 import torch
 
@@ -17,11 +20,12 @@ from diffusers import (
     DPMSolverSDEScheduler,
 )
 
-import google.generativeai as palm
-
 from .utils import (
     set_all_seeds,
-    get_palm_api_key
+)
+from .palmchat import (
+    palm_prompts,
+    gen_text,
 )
 
 _gpus = 0
@@ -101,7 +105,7 @@ class ImageMaker:
     def text2image(self,
                    prompt: str, neg_prompt: str = None,
                    ratio: Literal['3:2', '4:3', '16:9', '1:1', '9:16', '3:4', '2:3'] = '1:1',
-                   step: int = 28,
+                   step: int = 25,
                    cfg: float = 7,
                    seed: int = None) -> str:
         """Generate an image from the prompt.
@@ -139,84 +143,53 @@ class ImageMaker:
         return str(output_filename.with_suffix('.png'))
     
 
-    def generate_prompts_from_keywords(self, keywords: list[str], job, age, character_name) -> tuple[str, str]:
-        """Generate prompts from keywords.
+    def generate_character_prompts(self, character_name: str, age: str, job: str,
+                                         keywords: list[str] = None, 
+                                         creative_mode: Literal['sd character', 'cartoon', 'realistic'] = 'cartoon') -> tuple[str, str]:
+        """Generate positive and negative prompts for a character based on given attributes.
 
         Args:
-            keywords (list[str]): List of keywords.
             character_name (str): Character's name.
+            age (str): Age of the character.
+            job (str): The profession or job of the character.
+            keywords (list[str]): List of descriptive words for the character.
 
         Returns:
             tuple[str, str]: A tuple of positive and negative prompts.
         """
-        palm.configure(api_key=get_palm_api_key())
-        positive = "masterpiece, best quality, dramatic, solo, "  # Add chibi, cute : Cute 3D Chracter style
-        quality_prompt = ", extremely detailed, highly detailed, high budget, cinemascope, film grain, grainy, finely detailed eyes and face"
-        negative = ("nsfw, worst quality, low quality, lowres, bad anatomy,bad hands, text, watermark, signature, error, missing fingers, "
-                    "extra digit, fewer digits, cropped, worst quality, normal quality, blurry, username, extra limbs, "
-                    "twins, boring, jpeg artifacts ")
-        
-        defaults = {
-            'model': 'models/chat-bison-001',
-            'temperature': 0.5,
-            'candidate_count': 1,
-            'top_k': 40,
-            'top_p': 0.95,
-        }
-        context = ("Based on a few short sentences describing the character, recommend 'short words' that can visualize their image. "
-                   "Output only the 'words' section in JSON format. Output template is as follows: {\"words\":[\"word1\",\"word2\",\"word3\"]}. "
-                   "Do not output anything other than JSON values. Not exceeding 30 words.")
-        examples = [
-            [
-                "The character's name is Catherine, their job is as a Traveler, and they are in their 10s. "
-                "And the keywords that help in associating with the character are "
-                "\"Romance, Starlit Bridge, Dreamy, ENTJ, Ambitious\". "
-                "Print out the words in JSON format.",
-                "{\"words\":[\"1girl\",\"teenage\",\"Ethereal beauty\",\"Starry-eyed\",\"Wanderlust\",\"scarf\",\"floating hair\",\"whimsical\",\"graceful poise\",\"celestial allure\",\"delicate\",\"close-up\",\"warm soft lighting\",\"luminescent glow\",\"gentle aura\",\"mystic charm\",\"smug\",\"smirk\",\"enigmatic presence\",\"serene\",\"Dreamy Landscape\",\"fantastical essence\",\"poetic demeanor\"]}"
-            ],
-            [
-                "The character's name is Claire, their job is as a Technological Advancement, and they are in their 20s. "
-                "And the keywords that help in associating with the character are "
-                "\"Science Fiction, Space Station, INFP, Ambitious, Generous\". "
-                "Print out the words in JSON format.",
-                "{\"words\":[\"1girl\",\"twenty\",\"editorial close-up portrait\",\"cyborg\",\"sci-fi\",\"techno-savvy\",\"visionary engineer\",\"sharp focus\",\"bokeh\",\"extremely detailed\",\"intricate circuitry\",\"robotic grace\",\"rich colors\",\"vivid contrasts\",\"dramatic lighting\",\"Futuristic flair\",\"avant-garde\",\"high-tech allure\",\"Engineer with ingenuity\",\"innovative mind\",\"mechanical sophistication\",\"futuristic femme fatale\"]}"
-            ],
-            [
-                "The character's name is Liam, their job is as a Secret Agent, and they are in their 40s. "
-                "And the keywords that help in associating with the character are "
-                "\"Thriller, Underground Warehouse, Darkness, ESTP, Ambitious, Generous\". "
-                "Print out the words in JSON format.",
-                "{\"words\":[\"1man\",\"middle-aged\",\"absurdres\",\"dramatic lighting\",\"muscular adult male\",\"chiseled physique\",\"intense brown eyes\",\"raven-black hair\",\"stylish layer cut\",\"determined gaze\",\"looking at viewer\",\"enigmatic presence\",\"secret agent with a stealthy demeanor\",\"cunning strategist\",\"advanced techwear equipped with high-tech gadgets\",\"sleek\",\"night operative\",\"shadowy figure\",\"night cinematic atmosphere\",\"under the moonlight operation\",\"mysterious and captivating aura\"]}"
-            ]
-        ]
 
-        messages = [f"The character's name is {character_name}, their job is as a {job}, and they are in their {age}. " +
-                    "And the keywords that help in associating with the character are " +
-                    f"\"{', '.join(keywords)}\". " +
-                    "Print out the words in JSON format."]
-        response = palm.chat(
-            **defaults,
-            context=context,
-            examples=examples,
-            messages=messages
-        )
+        positive = "" # add static prompt for character if needed (e.g. "chibi, cute, anime")
+        negative = palm_prompts['image_gen']['neg_prompt']
 
-        print('PaLM Response:', response.last)
-        response.last = response.last.replace(',\n  ]\n}', '\n  ]\n}')
+        # Generate prompts with PaLM
+        t = palm_prompts['image_gen']['character']['gen_prompt']
+        q = palm_prompts['image_gen']['character']['query']
+        query_string = t.format(input=q.format(character_name=character_name,
+                                               job=job,
+                                               age=age,
+                                               keywords=', '.join(keywords) if keywords else 'Nothing'))
         try:
-            positive += ', '.join(json.loads(response.last)['words'][:32])
+            response, response_txt = asyncio.run(asyncio.wait_for(
+                                                    gen_text(query_string, mode="text", use_filter=False),
+                                                    timeout=10)
+                                                )
+        except asyncio.TimeoutError:
+            raise TimeoutError("The response time for PaLM API exceeded the limit.")
+        
+        try: 
+            res_json = json.loads(response_txt)
+            positive = (res_json['main_sentence'] if not positive else f"{positive}, {res_json['main_sentence']}") + ", "
+            positive += ', '.join(res_json['words'])
         except:
-            start, end = response.last.find('{'), response.last.rfind('}') + 1
-            if end - start >= 12:
-                json_str = response.last[start:end]
-                positive += ', '.join(json.loads(json_str)['words'][:32])
-            else:
-                positive += ', '.join(re.findall(r'\*\s(\w+)', response.last.replace('**', ''))[:32])
-        positive += quality_prompt
-
+            print("=== PaLM Response ===")
+            print(response.filters)
+            print(response_txt)
+            print("=== PaLM Response ===")            
+            raise ValueError("The response from PaLM API is not in the expected format.")
+            
         return (positive, negative)
-    
-    
+
+
     @property
     def model_base(self):
         """Model base
