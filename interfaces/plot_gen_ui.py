@@ -1,3 +1,4 @@
+import gradio as gr
 from interfaces import utils
 from modules import palmchat
 
@@ -74,17 +75,37 @@ personality: {personality1}
     return (
         response_json['title'],
         response_json['outline']
-        # f"# {response_json['title']}",
-        # response_json["plot"][0]["chapter_title"],
-        # response_json["plot"][1]["chapter_title"],
-        # response_json["plot"][2]["chapter_title"],
-        # response_json["plot"][3]["chapter_title"],
-        # f"## {response_json['plot'][0]['chapter_title']}",
-        # f"## {response_json['plot'][1]['chapter_title']}",
-        # f"## {response_json['plot'][2]['chapter_title']}",
-        # f"## {response_json['plot'][3]['chapter_title']}",        
-        # response_json["plot"][0]["chapter_plot"],
-        # response_json["plot"][1]["chapter_plot"],
-        # response_json["plot"][2]["chapter_plot"],
-        # response_json["plot"][3]["chapter_plot"],
+    )
+
+
+async def first_story_gen(title, plot):
+    prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobias's plot theory. You must tell a story based on a given plot. Your story must include descriptive sentences and dialog. Your story must be a minimum of 1500 words and a maximum of 2500 words. At the end of the story, you must create 3 actions, each of which must be different and affect the next story. YOU MUST FOLLOW THESE RULES.
+
+Output template is as follows: ```json{{"chapter_title": "chapter_title", "story": {{"story" : "story", "action1 " : "action1", "action2" : "action2", "action3" : "action3"}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
+
+
+```json
+{{"title": "{title}", "outline": "{plot}"}}
+```
+"""
+
+    print(f"generated prompt:\n{prompt}")
+
+    response_json = None
+    while response_json is None:
+        _, response_txt = await palmchat.gen_text(prompt, mode="text")
+        print(response_txt)
+
+        try:
+            response_json = utils.parse_first_json_code_snippet(response_txt)
+        except:
+            pass
+
+    return (
+        response_json["story"]["story"],
+        gr.update(interactive=True),
+        gr.update(interactive=True),
+        gr.update(value=response_json["story"]["action1"], interactive=True),
+        gr.update(value=response_json["story"]["action2"], interactive=True),
+        gr.update(value=response_json["story"]["action3"], interactive=True),
     )
