@@ -61,16 +61,7 @@ personality: {personality1}
     )
     
     print(f"generated prompt:\n{prompt}")
-
-    response_json = None
-    while response_json is None:
-        _, response_txt = await palmchat.gen_text(prompt, mode="text")
-        print(response_txt)
-
-        try:
-            response_json = utils.parse_first_json_code_snippet(response_txt)
-        except:
-            pass
+    response_json = await utils.retry_until_valid_json(prompt)
 
     return (
         response_json['title'],
@@ -91,16 +82,7 @@ Output template is as follows: ```json{{"chapter_title": "chapter_title", "story
 """
 
     print(f"generated prompt:\n{prompt}")
-
-    response_json = None
-    while response_json is None:
-        _, response_txt = await palmchat.gen_text(prompt, mode="text")
-        print(response_txt)
-
-        try:
-            response_json = utils.parse_first_json_code_snippet(response_txt)
-        except:
-            pass
+    response_json = await utils.retry_until_valid_json(prompt)
 
     return (
         response_json["story"]["story"],
