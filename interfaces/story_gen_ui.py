@@ -12,8 +12,8 @@ from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
 # TODO: Replace checkpoint filename to Huggingface URL
-img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', safety=False)
-bgm_maker = MusicMaker(model_size='small', output_format='mp3')
+img_maker = None # ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', safety=False)
+bgm_maker = None # MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
@@ -143,7 +143,8 @@ def video_gen(image, audio, title, use_ffmpeg=True):
     return (
         gr.update(visible=False),
         gr.update(visible=False),
-        gr.update(visible=True, value=output_filename)
+        gr.update(visible=True, value=output_filename),
+        "   "
     )
 
 
@@ -163,7 +164,10 @@ def image_gen(time, place, mood, title, chapter_title, chapter_plot):
     # generate image
     img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='16:9', cfg=4.5)
 
-    return  gr.update(visible=True, value=img_filename)
+    return  (
+        gr.update(visible=True, value=img_filename),
+        "  "
+    )
 
 
 def audio_gen(time, place, mood, title, chapter_title, chapter_plot):
@@ -181,4 +185,7 @@ def audio_gen(time, place, mood, title, chapter_title, chapter_plot):
     # generate music
     bgm_filename = bgm_maker.text2music(prompt, length=60)
 
-    return gr.update(visible=True, value=bgm_filename)
+    return (
+        gr.update(visible=True, value=bgm_filename),
+        " "
+    )

@@ -203,11 +203,12 @@ with gr.Blocks(css=STYLE) as demo:
 	gr.Markdown("### ✍🏼 Story writing")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as story_writing_section:
 		title_display = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"])
+		progress_comp = gr.Textbox(label=None, elem_classes=["no-label"], interactive=False)
 
 		with gr.Tab("Chapter 1"):
 			chapter1_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
 
-			chapter1_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
+			# chapter1_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
    
 			with gr.Row():
 				chapter1_image_gen_btn = gr.Button("🏞️")
@@ -231,7 +232,7 @@ with gr.Blocks(css=STYLE) as demo:
 		with gr.Tab("Chapter 2"):
 			chapter2_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
 
-			chapter2_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
+			# chapter2_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
    
 			with gr.Row():
 				chapter2_image_gen_btn = gr.Button("🏞️")
@@ -255,7 +256,7 @@ with gr.Blocks(css=STYLE) as demo:
 		with gr.Tab("Chapter 3"):
 			chapter3_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
 
-			chapter3_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
+			# chapter3_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
    
 			with gr.Row():
 				chapter3_image_gen_btn = gr.Button("🏞️")
@@ -279,7 +280,7 @@ with gr.Blocks(css=STYLE) as demo:
 		with gr.Tab("Chapter 4"):
 			chapter4_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
 
-			chapter4_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
+			# chapter4_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
    
 			with gr.Row():
 				chapter4_image_gen_btn = gr.Button("🏞️")
@@ -432,7 +433,7 @@ with gr.Blocks(css=STYLE) as demo:
 			time_dd, place_dd, mood_dd,
 			title, chapter1_title, chapter1_plot,
 		], 
-		outputs=[chapter1_image]
+		outputs=[chapter1_image, progress_comp]
 	)
  
 	chapter1_audio_gen_btn.click(
@@ -441,13 +442,13 @@ with gr.Blocks(css=STYLE) as demo:
 			time_dd, place_dd, mood_dd,
 			title, chapter1_title, chapter1_plot,
 		], 
-		outputs=[chapter1_audio]
+		outputs=[chapter1_audio, progress_comp]
 	)
  
 	chapter1_image_audio_combine_btn.click(
 		story_gen_ui.video_gen,
 		inputs=[chapter1_image, chapter1_audio, chapter1_title],
-		outputs=[chapter1_image, chapter1_audio, chapter1_video],
+		outputs=[chapter1_image, chapter1_audio, chapter1_video, progress_comp],
 	)
 
 	###### Chapter 2
