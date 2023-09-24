@@ -10,7 +10,7 @@ async def plot_gen(
 ):
     prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. As you write, you need to follow Ronald Tobias's plot theory. You also need to create a outline for your novel based on the input we give you, and generate a title based on the outline. You must create the outline at least more tham 2000 words long. YOU MUST FOLLOW THESE RULES.
 
-Output template is as follows: ```json{"title": "title", "outline": "outline"}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
+Output template is as follows: ```json{{"title": "title", "outline": "outline"}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
 
 when: {time}
 where: {place}
