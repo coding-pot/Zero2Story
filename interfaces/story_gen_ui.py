@@ -4,7 +4,7 @@ import gradio as gr
 from gradio_client import Client
 
 from modules import (
-	ImageMaker, MusicMaker, palmchat
+	ImageMaker, MusicMaker, palmchat, merge_video
 )
 from interfaces import utils
 
@@ -13,7 +13,7 @@ from pingpong.context import CtxLastWindowStrategy
 
 # TODO: Replace checkpoint filename to Huggingface URL
 img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', safety=False)
-bgm_maker = MusicMaker(model_size='large', output_format='mp3')
+bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
@@ -125,21 +125,25 @@ Continue the story based on the choice "{action}"
     )
 
 
-def video_gen(image, audio, title):
-    client = Client(video_gen_client_url)
+def video_gen(image, audio, title, use_ffmpeg=True):
+    if use_ffmpeg:
+        output_filename = merge_video(image, audio, story_title=title)
     
-    result = client.predict(
-        title,
-        audio,
-        image,
-        f"{utils.id_generator()}.mp4",
-        api_name="/predict"
-    )
+    if not use_ffmpeg or not output_filename:
+        client = Client(video_gen_client_url)
+        result = client.predict(
+            title,
+            audio,
+            image,
+            f"{utils.id_generator()}.mp4",
+            api_name="/predict"
+        )
+        output_filename = result[0]
 
     return (
         gr.update(visible=False),
         gr.update(visible=False),
-        gr.update(value=result[0], visible=True)
+        gr.update(visible=True, value=output_filename)
     )
 
 

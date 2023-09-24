@@ -1,5 +1,4 @@
 from typing import Literal
-from tempfile import NamedTemporaryFile
 from pathlib import Path
 
 import uuid
