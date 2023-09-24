@@ -6,6 +6,7 @@ def _add_side_character(
     name, age, mbti, personality, job
 ):
     if enable:
+        cur_side_chars = cur_side_chars + 1
         prompt = prompt + f"""
 side character{cur_side_chars}: {{
 name: {name},
