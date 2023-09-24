@@ -159,4 +159,9 @@ textarea {
     width: 95%;
   }
 }
+
+.font-big textarea {
+  font-size: 19pt !important;
+  text-align: center;
+}
 """

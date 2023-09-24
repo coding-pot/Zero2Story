@@ -8,11 +8,9 @@ async def plot_gen(
     name3, age3, mbti3, personality3, job3,
     name4, age4, mbti4, personality4, job4,
 ):
-    prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. As you write, you need to follow Ronald Tobias's plot theory. You also need to create a basic outline for your novel based on the input we give you, and generate a title based on the outline.
+    prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. As you write, you need to follow Ronald Tobias's plot theory. You also need to create a outline for your novel based on the input we give you, and generate a title based on the outline. You must create the outline at least more tham 2000 words long. YOU MUST FOLLOW THESE RULES.
 
-Output template is as follows: ```json{{"title": "title", "plot": [{{"chapter_title" : "chapter_title", "chapter_plot" : "chapter_plot"}}]}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
-
-You must create only four chapters, no more, no less. 
+Output template is as follows: ```json{"title": "title", "outline": "outline"}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
 
 when: {time}
 where: {place}
@@ -48,7 +46,7 @@ job: {job4},
 age: {age4},
 mbti: {mbti4},
 personality: {personality4} 
-}}    
+}}
 """
 
     response_json = None
@@ -63,17 +61,18 @@ personality: {personality4}
 
     return (
         response_json['title'],
-        f"# {response_json['title']}",
-        response_json["plot"][0]["chapter_title"],
-        response_json["plot"][1]["chapter_title"],
-        response_json["plot"][2]["chapter_title"],
-        response_json["plot"][3]["chapter_title"],
-        f"## {response_json['plot'][0]['chapter_title']}",
-        f"## {response_json['plot'][1]['chapter_title']}",
-        f"## {response_json['plot'][2]['chapter_title']}",
-        f"## {response_json['plot'][3]['chapter_title']}",        
-        response_json["plot"][0]["chapter_plot"],
-        response_json["plot"][1]["chapter_plot"],
-        response_json["plot"][2]["chapter_plot"],
-        response_json["plot"][3]["chapter_plot"],
+        response_json['outline']
+        # f"# {response_json['title']}",
+        # response_json["plot"][0]["chapter_title"],
+        # response_json["plot"][1]["chapter_title"],
+        # response_json["plot"][2]["chapter_title"],
+        # response_json["plot"][3]["chapter_title"],
+        # f"## {response_json['plot'][0]['chapter_title']}",
+        # f"## {response_json['plot'][1]['chapter_title']}",
+        # f"## {response_json['plot'][2]['chapter_title']}",
+        # f"## {response_json['plot'][3]['chapter_title']}",        
+        # response_json["plot"][0]["chapter_plot"],
+        # response_json["plot"][1]["chapter_plot"],
+        # response_json["plot"][2]["chapter_plot"],
+        # response_json["plot"][3]["chapter_plot"],
     )

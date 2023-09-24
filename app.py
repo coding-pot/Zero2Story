@@ -164,35 +164,36 @@ with gr.Blocks(css=STYLE) as demo:
 
 	gr.Markdown("### 💡 Plot setup")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as plot_setup_section:
-		title = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"])
+		title = gr.Textbox("Title Undetermined Yet", elem_classes=["no-label", "font-big"])
+		plot = gr.Textbox(lines=10, elem_classes=["no-label"])
 
-		with gr.Row():
-			gr.Textbox("Chapter 1.", elem_classes=["no-label"], scale=1)
-			chapter1_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
+		with gr.Row(visible=False):
+			gr.Textbox("Chapter 1.", elem_classes=["no-label"], scale=1, visible=False)
+			chapter1_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5, visible=False)
 
-		with gr.Row(elem_classes=["left-margin"]):
-			chapter1_plot = gr.Textbox(placeholder="The plot of the first chapter will be generated here", lines=3, elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"], visible=False):
+			chapter1_plot = gr.Textbox(placeholder="The plot of the first chapter will be generated here", lines=3, elem_classes=["no-label"], visible=False)
 
-		with gr.Row():
-			gr.Textbox("Chapter 2.", elem_classes=["no-label"], scale=1)
-			chapter2_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
+		with gr.Row(visible=False):
+			gr.Textbox("Chapter 2.", elem_classes=["no-label"], scale=1, visible=False)
+			chapter2_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5, visible=False)
 
-		with gr.Row(elem_classes=["left-margin"]):
-			chapter2_plot = gr.Textbox(placeholder="The plot of the second chapter will be generated here", lines=3, elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"], visible=False):
+			chapter2_plot = gr.Textbox(placeholder="The plot of the second chapter will be generated here", lines=3, elem_classes=["no-label"], visible=False)
 
-		with gr.Row():
-			gr.Textbox("Chapter 3.", elem_classes=["no-label"], scale=1)
-			chapter3_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
+		with gr.Row(visible=False):
+			gr.Textbox("Chapter 3.", elem_classes=["no-label"], scale=1, visible=False)
+			chapter3_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5, visible=False)
 
-		with gr.Row(elem_classes=["left-margin"]):
-			chapter3_plot = gr.Textbox(placeholder="The plot of the third chapter will be generated here", lines=3, elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"], visible=False):
+			chapter3_plot = gr.Textbox(placeholder="The plot of the third chapter will be generated here", lines=3, elem_classes=["no-label"], visible=False)
 
-		with gr.Row():
-			gr.Textbox("Chapter 4.", elem_classes=["no-label"], scale=1)
-			chapter4_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
+		with gr.Row(visible=False):
+			gr.Textbox("Chapter 4.", elem_classes=["no-label"], scale=1, visible=False)
+			chapter4_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5, visible=False)
 
-		with gr.Row(elem_classes=["left-margin"]):
-			chapter4_plot = gr.Textbox(placeholder="The plot of the fourth chapter will be generated here", lines=3, elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"], visible=False):
+			chapter4_plot = gr.Textbox(placeholder="The plot of the fourth chapter will be generated here", lines=3, elem_classes=["no-label"], visible=False)
 
 		with gr.Row():
 			gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
@@ -419,10 +420,11 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
 		],
 		outputs = [
-			title, title_display,
-    		chapter1_title, chapter2_title, chapter3_title, chapter4_title,
-		    chapter1_title_display, chapter2_title_display, chapter3_title_display, chapter4_title_display,
-      		chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
+			title, plot,
+   			# title_display,
+    		# chapter1_title, chapter2_title, chapter3_title, chapter4_title,
+		    # chapter1_title_display, chapter2_title_display, chapter3_title_display, chapter4_title_display,
+      		# chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
     	]
 	)
 	### Story generation
