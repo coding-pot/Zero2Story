@@ -71,6 +71,7 @@ with gr.Blocks(css=STYLE) as demo:
 			gen_char_btn1 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
 		with gr.Tab("side character 1"):
+			side_char_enable_ckb1 = gr.Checkbox(label="character include/enable", value=False)
 			char_gallery2 = gr.Gallery(value=default_character_images, height=256, preview=True)
 
 			with gr.Row(elem_classes=["no-gap"]):
@@ -101,6 +102,7 @@ with gr.Blocks(css=STYLE) as demo:
 			gen_char_btn2 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
 		with gr.Tab("side character 2"):
+			side_char_enable_ckb2 = gr.Checkbox(label="character include/enable", value=False)
 			char_gallery3 = gr.Gallery(value=default_character_images, height=256, preview=True)
 
 			with gr.Row(elem_classes=["no-gap"]):
@@ -131,6 +133,7 @@ with gr.Blocks(css=STYLE) as demo:
 			gen_char_btn3 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
 		with gr.Tab("side character 3"):
+			side_char_enable_ckb3 = gr.Checkbox(label="character include/enable", value=False)
 			char_gallery4 = gr.Gallery(value=default_character_images, height=256, preview=True)
 
 			with gr.Row(elem_classes=["no-gap"]):
@@ -414,6 +417,7 @@ with gr.Blocks(css=STYLE) as demo:
 		plot_gen_ui.plot_gen,
 		inputs= [
 			time_dd, place_dd, mood_dd, 
+			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
