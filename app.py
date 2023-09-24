@@ -165,7 +165,7 @@ with gr.Blocks(css=STYLE) as demo:
 	gr.Markdown("### 💡 Plot setup")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as plot_setup_section:
 		title = gr.Textbox("Title Undetermined Yet", elem_classes=["no-label", "font-big"])
-		plot = gr.Textbox(lines=10, elem_classes=["no-label"])
+		plot = gr.Textbox(lines=10, elem_classes=["no-label", "small-big-textarea"])
 
 		with gr.Row(visible=False):
 			gr.Textbox("Chapter 1.", elem_classes=["no-label"], scale=1, visible=False)
