@@ -5,3 +5,6 @@ from .palmchat import (
     PaLMChatPPManager,
     GradioPaLMChatPPManager,
 )
+from .utils import (
+    merge_video,
+)
