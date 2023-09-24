@@ -74,6 +74,7 @@ personality: {personality1}
 
     return (
         response_json['title'],
+        f"## {response_json['title']}",
         response_json['outline']
     )
 

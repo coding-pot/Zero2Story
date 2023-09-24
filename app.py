@@ -442,7 +442,7 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
 		],
 		outputs = [
-			title, plot,
+			title, title_display, plot,
    			# title_display,
     		# chapter1_title, chapter2_title, chapter3_title, chapter4_title,
 		    # chapter1_title_display, chapter2_title_display, chapter3_title_display, chapter4_title_display,
