@@ -74,7 +74,6 @@ with gr.Blocks(css=STYLE) as demo:
 
 				gen_char_btn1 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
-		with gr.Row():
 			with gr.Column():
 				side_char_enable_ckb1 = gr.Checkbox(label="character include/enable", value=False)
 				char_gallery2 = gr.Gallery(value=default_character_images, height=256, preview=True)
@@ -106,7 +105,6 @@ with gr.Blocks(css=STYLE) as demo:
 
 				gen_char_btn2 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
-		with gr.Row():
 			with gr.Column():
 				side_char_enable_ckb2 = gr.Checkbox(label="character include/enable", value=False)
 				char_gallery3 = gr.Gallery(value=default_character_images, height=256, preview=True)
@@ -138,7 +136,6 @@ with gr.Blocks(css=STYLE) as demo:
 
 				gen_char_btn3 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
-		with gr.Row():
 			with gr.Column():
 				side_char_enable_ckb3 = gr.Checkbox(label="character include/enable", value=False)
 				char_gallery4 = gr.Gallery(value=default_character_images, height=256, preview=True)
