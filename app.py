@@ -69,7 +69,7 @@ with gr.Blocks(css=STYLE) as demo:
 					gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
 					job_dd1 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
 					creative_dd1 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -100,7 +100,7 @@ with gr.Blocks(css=STYLE) as demo:
 					gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
 					job_dd2 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][1], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
 					creative_dd2 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -131,7 +131,7 @@ with gr.Blocks(css=STYLE) as demo:
 					gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
 					job_dd3 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][2], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
 					creative_dd3 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -162,7 +162,7 @@ with gr.Blocks(css=STYLE) as demo:
 					gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
 					job_dd4 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][3], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
 					creative_dd4 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
