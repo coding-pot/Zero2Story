@@ -411,7 +411,7 @@ with gr.Blocks(css=STYLE) as demo:
 	story_progress.input(
 		story_gen_ui.move_story_cursor,
 		inputs=[
-			story_progress, cursors, cur_cursor
+			story_progress, cursors
 		],
 		outputs=[
 			cur_cursor,
