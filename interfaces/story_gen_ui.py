@@ -199,9 +199,9 @@ JSON output:
 			gr.update(value=None, visible=False),
 			gr.update(value=None, visible=False),
 			gr.update(value=None, visible=False),
-			gr.update(value=response_json["next actions"][0], interactive=True),
-			gr.update(value=response_json["next actions"][1], interactive=True),
-			gr.update(value=response_json["next actions"][2], interactive=True)
+			gr.update(value=response_json["actions"][0], interactive=True),
+			gr.update(value=response_json["actions"][1], interactive=True),
+			gr.update(value=response_json["actions"][2], interactive=True)
 		)
 	else:
 		prompt = f"""Write the next few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. The next few paragraphs should be naturally connected to the current paragraphs, and they should be written based on the "action choice". Also, suggest three choosable actions to drive current story in different directions. The choosable actions should not have a duplicate action of the action choice. The next few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. Each paragraph should consist of at least five sentences. REMEMBER the next few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
