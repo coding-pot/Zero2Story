@@ -129,12 +129,12 @@ def video_gen(
 	image, audio, title, cursors, cur_cursor, use_ffmpeg=True
 ):
 	if use_ffmpeg:
-		output_filename = merge_video(image, audio, story_title=title)
+		output_filename = merge_video(image, audio, story_title="")
 	
 	if not use_ffmpeg or not output_filename:
 		client = Client(video_gen_client_url)
 		result = client.predict(
-			title,
+			"",
 			audio,
 			image,
 			f"{utils.id_generator()}.mp4",

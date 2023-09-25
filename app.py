@@ -394,7 +394,7 @@ with gr.Blocks(css=STYLE) as demo:
 	img_audio_combine_btn.click(
 		story_gen_ui.video_gen,
 		inputs=[
-			story_image, story_audio, "", cursors, cur_cursor
+			story_image, story_audio, story_content, cursors, cur_cursor
 		],
 		outputs=[
 			story_image, story_audio, story_video, cursors, progress_comp
