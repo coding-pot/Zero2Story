@@ -164,12 +164,21 @@ def move_story_cursor(moved_cursor, cursors):
 		)
 
 	else:
+		image_container = gr.update(value=None, visible=False)
+		audio_container = gr.update(value=None, visible=False)
+
+		if "img" in cursor_content:
+			image_container = gr.update(value=cursor_content["img"], visible=True)
+
+		if "audio" in cursor_content:
+			audio_container = gr.update(value=cursor_content["audio"], visible=True)
+
 		outputs = (
 			moved_cursor-1,
 			gr.update(label=f"{moved_cursor} out of {len(cursors)} stories"),
 			cursor_content["story"],
-			cursor_content["img"] if "img" in cursor_content else gr.update(value=None, visible=False),
-			cursor_content["audio"] if "audio" in cursor_content else gr.update(value=None, visible=False),
+			image_container,
+			audio_container,
 			gr.update(value=None, visible=False),
 		)        
 
