@@ -217,17 +217,25 @@ with gr.Blocks(css=STYLE) as demo:
 			audio_gen_btn = gr.Button("🔊", interactive=False)
 			img_audio_combine_btn = gr.Button("📀", interactive=False)
   
-		story_image = gr.Image(None, visible=False, type="filepath", elem_classes=["no-label-image-audio"])
-		story_audio = gr.Audio(None, visible=False, type="filepath", elem_classes=["no-label-image-audio"])
-		story_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
+		story_image = gr.Image(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
+		story_audio = gr.Audio(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
+		story_video = gr.Video(visible=False, interactive=False, elem_classes=["no-label-gallery"])
 
-		story_progress = gr.Slider(minimum=1, maximum=2, value=1, step=1, interactive=True, visible=False)
+		story_progress = gr.Slider(minimum=1, maximum=2, value=1, step=1, interactive=True, visible=True)
 
 		story_content = gr.Textbox(
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
 				lines=12,
 				elem_classes=["no-label", "small-big-textarea"]
 		)		
+
+		action_types = gr.Radio(
+			choices=[
+				"rising action", "crisis", "climax", "falling action", "denouncement"
+			],
+			value="rising action",
+			interactive=True
+		)
 
 		with gr.Row():
 			action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button"])
@@ -410,6 +418,20 @@ with gr.Blocks(css=STYLE) as demo:
 			story_content,
 			story_image, story_audio, story_video,
 			action_btn1, action_btn2, action_btn3,
+		]
+	)
+
+	action_btn1.click(
+		story_gen_ui.next_story_gen,
+		inputs=[
+			action_types, action_btn1,
+			title, plot, story_content,
+			cursors, cur_cursor
+		],
+		outputs=[
+			story_content,
+			cursors, cur_cursor, story_progress, 
+			action_btn1, action_btn2, action_btn3
 		]
 	)
 

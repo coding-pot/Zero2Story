@@ -17,113 +17,41 @@ bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
-async def next_paragraph_gen(
-	action, progress,
-	time, place, mood,
-	name1, age1, mbti1, personality1, job1,
-	name2, age2, mbti2, personality2, job2,
-	name3, age3, mbti3, personality3, job3,
-	name4, age4, mbti4, personality4, job4,
-	chapter1_title, chapter2_title, chapter3_title, chapter4_title,
-	chapter1_content
+async def next_story_gen(
+	action_type, action,
+	title, plot, story_content,
+	cursors, cur_cursor
 ):
-	cur_progress = utils.get_progress_from_md(progress)
-	nxt_progress = cur_progress + 1
-	
-	ctx = f"""Based on the given information as follows, give me the next paragraph of the chapter1 in JSON format. Also suggest three specific actions that the characters to choose to continue the story after the next paragraph. 
+	story = ""
+	for cursor in cursors:
+		story = story + cursor["story"]
 
-Output template is as follows: ```json{{"paragraph": "paragraph", actions:["action1", action2", action3"]}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed.
+	prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobias's plot theory and Gustav Freytag's pyramid theory. According to Gustav Freytag's pyramid theory, the plot type contains rising actions-crisis-climax-falling actions-denouncement. 
 
-when: {time}
-where: {place}
-mood: {mood}
+Output template is as follows: ```json{{"chapter_title": "chapter_title", "plot_type based on Freytag's Theory" : "type", "story": {{"story" : "story", "action1 " : "action1", "action2" : "action2", "action3" : "action3"}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
 
-main character: {{
-name: {name1},
-job: {job1},
-age: {age1},
-mbti: {mbti1},
-personality: {personality1} 
-}}
+```json
+{{"chapter_title": "{title}", "plot_type based on Freytag's Theory" : "{action_type}", "story": {{"story": "{story}", "action" : "{action}"}}}}
+```
 
-side character1: {{
-name: {name2},
-job: {job2},
-age: {age2},
-mbti: {mbti2},
-personality: {personality2} 
-}}
-
-side character2: {{
-name: {name3},
-job: {job3},
-age: {age3},
-mbti: {mbti3},
-personality: {personality3} 
-}}
-
-side character3: {{
-name: {name4},
-job: {job4},
-age: {age4},
-mbti: {mbti4},
-personality: {personality4} 
-}}
 """
 
-	user_input = f"""
-chapter 1: {{
-title: {chapter1_title},
-content: {chapter1_content}
-}}
+	print(f"generated prompt:\n{prompt}")
+	response_json = await utils.retry_until_valid_json(prompt)
 
-chapter 2: {{
-title: {chapter2_title},
-content: Not determined
-}}
-
-chapter 3: {{
-title: {chapter3_title},
-content: Not determined
-}}
-
-chapter 4: {{
-title: {chapter4_title},
-content: Not determined
-}}
-
-Continue the story based on the choice "{action}"
-"""
-
-	ppm = palmchat.GradioPaLMChatPPManager()
-	ppm.add_pingpong(
-		PingPong(user_input, '')
-	)
-	prompt = utils.build_prompts(ppm)
-
-	response_json = None
-	while response_json is None:
-		response_txt = await utils.get_chat_response(prompt, ctx=ctx)
-		print(response_txt)
-
-		try:
-			response_json = utils.parse_first_json_code_snippet(response_txt)
-		except:
-			 pass
-		
-	print(response_json)
+	cursors.append({
+		"story": response_json["story"]["story"]
+	})
+	cur_cursor = cur_cursor + 1
 
 	return (
-		utils.get_progress_md(nxt_progress),
-		f"""{chapter1_content}
-
-{response_json["paragraph"]}
-""",
-		response_json["actions"][0],
-		response_json["actions"][1],
-		response_json["actions"][2]
+		response_json["story"]["story"],
+		cursors, cur_cursor,
+		gr.update(maximum=len(cursors), value=cur_cursor+1, visible=True),
+        gr.update(value=response_json["story"]["action1"], interactive=True),
+        gr.update(value=response_json["story"]["action2"], interactive=True),
+        gr.update(value=response_json["story"]["action3"], interactive=True)
 	)
-
 
 def video_gen(
 	image, audio, title, cursors, cur_cursor, use_ffmpeg=True
