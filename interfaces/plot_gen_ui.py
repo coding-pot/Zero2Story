@@ -46,16 +46,16 @@ main character
 - personality: string
 
 JSON output:
-{
+{{
     "title": "string", 
-    "outline": {
+    "outline": {{
         "rising action": "paragraphs of string", 
         "crisis": "paragraphs of string", 
         "climax": "paragraphs of string", 
         "falling action": "paragraphs of string", 
         "denouement": "paragraphs of string"
-    }
-}
+    }}
+}}
 
 background information:
 - genre: {time}
