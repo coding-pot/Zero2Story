@@ -26,7 +26,7 @@ async def next_story_gen(
 	for cursor in cursors:
 		story = story + cursor["story"]
 
-	prompt = "You are a world-renowned novelist and TRPG creator. You specialize in long, "
+	prompt = ("You are a world-renowned novelist and TRPG creator. You specialize in long, "
 	"descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobia"
 	"s's plot theory and Gustav Freytag's pyramid theory. According to Gustav Freytag's py"
 	"ramid theory, the plot type contains rising actions-crisis-climax-falling actions-den"
@@ -40,7 +40,7 @@ async def next_story_gen(
 {{"chapter_title": "{title}", "plot_type based on Freytag's Theory" : "{action_type}", "story": {{"story": "{story}", "action" : "{action}"}}}}
 ```
 
-"""
+""")
 
 	print(f"generated prompt:\n{prompt}")	
 	parameters = {

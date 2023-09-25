@@ -31,7 +31,7 @@ async def plot_gen(
 ):
 	cur_side_chars = 1
 	
-	prompt = "You are a world-renowned novelist and TRPG creator. You specialize in long, "
+	prompt = ("You are a world-renowned novelist and TRPG creator. You specialize in long, "
 	"descriptive sentences and enigmatic plots. As you write, you need to follow Ronald To"
 	"bias's plot theory. You also need to create a outline for your novel based on the inp"
 	"ut we give you, and generate a title based on the outline. You must create the outlin"
@@ -51,7 +51,7 @@ mbti: {mbti1},
 personality: {personality1} 
 }}
 
-"""
+""")
 
 	prompt, cur_side_chars = _add_side_character(
 		side_char_enable1, prompt, cur_side_chars,
@@ -88,7 +88,7 @@ async def first_story_gen(
 	title, plot,
 	cursors, cur_cursor
 ):
-	prompt = "You are a world-renowned novelist and TRPG creator. You specialize in long, "
+	prompt = ("You are a world-renowned novelist and TRPG creator. You specialize in long, "
 	"descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobia"
 	"s's plot theory. You must tell a story based on a given plot. Your story must include"
 	" descriptive sentences and dialog. Your story must be a minimum of 1500 words and a m"
@@ -101,7 +101,8 @@ async def first_story_gen(
 	f"""
 title: {title}
 outline: {plot}
-"""
+
+""")
 
 	print(f"generated prompt:\n{prompt}")
 	parameters = {
