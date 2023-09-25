@@ -17,36 +17,118 @@ bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
+def _add_side_character(
+	enable, prompt, cur_side_chars,
+	name, age, mbti, personality, job
+):
+	if enable:
+		prompt = prompt + f"""
+side character #{cur_side_chars}
+- name: {name},
+- job: {job},
+- age: {age},
+- mbti: {mbti},
+- personality: {personality}
+
+"""
+		cur_side_chars = cur_side_chars + 1
+		
+	return prompt, cur_side_chars
+
 async def next_story_gen(
 	action_type, action,
-	title, plot, story_content,
+	title, story_content,
+ 	rising_action, crisis, climax, falling_action, denouement,
+	time, place, mood,
+	side_char_enable1, side_char_enable2, side_char_enable3,
+	name1, age1, mbti1, personality1, job1,
+	name2, age2, mbti2, personality2, job2,
+	name3, age3, mbti3, personality3, job3,
+	name4, age4, mbti4, personality4, job4, 
 	cursors, cur_cursor
 ):
-	story = ""
-	for cursor in cursors:
-		story = story + cursor["story"]
-
+	cur_side_chars = 1
 	plot_type = cursors[cur_cursor]["plot_type"]
 
 	conditional_prompt = f"Continue writing on the current plot type, \"{plot_type}\""
 	if action_type == "move to the next phase":
 		conditional_prompt = f"Writing of next plot type after the current, \"{plot_type}\""
 
-	prompt = ("You are a world-renowned novelist and TRPG creator. You specialize in long, "
-	"descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobia"
-	"s's plot theory and Gustav Freytag's pyramid theory. According to Gustav Freytag's py"
-	"ramid theory, the plot type contains rising actions-crisis-climax-falling actions-den"
-	f"ouncement. {conditional_prompt}\n"
-	"Output template is as follows: ```json{\"chapter_title\": \"chapter_title\", \"plot_t"
-	"ype based on Freytag's Theory\": \"type\", \"story\": {\"story\" : \"story\", \"acti"
-	"on1\": \"action1\", \"action2\": \"action2\", \"action3\": \"action3\"}```. DO NOT ou"
-	"tput anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed."
-	f"""
-```json
-{{"chapter_title": "{title}", "plot_type based on Freytag's Theory" : "{plot_type}", "story": {{"story": "{story}", "action" : "{action}"}}}}
-```
+	line_break = '\n'
+	prompt = f"""Write the next few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. The next few paragraphs should be naturally connected to the current paragraphs, and they should be written based on the action choice. Also, suggest three choosable actions to drive current story in different directions. The choosable actions should not have a duplicate action of the action choice. The next few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. Each paragraph should consist of at least five sentences.
 
-""")
+background information:
+- genre: string
+- where: string
+- mood: string
+
+main character
+- name: string
+- job: string
+- age: string
+- mbti: string
+- personality: string
+
+overall outline
+- title: string
+- rising action: string
+- crisis: string
+- climax: string
+- falling action: string
+- denouement: string
+
+{plot_type} contents
+- current paragraphs: string
+- action choice: string
+
+JSON output:
+{{
+	"next paragraphs": ["string", "string", ...],
+	"next actions:": ["string", "string", "string"]
+}}
+
+background information:
+- genre: {time}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {name1}
+- job: {job1},
+- age: {age1},
+- mbti: {mbti1},
+- personality: {personality1}
+
+"""
+
+	prompt, cur_side_chars = _add_side_character(
+		side_char_enable1, prompt, cur_side_chars,
+		name2, job2, age2, mbti2, personality2
+	)
+	prompt, cur_side_chars = _add_side_character(
+		side_char_enable2, prompt, cur_side_chars,
+		name3, job3, age3, mbti3, personality3
+	)
+	prompt, cur_side_chars = _add_side_character(
+		side_char_enable3, prompt, cur_side_chars,
+		name4, job4, age4, mbti4, personality4
+	)
+ 
+	prompt = prompt + f"""
+overall outline
+- title: {title}
+- rising action: {rising_action}
+- crisis: {crisis}
+- climax: {climax}
+- falling action: {falling_action}
+- denouement: {denouement}
+
+rising action contents
+- current paragraphs: {story_content.replace(line_break, "")}
+- action choice: {action}
+
+JSON output:
+"""
 
 	print(f"generated prompt:\n{prompt}")
 	parameters = {
@@ -59,13 +141,14 @@ async def next_story_gen(
 	}
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
-	cursors.append({
-		"story": response_json["story"]["story"]
-	})
-	cur_cursor = cur_cursor + 1
+	cursors[cur_cursor]["story"] = story_content + "\n\n".join(response_json["paragraphs"])
+	# cursors.append({
+	# 	"story": response_json["story"]["story"]
+	# })
+	# cur_cursor = cur_cursor + 1
 
 	return (
-		response_json["story"]["story"],
+		story_content + "\n\n".join(response_json["paragraphs"]),
 		cursors, cur_cursor,
 		gr.update(
 			maximum=len(cursors), value=cur_cursor+1,
@@ -74,9 +157,9 @@ async def next_story_gen(
 		gr.update(value=None, visible=False),
 		gr.update(value=None, visible=False),
 		gr.update(value=None, visible=False),
-        gr.update(value=response_json["story"]["action1"], interactive=True),
-        gr.update(value=response_json["story"]["action2"], interactive=True),
-        gr.update(value=response_json["story"]["action3"], interactive=True)
+		gr.update(value=response_json["actions"][0], interactive=True),
+		gr.update(value=response_json["actions"][1], interactive=True),
+		gr.update(value=response_json["actions"][2], interactive=True)
 	)
 
 def video_gen(

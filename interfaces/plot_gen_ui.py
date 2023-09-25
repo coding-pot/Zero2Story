@@ -203,11 +203,11 @@ JSON output:
 	cursors.append({
 		"title": response_json["chapter_title"],
 		"plot_type": "rising action",
-		"story": response_json["paragraphs"]
+		"story": "\n\n".join(response_json["paragraphs"])
 	})
 
 	return (
-		response_json["paragraphs"],
+		"\n\n".join(response_json["paragraphs"]),
 		cursors,
 		cur_cursor, 
 		gr.update(interactive=True),
