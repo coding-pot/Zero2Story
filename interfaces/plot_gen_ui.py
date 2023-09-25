@@ -31,33 +31,45 @@ async def plot_gen(
 	name4, age4, mbti4, personality4, job4,
 ):
 	cur_side_chars = 1
-	prompt = (
-		"As a world-renowned novelist and TRPG creator, write a title and an outline of a "
-		"novel based on the background and character information below in Ronald Tobias's "
-		"plot theory. The outline should be very much detailed according to \"rising actio"
-		"n\", \"crisis\", \"climax\", \"falling action\", and \"denouncement\" plot types."
-		"\n\n"
-		"Output template is as follows: \n"
-		"```json\n"
-		"{\"title\": \"string\", \"outline\": {\"rising action\": \"string\", \"crisis\": \""
-		"string\", \"climax\": \"string\", \"falling action\": \"string\", \"denouncement\": \"string\"}}\n"
-		"```\n"
-		f"""
+	prompt = f"""Write a title and an outline of a novel based on the background information below in Ronald Tobias's plot theory. The outline should follow the  "rising action", "crisis", "climax", "falling action", and "denouement" plot types. Each should be filled with a VERY detailed and descriptive at least two paragraphs of string. Randomly choose if the story goes optimistic or tragic.
+
+background information:
+- genre: string
+- where: string
+- mood: string
+
+main character
+- name: string
+- job: string
+- age: string
+- mbti: string
+- personality: string
+
+JSON output:
+{
+    "title": "string", 
+    "outline": {
+        "rising action": "paragraphs of string", 
+        "crisis": "paragraphs of string", 
+        "climax": "paragraphs of string", 
+        "falling action": "paragraphs of string", 
+        "denouement": "paragraphs of string"
+    }
+}
+
 background information:
 - genre: {time}
 - where: {place}
 - mood: {mood}
 
-character information:
 main character
 - name: {name1}
-- job: {job1},
-- age: {age1},
-- mbti: {mbti1},
+- job: {job1}
+- age: {age1}
+- mbti: {mbti1}
 - personality: {personality1}
 
 """
-	)
 
 	prompt, cur_side_chars = _add_side_character(
 		side_char_enable1, prompt, cur_side_chars,
@@ -72,7 +84,7 @@ main character
 		name4, job4, age4, mbti4, personality4
 	)
 
-	prompt = prompt + "output:\n"
+	prompt = prompt + "JSON output:\n"
 	
 	print(f"generated prompt:\n{prompt}")
 	parameters = {

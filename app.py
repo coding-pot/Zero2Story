@@ -372,18 +372,19 @@ with gr.Blocks(css=STYLE) as demo:
 		    # chapter1_title_display, chapter2_title_display, chapter3_title_display, chapter4_title_display,
       		# chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
     	]
-	).then(
-		plot_gen_ui.first_story_gen,
-		inputs=[
-			title, plot, cursors, cur_cursor
-		],
-		outputs=[
-			story_content,
-			cursors, cur_cursor,
-			image_gen_btn, audio_gen_btn,
-			action_btn1, action_btn2, action_btn3
-		]
 	)
+#  .then(
+# 		plot_gen_ui.first_story_gen,
+# 		inputs=[
+# 			title, plot, cursors, cur_cursor
+# 		],
+# 		outputs=[
+# 			story_content,
+# 			cursors, cur_cursor,
+# 			image_gen_btn, audio_gen_btn,
+# 			action_btn1, action_btn2, action_btn3
+# 		]
+# 	)
 	### Story generation
 	image_gen_btn.click(
 		story_gen_ui.image_gen,
