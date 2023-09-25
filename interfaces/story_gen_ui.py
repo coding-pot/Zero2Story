@@ -84,7 +84,7 @@ overall outline
 JSON output:
 {{
 	"next paragraphs": ["string", "string", ...],
-	"next actions:": ["string", "string", "string"]
+	"next actions": ["string", "string", "string"]
 }}
 
 background information:
