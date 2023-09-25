@@ -47,14 +47,14 @@ main character
 
 JSON output:
 {{
-    "title": "string", 
-    "outline": {{
-        "rising action": "paragraphs of string", 
-        "crisis": "paragraphs of string", 
-        "climax": "paragraphs of string", 
-        "falling action": "paragraphs of string", 
-        "denouement": "paragraphs of string"
-    }}
+	"title": "string", 
+	"outline": {{
+		"rising action": "paragraphs of string", 
+		"crisis": "paragraphs of string", 
+		"climax": "paragraphs of string", 
+		"falling action": "paragraphs of string", 
+		"denouement": "paragraphs of string"
+	}}
 }}
 
 background information:
@@ -97,14 +97,14 @@ main character
 	}    	
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
-	outline = ""
-	for plot_type, plot in response_json['outline'].items():
-		outline = outline + f"# {plot_type}\n{plot}\n\n"
-
 	return (
 		response_json['title'],
 		f"## {response_json['title']}",
-		outline
+		response_json['outline']['rising action'],
+		response_json['outline']['crisis'],
+		response_json['outline']['climax'],
+		response_json['outline']['falling action'],
+		response_json['outline']['denouement'],
 	)
 
 
@@ -112,21 +112,57 @@ async def first_story_gen(
 	title, plot,
 	cursors, cur_cursor
 ):
-	prompt = ("You are a world-renowned novelist and TRPG creator. You specialize in long, "
-	"descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobia"
-	"s's plot theory. You must tell a story based on a given plot. Your story must include"
-	" descriptive sentences and dialog. Your story must be a minimum of 1500 words and a m"
-	"aximum of 2500 words. At the end of the story, you must create 3 actions, each of whi"
-	"ch must be different and affect the next story. YOU MUST FOLLOW THESE RULES.\n"
-	"Output template is as follows: ```json{\"chapter_title\": \"chapter_title\", \"story\""
-	": {{\"story\" : \"story\", \"action1\" : \"action1\", \"action2\" : \"action2\", \"act"
-	"ion3\" : \"action3\"}}```. DO NOT output anything other than JSON values. ONLY JSON is"
-	" allowed. The JSON key name should not be changed."
-	f"""
-title: {title}
-outline: {plot}
+	prompt = f"""Write the chapter title and the first few paragraphs of the "rising action" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. 
 
-""")
+background information:
+- genre: string
+- where: string
+- mood: string
+
+main character
+- name: string
+- job: string
+- age: string
+- mbti: string
+- personality: string
+
+overall outline
+- title: string
+- rising action: string
+- crisis: string
+- climax: string
+- falling action: string
+- denouement: string
+
+JSON output:
+{
+	"chapter_title": "string",
+	"paragraphs": ["string", "string", ...],
+	"actions:": ["string", "string", "string"]
+}
+
+background information:
+- genre: Middle Ages
+- where: Royal Palace
+- mood: Epic Adventure
+
+main character
+- name: Aaron
+- job: Knight,
+- age: 10s,
+- mbti: ESTJ,
+- personality: Optimistic
+
+overall outline
+- title: The Young Knight
+- rising action: Aaron was a young knight in training at the Royal Palace. He was eager to prove himself and was always looking for ways to help his kingdom. One day, he heard that a group of bandits were terrorizing the countryside. He knew he had to do something, so he set out with a group of other knights to stop them.
+- crisis: The knights tracked the bandits to their hideout, but they were outnumbered and outmatched. Just when it seemed like they were about to be defeated, Aaron came up with a plan. He distracted the bandits while the other knights snuck into the hideout and captured them.
+- climax: The knights returned to the palace victorious, and Aaron was hailed as a hero. The king was so impressed that he promoted Aaron to the rank of captain and gave him his own knights to command.
+- falling action: Aaron continued to serve the king faithfully for many years. He led his knights in many battles and always came out victorious. He was a true hero and an inspiration to all who knew him.
+- denouement: Aaron eventually retired from the military and lived a long and happy life. He was loved by everyone who knew him and was remembered as one of the greatest knights who ever lived.
+
+JSON output:
+"""
 
 	print(f"generated prompt:\n{prompt}")
 	parameters = {

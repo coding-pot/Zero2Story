@@ -171,35 +171,27 @@ with gr.Blocks(css=STYLE) as demo:
 	gr.Markdown("### 💡 Plot setup")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as plot_setup_section:
 		title = gr.Textbox("Title Undetermined Yet", elem_classes=["no-label", "font-big"])
-		plot = gr.Textbox(lines=10, elem_classes=["no-label", "small-big-textarea"])
+		# plot = gr.Textbox(lines=10, elem_classes=["no-label", "small-big-textarea"])
 
-		with gr.Row(visible=False):
-			gr.Textbox("Chapter 1.", elem_classes=["no-label"], scale=1, visible=False)
-			chapter1_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5, visible=False)
+		gr.Textbox("Rising action", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):
+			chapter1_plot = gr.Textbox(placeholder="The plot of the first chapter will be generated here", lines=3, elem_classes=["no-label"])
 
-		with gr.Row(elem_classes=["left-margin"], visible=False):
-			chapter1_plot = gr.Textbox(placeholder="The plot of the first chapter will be generated here", lines=3, elem_classes=["no-label"], visible=False)
+		gr.Textbox("Crisis", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
+			chapter2_plot = gr.Textbox(placeholder="The plot of the second chapter will be generated here", lines=3, elem_classes=["no-label"])
 
-		with gr.Row(visible=False):
-			gr.Textbox("Chapter 2.", elem_classes=["no-label"], scale=1, visible=False)
-			chapter2_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5, visible=False)
+		gr.Textbox("Climax", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
+			chapter3_plot = gr.Textbox(placeholder="The plot of the third chapter will be generated here", lines=3, elem_classes=["no-label"])
 
-		with gr.Row(elem_classes=["left-margin"], visible=False):
-			chapter2_plot = gr.Textbox(placeholder="The plot of the second chapter will be generated here", lines=3, elem_classes=["no-label"], visible=False)
+		gr.Textbox("Falling action", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
+			chapter4_plot = gr.Textbox(placeholder="The plot of the fourth chapter will be generated here", lines=3, elem_classes=["no-label"])
 
-		with gr.Row(visible=False):
-			gr.Textbox("Chapter 3.", elem_classes=["no-label"], scale=1, visible=False)
-			chapter3_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5, visible=False)
-
-		with gr.Row(elem_classes=["left-margin"], visible=False):
-			chapter3_plot = gr.Textbox(placeholder="The plot of the third chapter will be generated here", lines=3, elem_classes=["no-label"], visible=False)
-
-		with gr.Row(visible=False):
-			gr.Textbox("Chapter 4.", elem_classes=["no-label"], scale=1, visible=False)
-			chapter4_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5, visible=False)
-
-		with gr.Row(elem_classes=["left-margin"], visible=False):
-			chapter4_plot = gr.Textbox(placeholder="The plot of the fourth chapter will be generated here", lines=3, elem_classes=["no-label"], visible=False)
+		gr.Textbox("Denouement", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
+			chapter5_plot = gr.Textbox(placeholder="The plot of the fifth chapter will be generated here", lines=3, elem_classes=["no-label"])
 
 		with gr.Row():
 			plot_gen_temp = gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
@@ -366,12 +358,13 @@ with gr.Blocks(css=STYLE) as demo:
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
 		],
 		outputs = [
-			title, title_display, plot,
+			title, title_display, 
+			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot
    			# title_display,
-    		# chapter1_title, chapter2_title, chapter3_title, chapter4_title,
-		    # chapter1_title_display, chapter2_title_display, chapter3_title_display, chapter4_title_display,
-      		# chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
-    	]
+			# chapter1_title, chapter2_title, chapter3_title, chapter4_title,
+			# chapter1_title_display, chapter2_title_display, chapter3_title_display, chapter4_title_display,
+	  		# chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
+		]
 	)
 #  .then(
 # 		plot_gen_ui.first_story_gen,
@@ -386,23 +379,23 @@ with gr.Blocks(css=STYLE) as demo:
 # 		]
 # 	)
 	### Story generation
-	image_gen_btn.click(
-		story_gen_ui.image_gen,
-		inputs=[
-			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor, story_audio
-		],
-		outputs=[
-			story_image, img_audio_combine_btn, cursors, progress_comp,
-		]
-	)
+	# image_gen_btn.click(
+	# 	story_gen_ui.image_gen,
+	# 	inputs=[
+	# 		time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor, story_audio
+	# 	],
+	# 	outputs=[
+	# 		story_image, img_audio_combine_btn, cursors, progress_comp,
+	# 	]
+	# )
 
-	audio_gen_btn.click(
-		story_gen_ui.audio_gen,
-		inputs=[
-			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor, story_image
-		],
-		outputs=[story_audio, img_audio_combine_btn, cursors, progress_comp]
-	)
+	# audio_gen_btn.click(
+	# 	story_gen_ui.audio_gen,
+	# 	inputs=[
+	# 		time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor, story_image
+	# 	],
+	# 	outputs=[story_audio, img_audio_combine_btn, cursors, progress_comp]
+	# )
 
 	img_audio_combine_btn.click(
 		story_gen_ui.video_gen,
@@ -428,67 +421,67 @@ with gr.Blocks(css=STYLE) as demo:
 		]
 	)
 
-	action_btn1.click(
-		story_gen_ui.next_story_gen,
-		inputs=[
-			action_types, action_btn1,
-			title, plot, story_content,
-			cursors, cur_cursor
-		],
-		outputs=[
-			story_content,
-			cursors, cur_cursor, story_progress,
-			story_image, story_audio, story_video,
-			action_btn1, action_btn2, action_btn3
-		]
-	)
+	# action_btn1.click(
+	# 	story_gen_ui.next_story_gen,
+	# 	inputs=[
+	# 		action_types, action_btn1,
+	# 		title, plot, story_content,
+	# 		cursors, cur_cursor
+	# 	],
+	# 	outputs=[
+	# 		story_content,
+	# 		cursors, cur_cursor, story_progress,
+	# 		story_image, story_audio, story_video,
+	# 		action_btn1, action_btn2, action_btn3
+	# 	]
+	# )
 
-	action_btn2.click(
-		story_gen_ui.next_story_gen,
-		inputs=[
-			action_types, action_btn2,
-			title, plot, story_content,
-			cursors, cur_cursor
-		],
-		outputs=[
-			story_content,
-			cursors, cur_cursor, story_progress,
-			story_image, story_audio, story_video,
-			action_btn1, action_btn2, action_btn3
-		]
-	)	
+	# action_btn2.click(
+	# 	story_gen_ui.next_story_gen,
+	# 	inputs=[
+	# 		action_types, action_btn2,
+	# 		title, plot, story_content,
+	# 		cursors, cur_cursor
+	# 	],
+	# 	outputs=[
+	# 		story_content,
+	# 		cursors, cur_cursor, story_progress,
+	# 		story_image, story_audio, story_video,
+	# 		action_btn1, action_btn2, action_btn3
+	# 	]
+	# )	
 
-	action_btn3.click(
-		story_gen_ui.next_story_gen,
-		inputs=[
-			action_types, action_btn3,
-			title, plot, story_content,
-			cursors, cur_cursor
-		],
-		outputs=[
-			story_content,
-			cursors, cur_cursor, story_progress,
-			story_image, story_audio, story_video,
-			action_btn1, action_btn2, action_btn3
-		]
-	)
+	# action_btn3.click(
+	# 	story_gen_ui.next_story_gen,
+	# 	inputs=[
+	# 		action_types, action_btn3,
+	# 		title, plot, story_content,
+	# 		cursors, cur_cursor
+	# 	],
+	# 	outputs=[
+	# 		story_content,
+	# 		cursors, cur_cursor, story_progress,
+	# 		story_image, story_audio, story_video,
+	# 		action_btn1, action_btn2, action_btn3
+	# 	]
+	# )
 
 	### Chatbot
 
-	chat_input_txt.submit(
-		chat_ui.chat,
-		inputs=[
-			chat_input_txt, chat_mode, chat_state,
-			time_dd, place_dd, mood_dd, 
-			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-			chapter1_title, chapter2_title, chapter3_title, chapter4_title,
-			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
-		],
-		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
-	)
+	# chat_input_txt.submit(
+	# 	chat_ui.chat,
+	# 	inputs=[
+	# 		chat_input_txt, chat_mode, chat_state,
+	# 		time_dd, place_dd, mood_dd, 
+	# 		name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+	# 		name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+	# 		name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+	# 		name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+	# 		chapter1_title, chapter2_title, chapter3_title, chapter4_title,
+	# 		chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
+	# 	],
+	# 	outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
+	# )
  
 	regen_btn.click(
 		chat_ui.rollback_last_ui,
