@@ -181,7 +181,7 @@ def move_story_cursor(moved_cursor, cursors):
 			cursor_content["story"],
 			gr.update(value=None, visible=False),
 			gr.update(value=None, visible=False),
-			cursor_content["video"],
+			gr.update(value=cursor_content["video"], visible=True),
 		)
 
 	else:
