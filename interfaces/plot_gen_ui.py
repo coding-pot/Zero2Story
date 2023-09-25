@@ -207,6 +207,7 @@ JSON output:
 	})
 
 	return (
+		f"## {response_json['chapter_title']}",
 		"\n\n".join(response_json["paragraphs"]),
 		cursors,
 		cur_cursor, 
