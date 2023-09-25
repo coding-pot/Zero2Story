@@ -148,11 +148,11 @@ def video_gen(image, audio, title, use_ffmpeg=True):
     )
 
 
-def image_gen(time, place, mood, title, chapter_title, chapter_plot):
+def image_gen(time, place, mood, title, story_content, plot_cursor):
     # generate prompts for background image with PaLM
     for _ in range(3):
         try:
-            prompt, neg_prompt = img_maker.generate_background_prompts(time, place, mood, title, chapter_title, chapter_plot)
+            prompt, neg_prompt = img_maker.generate_background_prompts(time, place, mood, title, "", story_content[plot_cursor:])
             print(f"Image Prompt: {prompt}")
             print(f"Negative Prompt: {neg_prompt}")
         except Exception as e:
@@ -170,11 +170,11 @@ def image_gen(time, place, mood, title, chapter_title, chapter_plot):
     )
 
 
-def audio_gen(time, place, mood, title, chapter_title, chapter_plot):
+def audio_gen(time, place, mood, title, story_content, plot_cursor):
     # generate prompt for background music with PaLM
     for _ in range(3):
         try:
-            prompt = bgm_maker.generate_prompt(time, place, mood, title, chapter_title, chapter_plot)
+            prompt = bgm_maker.generate_prompt(time, place, mood, title, "", story_content[plot_cursor:])
             print(f"Music Prompt: {prompt}")
         except Exception as e:
             print(e)

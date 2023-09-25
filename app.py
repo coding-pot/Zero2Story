@@ -216,6 +216,10 @@ with gr.Blocks(css=STYLE) as demo:
 			audio_gen_btn = gr.Button("🔊", interactive=False)
 			img_audio_combine_btn = gr.Button("📀", interactive=False)
   
+		story_image = gr.Image(None, visible=False, type="filepath")
+		story_audio = gr.Audio(None, visible=False, type="filepath")
+		story_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
+
 		story_content = gr.Textbox(
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
 				lines=12,
@@ -461,8 +465,17 @@ with gr.Blocks(css=STYLE) as demo:
 	image_gen_btn.click(
 		story_gen_ui.image_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, plot, story_content
-		]
+			time_dd, place_dd, mood_dd, plot, story_content, plot_cursor
+		],
+		outputs=[story_image, progress_comp]
+	)
+
+	audio_gen_btn.click(
+		story_gen_ui.audio_gen,
+		inputs=[
+			time_dd, place_dd, mood_dd, plot, story_content, plot_cursor
+		],
+		outputs=[story_audio, progress_comp]		
 	)
 	###### Chapter 1
 	# chapter1_image_gen_btn.click(
