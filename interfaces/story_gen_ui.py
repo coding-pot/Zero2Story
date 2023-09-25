@@ -49,7 +49,7 @@ Output template is as follows: ```json{{"chapter_title": "chapter_title", "plot_
 		cursors, cur_cursor,
 		gr.update(
 			maximum=len(cursors), value=cur_cursor+1,
-			label=f"{cur_cursor}/{len(cursors)}", visible=True
+			label=f"{cur_cursor} out of {len(cursors)} stories", visible=True
 		),
         gr.update(value=response_json["story"]["action1"], interactive=True),
         gr.update(value=response_json["story"]["action2"], interactive=True),
@@ -155,22 +155,22 @@ def move_story_cursor(moved_cursor, cursors):
 
 	if "video" in cursor_content:
 		outputs = (
-			 moved_cursor-1,
-			 gr.update(label=f"{moved_cursor}/{len(cursors)}"),
-			 cursor_content["story"],
-			 None,
-			 None,
-			 cursor_content["video"],
+			moved_cursor-1,
+			gr.update(label=f"{moved_cursor}/{len(cursors)}"),
+			cursor_content["story"],
+			gr.update(value=None, visible=False),
+			gr.update(value=None, visible=False),
+			cursor_content["video"],
 		)
 
 	else:
 		outputs = (
-			 moved_cursor-1,
-			 gr.update(label=f"{moved_cursor}/{len(cursors)}"),
-			 cursor_content["story"],
-			 cursor_content["img"] if "img" in cursor_content else None,
-			 cursor_content["audio"] if "audio" in cursor_content else None,
-			 None,
+			moved_cursor-1,
+			gr.update(label=f"{moved_cursor} out of {len(cursors)} stories"),
+			cursor_content["story"],
+			cursor_content["img"] if "img" in cursor_content else gr.update(value=None, visible=False),
+			cursor_content["audio"] if "audio" in cursor_content else gr.update(value=None, visible=False),
+			gr.update(value=None, visible=False),
 		)        
 
 	return outputs + action_btn

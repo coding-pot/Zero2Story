@@ -87,6 +87,8 @@ outline: {plot}
     response_json = await utils.retry_until_valid_json(prompt)
 
     cursors.append({
+        "title": response_json["chapter_title"],
+        "plot_type": response_json["plot_type based on Freytag's Theory"],
         "story": response_json["story"]["story"]
     })
 
