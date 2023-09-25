@@ -89,7 +89,6 @@ outline: {plot}
     cursors.append({
         "story": response_json["story"]["story"]
     })
-    cur_cursor = cur_cursor + 1
 
     return (
         response_json["story"]["story"],
