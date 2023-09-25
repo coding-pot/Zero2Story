@@ -168,4 +168,8 @@ textarea {
 .no-label-image-audio > div:nth-child(2) {
   display: none;
 }
+
+.no-label-radio > span {
+  display: none;
+}
 """

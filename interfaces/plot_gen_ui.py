@@ -21,6 +21,7 @@ personality: {personality}
 	
 
 async def plot_gen(
+	temperature,
 	time, place, mood,
 	side_char_enable1, side_char_enable2, side_char_enable3,
 	name1, age1, mbti1, personality1, job1,
@@ -30,10 +31,14 @@ async def plot_gen(
 ):
 	cur_side_chars = 1
 	
-	prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. As you write, you need to follow Ronald Tobias's plot theory. You also need to create a outline for your novel based on the input we give you, and generate a title based on the outline. You must create the outline at least more tham 2000 words long. YOU MUST FOLLOW THESE RULES.
-
-Output template is as follows: ```json{{"title": "title", "outline": "outline"}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed.
-
+	prompt = "You are a world-renowned novelist and TRPG creator. You specialize in long, "
+	"descriptive sentences and enigmatic plots. As you write, you need to follow Ronald To"
+	"bias's plot theory. You also need to create a outline for your novel based on the inp"
+	"ut we give you, and generate a title based on the outline. You must create the outlin"
+	"e at least more tham 2000 words long. YOU MUST FOLLOW THESE RULES.\n"
+	"Output template is as follows: ```json{\"title\": \"title\", \"outline\": \"outline\""
+	"}```. DO NOT output anything other than JSON values. ONLY JSON is allowed."
+	f"""
 when: {time}
 where: {place}
 mood: {mood}
@@ -62,7 +67,15 @@ personality: {personality1}
 	)
 	
 	print(f"generated prompt:\n{prompt}")
-	response_json = await utils.retry_until_valid_json(prompt)
+	parameters = {
+		'model': 'models/text-bison-001',
+		'candidate_count': 1,
+		'temperature': temperature,
+		'top_k': 40,
+		'top_p': 1,
+		'max_output_tokens': 4096,
+	}    	
+	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
 	return (
 		response_json['title'],
@@ -75,10 +88,17 @@ async def first_story_gen(
 	title, plot,
 	cursors, cur_cursor
 ):
-	prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobias's plot theory. You must tell a story based on a given plot. Your story must include descriptive sentences and dialog. Your story must be a minimum of 1500 words and a maximum of 2500 words. At the end of the story, you must create 3 actions, each of which must be different and affect the next story. YOU MUST FOLLOW THESE RULES.
-
-Output template is as follows: ```json{{"chapter_title": "chapter_title", "story": {{"story" : "story", "action1 " : "action1", "action2" : "action2", "action3" : "action3"}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
-
+	prompt = "You are a world-renowned novelist and TRPG creator. You specialize in long, "
+	"descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobia"
+	"s's plot theory. You must tell a story based on a given plot. Your story must include"
+	" descriptive sentences and dialog. Your story must be a minimum of 1500 words and a m"
+	"aximum of 2500 words. At the end of the story, you must create 3 actions, each of whi"
+	"ch must be different and affect the next story. YOU MUST FOLLOW THESE RULES.\n"
+	"Output template is as follows: ```json{\"chapter_title\": \"chapter_title\", \"story\""
+	": {{\"story\" : \"story\", \"action1\" : \"action1\", \"action2\" : \"action2\", \"act"
+	"ion3\" : \"action3\"}}```. DO NOT output anything other than JSON values. ONLY JSON is"
+	" allowed. The JSON key name should not be changed."
+	f"""
 title: {title}
 outline: {plot}
 """
@@ -90,7 +110,7 @@ outline: {plot}
 		'temperature': 0.7,
 		'top_k': 40,
 		'top_p': 1,
-		'max_output_tokens': 2048,
+		'max_output_tokens': 4096,
 	}    
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 

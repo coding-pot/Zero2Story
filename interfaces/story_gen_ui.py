@@ -26,10 +26,16 @@ async def next_story_gen(
 	for cursor in cursors:
 		story = story + cursor["story"]
 
-	prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobias's plot theory and Gustav Freytag's pyramid theory. According to Gustav Freytag's pyramid theory, the plot type contains rising actions-crisis-climax-falling actions-denouncement. 
-
-Output template is as follows: ```json{{"chapter_title": "chapter_title", "plot_type based on Freytag's Theory" : "type", "story": {{"story" : "story", "action1 " : "action1", "action2" : "action2", "action3" : "action3"}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
-
+	prompt = "You are a world-renowned novelist and TRPG creator. You specialize in long, "
+	"descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobia"
+	"s's plot theory and Gustav Freytag's pyramid theory. According to Gustav Freytag's py"
+	"ramid theory, the plot type contains rising actions-crisis-climax-falling actions-den"
+	"ouncement.\n"
+	"Output template is as follows: ```json{\"chapter_title\": \"chapter_title\", \"plot_t"
+	"ype based on Freytag's Theory\": \"type\", \"story\": {\"story\" : \"story\", \"acti"
+	"on1\": \"action1\", \"action2\": \"action2\", \"action3\": \"action3\"}```. DO NOT ou"
+	"tput anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed."
+	f"""
 ```json
 {{"chapter_title": "{title}", "plot_type based on Freytag's Theory" : "{action_type}", "story": {{"story": "{story}", "action" : "{action}"}}}}
 ```
@@ -43,7 +49,7 @@ Output template is as follows: ```json{{"chapter_title": "chapter_title", "plot_
 		'temperature': 0.7,
 		'top_k': 40,
 		'top_p': 1,
-		'max_output_tokens': 2048,
+		'max_output_tokens': 4096,
 	}
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
@@ -57,7 +63,7 @@ Output template is as follows: ```json{{"chapter_title": "chapter_title", "plot_
 		cursors, cur_cursor,
 		gr.update(
 			maximum=len(cursors), value=cur_cursor+1,
-			label=f"{cur_cursor} out of {len(cursors)} stories", visible=True
+			label=f"{cur_cursor} out of {len(cursors)} chapters", visible=True
 		),
 		gr.update(value=None, visible=False),
 		gr.update(value=None, visible=False),
@@ -177,7 +183,7 @@ def move_story_cursor(moved_cursor, cursors):
 	if "video" in cursor_content:
 		outputs = (
 			moved_cursor-1,
-			gr.update(label=f"{moved_cursor}/{len(cursors)}"),
+			gr.update(label=f"{moved_cursor} out of {len(cursors)} chapters"),
 			cursor_content["story"],
 			gr.update(value=None, visible=False),
 			gr.update(value=None, visible=False),
@@ -196,7 +202,7 @@ def move_story_cursor(moved_cursor, cursors):
 
 		outputs = (
 			moved_cursor-1,
-			gr.update(label=f"{moved_cursor} out of {len(cursors)} stories"),
+			gr.update(label=f"{moved_cursor} out of {len(cursors)} chapters"),
 			cursor_content["story"],
 			image_container,
 			audio_container,

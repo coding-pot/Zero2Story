@@ -202,7 +202,7 @@ with gr.Blocks(css=STYLE) as demo:
 			chapter4_plot = gr.Textbox(placeholder="The plot of the fourth chapter will be generated here", lines=3, elem_classes=["no-label"], visible=False)
 
 		with gr.Row():
-			gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
+			plot_gen_temp = gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
 			plot_gen_btn = gr.Button("gen plot", elem_classes=["control-button"])
 
 		plot_setup_confirm_btn = gr.Button("confirm", elem_classes=["control-button"])
@@ -234,10 +234,11 @@ with gr.Blocks(css=STYLE) as demo:
 
 		action_types = gr.Radio(
 			choices=[
-				"rising action", "crisis", "climax", "falling action", "denouncement"
+				"continue current phase", "move to the next phase"
 			],
-			value="rising action",
-			interactive=True
+			value="continue current phase",
+			interactive=True,
+			elem_classes=["no-label-radio"]
 		)
 
 		with gr.Row():
@@ -356,6 +357,7 @@ with gr.Blocks(css=STYLE) as demo:
 	plot_gen_btn.click(
 		plot_gen_ui.plot_gen,
 		inputs= [
+			plot_gen_temp,
 			time_dd, place_dd, mood_dd, 
 			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
