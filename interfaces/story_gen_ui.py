@@ -35,6 +35,26 @@ side character #{cur_side_chars}
 		
 	return prompt, cur_side_chars
 
+def _add_contents_by_content_types(cursors, plot_type):
+	plot_contents = {}
+	sub_prompts = ""
+	
+	for cursor in cursors:
+		if cursor["plot_type"] not in plot_contents:
+			plot_contents[cursor["plot_type"]] = cursor["story"]
+		else:
+	  		plot_contents[cursor["plot_type"]] = plot_contents[cursor["plot_type"]] + cursor["story"]
+ 
+	for t in ["rising action", "crisis", "climax", "falling action", "denouement"]:
+		if t == plot_type:
+			break
+		else:
+			sub_prompts = sub_prompts + f"""{t} contents
+- paragraphs: {plot_contents[t]}
+"""
+
+	return sub_prompts
+
 async def next_story_gen(
 	action_type, action,
 	title, subtitle, story_content,
@@ -48,14 +68,85 @@ async def next_story_gen(
 	cursors, cur_cursor
 ):
 	cur_side_chars = 1
+	line_break = '\n'
 	plot_type = cursors[cur_cursor]["plot_type"]
 
-	conditional_prompt = f"Continue writing on the current plot type, \"{plot_type}\""
-	if action_type == "move to the next phase":
-		conditional_prompt = f"Writing of next plot type after the current, \"{plot_type}\""
+	if action_type != "move to the next phase":
+		prompt = f"""Write the chapter title and the first few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. REMEMBER the first few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
 
-	line_break = '\n'
-	prompt = f"""Write the next few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. The next few paragraphs should be naturally connected to the current paragraphs, and they should be written based on the "action choice". Also, suggest three choosable actions to drive current story in different directions. The choosable actions should not have a duplicate action of the action choice. The next few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. Each paragraph should consist of at least five sentences. REMEMBER the next few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
+background information:
+- genre: string
+- where: string
+- mood: string
+
+main character
+- name: string
+- job: string
+- age: string
+- mbti: string
+- personality: string
+
+overall outline
+- title: string
+- rising action: string
+- crisis: string
+- climax: string
+- falling action: string
+- denouement: string
+
+"""
+		prompt = prompt + _add_contents_by_content_types(cursors, plot_type)
+f"""
+JSON output:
+{{
+	"next paragraphs": ["string", "string", ...],
+	"next actions": ["string", "string", "string"]
+}}
+
+background information:
+- genre: {time}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {name1}
+- job: {job1},
+- age: {age1},
+- mbti: {mbti1},
+- personality: {personality1}
+
+"""
+
+		prompt, cur_side_chars = _add_side_character(
+			side_char_enable1, prompt, cur_side_chars,
+			name2, job2, age2, mbti2, personality2
+		)
+		prompt, cur_side_chars = _add_side_character(
+			side_char_enable2, prompt, cur_side_chars,
+			name3, job3, age3, mbti3, personality3
+		)
+		prompt, cur_side_chars = _add_side_character(
+			side_char_enable3, prompt, cur_side_chars,
+			name4, job4, age4, mbti4, personality4
+		)
+	
+		prompt = prompt + f"""
+overall outline
+- title: {title}
+- rising action: {rising_action}
+- crisis: {crisis}
+- climax: {climax}
+- falling action: {falling_action}
+- denouement: {denouement}
+
+rising action contents
+- current paragraphs: {story_content.replace(line_break, "")}
+
+JSON output:
+"""
+
+	else:
+		prompt = f"""Write the next few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. The next few paragraphs should be naturally connected to the current paragraphs, and they should be written based on the "action choice". Also, suggest three choosable actions to drive current story in different directions. The choosable actions should not have a duplicate action of the action choice. The next few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. Each paragraph should consist of at least five sentences. REMEMBER the next few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
 
 background information:
 - genre: string
@@ -101,20 +192,20 @@ main character
 
 """
 
-	prompt, cur_side_chars = _add_side_character(
-		side_char_enable1, prompt, cur_side_chars,
-		name2, job2, age2, mbti2, personality2
-	)
-	prompt, cur_side_chars = _add_side_character(
-		side_char_enable2, prompt, cur_side_chars,
-		name3, job3, age3, mbti3, personality3
-	)
-	prompt, cur_side_chars = _add_side_character(
-		side_char_enable3, prompt, cur_side_chars,
-		name4, job4, age4, mbti4, personality4
-	)
- 
-	prompt = prompt + f"""
+		prompt, cur_side_chars = _add_side_character(
+			side_char_enable1, prompt, cur_side_chars,
+			name2, job2, age2, mbti2, personality2
+		)
+		prompt, cur_side_chars = _add_side_character(
+			side_char_enable2, prompt, cur_side_chars,
+			name3, job3, age3, mbti3, personality3
+		)
+		prompt, cur_side_chars = _add_side_character(
+			side_char_enable3, prompt, cur_side_chars,
+			name4, job4, age4, mbti4, personality4
+		)
+	
+		prompt = prompt + f"""
 overall outline
 - title: {title}
 - rising action: {rising_action}
@@ -130,38 +221,38 @@ rising action contents
 JSON output:
 """
 
-	print(f"generated prompt:\n{prompt}")
-	parameters = {
-		'model': 'models/text-bison-001',
-		'candidate_count': 1,
-		'temperature': 0.9,
-		'top_k': 40,
-		'top_p': 1,
-		'max_output_tokens': 4096,
-	}
-	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+		print(f"generated prompt:\n{prompt}")
+		parameters = {
+			'model': 'models/text-bison-001',
+			'candidate_count': 1,
+			'temperature': 0.9,
+			'top_k': 40,
+			'top_p': 1,
+			'max_output_tokens': 4096,
+		}
+		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
-	cursors.append({
-		"title": subtitle.replace("## ", ""),
-		"plot_type": plot_type,
-		"story": "\n\n".join(response_json["next paragraphs"])
-	})
-	cur_cursor = cur_cursor + 1
+		cursors.append({
+			"title": subtitle.replace("## ", ""),
+			"plot_type": plot_type,
+			"story": "\n\n".join(response_json["next paragraphs"])
+		})
+		cur_cursor = cur_cursor + 1
 
-	return (
-		"\n\n".join(response_json["next paragraphs"]),
-		cursors, cur_cursor,
-		gr.update(
-			maximum=len(cursors), value=cur_cursor+1,
-			label=f"{cur_cursor} out of {len(cursors)} chapters", visible=True
-		),
-		gr.update(value=None, visible=False),
-		gr.update(value=None, visible=False),
-		gr.update(value=None, visible=False),
-		gr.update(value=response_json["next actions"][0], interactive=True),
-		gr.update(value=response_json["next actions"][1], interactive=True),
-		gr.update(value=response_json["next actions"][2], interactive=True)
-	)
+		return (
+			"\n\n".join(response_json["next paragraphs"]),
+			cursors, cur_cursor,
+			gr.update(
+				maximum=len(cursors), value=cur_cursor+1,
+				label=f"{cur_cursor} out of {len(cursors)} chapters", visible=True
+			),
+			gr.update(value=None, visible=False),
+			gr.update(value=None, visible=False),
+			gr.update(value=None, visible=False),
+			gr.update(value=response_json["next actions"][0], interactive=True),
+			gr.update(value=response_json["next actions"][1], interactive=True),
+			gr.update(value=response_json["next actions"][2], interactive=True)
+		)
 
 def video_gen(
 	image, audio, title, cursors, cur_cursor, use_ffmpeg=True
