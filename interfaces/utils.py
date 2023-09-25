@@ -9,39 +9,19 @@ from pingpong.context import CtxLastWindowStrategy
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
 
-def get_progress_md(idx):
-	if idx == 0:
-		return "🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️"
-	elif idx == 1:
-		return "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️"
-	elif idx == 2:
-		return "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️"
-	else:
-		return "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘"
-
-def get_progress_from_md(md):
-	if md == "🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️":
-		return 0
-	elif md == "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️":
-		return 1
-	elif md == "⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️":
-		return 2
-	else:
-		return 3
-
-def parse_first_json_code_snippet(string):
+def parse_first_json_code_snippet(code_snippet):
 	json_parsed_string = None
 	
 	try:
-		json_parsed_string = json.loads(json_code_snippet, strict=False)
+		json_parsed_string = json.loads(code_snippet, strict=False)
 	except:
-		json_start_index = string.find('```json')
-		json_end_index = string.find('```', json_start_index + 6)
+		json_start_index = code_snippet.find('```json')
+		json_end_index = code_snippet.find('```', json_start_index + 6)
 
 		if json_start_index < 0 or json_end_index < 0:
 			raise ValueError('No JSON code snippet found in string.')
 
-		json_code_snippet = string[json_start_index + 7:json_end_index]
+		json_code_snippet = code_snippet[json_start_index + 7:json_end_index]
 		json_parsed_string = json.loads(json_code_snippet, strict=False)
 	finally:
 		return json_parsed_string
