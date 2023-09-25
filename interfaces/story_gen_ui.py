@@ -36,8 +36,16 @@ Output template is as follows: ```json{{"chapter_title": "chapter_title", "plot_
 
 """
 
-	print(f"generated prompt:\n{prompt}")
-	response_json = await utils.retry_until_valid_json(prompt)
+	print(f"generated prompt:\n{prompt}")	
+	parameters = {
+		'model': 'models/text-bison-001',
+		'candidate_count': 1,
+		'temperature': 0.7,
+		'top_k': 40,
+		'top_p': 1,
+		'max_output_tokens': 2048,
+	}
+	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
 	cursors.append({
 		"story": response_json["story"]["story"]

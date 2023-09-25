@@ -43,20 +43,20 @@ def parse_first_json_code_snippet(string):
 
 		json_code_snippet = string[json_start_index + 7:json_end_index]
 		json_parsed_string = json.loads(json_code_snippet, strict=False)
+	finally:
+		return json_parsed_string
 
-	return json_parsed_string
-
-async def retry_until_valid_json(prompt):
+async def retry_until_valid_json(prompt, parameters=None):
 	response_json = None
 	while response_json is None:
-		_, response_txt = await palmchat.gen_text(prompt, mode="text")
+		_, response_txt = await palmchat.gen_text(prompt, mode="text", parameters=parameters)
 		print(response_txt)
 
 		try:
 			response_json = parse_first_json_code_snippet(response_txt)
 		except:
 			pass
-		  
+			
 	return response_json
 
 def build_prompts(ppm, win_size=3):
