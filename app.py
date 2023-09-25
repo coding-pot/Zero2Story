@@ -386,8 +386,7 @@ with gr.Blocks(css=STYLE) as demo:
 	image_gen_btn.click(
 		story_gen_ui.image_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor, 
-			story_image, story_audio
+			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor, story_audio
 		],
 		outputs=[
 			story_image, img_audio_combine_btn, cursors, progress_comp,
@@ -397,8 +396,7 @@ with gr.Blocks(css=STYLE) as demo:
 	audio_gen_btn.click(
 		story_gen_ui.audio_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor,
-			story_image, story_audio
+			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor, story_image
 		],
 		outputs=[story_audio, img_audio_combine_btn, cursors, progress_comp]
 	)
