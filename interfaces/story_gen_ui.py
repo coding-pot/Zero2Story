@@ -55,7 +55,7 @@ async def next_story_gen(
 		conditional_prompt = f"Writing of next plot type after the current, \"{plot_type}\""
 
 	line_break = '\n'
-	prompt = f"""Write the next few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. The next few paragraphs should be naturally connected to the current paragraphs, and they should be written based on the action choice. Also, suggest three choosable actions to drive current story in different directions. The choosable actions should not have a duplicate action of the action choice. The next few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. Each paragraph should consist of at least five sentences. REMEMBER the next few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
+	prompt = f"""Write the next few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. The next few paragraphs should be naturally connected to the current paragraphs, and they should be written based on the "action choice". Also, suggest three choosable actions to drive current story in different directions. The choosable actions should not have a duplicate action of the action choice. The next few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. Each paragraph should consist of at least five sentences. REMEMBER the next few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
 
 background information:
 - genre: string
@@ -141,14 +141,14 @@ JSON output:
 	}
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
-	cursors[cur_cursor]["story"] = story_content + "\n\n".join(response_json["next paragraphs"])
+	cursors[cur_cursor]["story"] = story_content + "\n\n" + "\n\n".join(response_json["next paragraphs"])
 	# cursors.append({
 	# 	"story": response_json["story"]["story"]
 	# })
 	# cur_cursor = cur_cursor + 1
 
 	return (
-		story_content + "\n\n".join(response_json["next paragraphs"]),
+		story_content + "\n\n" + "\n\n".join(response_json["next paragraphs"]),
 		cursors, cur_cursor,
 		gr.update(
 			maximum=len(cursors), value=cur_cursor+1,
