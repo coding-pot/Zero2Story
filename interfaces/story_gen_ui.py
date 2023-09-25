@@ -26,27 +26,33 @@ async def next_story_gen(
 	for cursor in cursors:
 		story = story + cursor["story"]
 
+	plot_type = cursors[cur_cursor]["plot_type"]
+
+	conditional_prompt = f"Continue writing on the current plot type, \"{plot_type}\""
+	if action_type == "move to the next phase":
+		conditional_prompt = f"Writing of next plot type after the current, \"{plot_type}\""
+
 	prompt = ("You are a world-renowned novelist and TRPG creator. You specialize in long, "
 	"descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobia"
 	"s's plot theory and Gustav Freytag's pyramid theory. According to Gustav Freytag's py"
 	"ramid theory, the plot type contains rising actions-crisis-climax-falling actions-den"
-	"ouncement.\n"
+	f"ouncement. {conditional_prompt}\n"
 	"Output template is as follows: ```json{\"chapter_title\": \"chapter_title\", \"plot_t"
 	"ype based on Freytag's Theory\": \"type\", \"story\": {\"story\" : \"story\", \"acti"
 	"on1\": \"action1\", \"action2\": \"action2\", \"action3\": \"action3\"}```. DO NOT ou"
 	"tput anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed."
 	f"""
 ```json
-{{"chapter_title": "{title}", "plot_type based on Freytag's Theory" : "{action_type}", "story": {{"story": "{story}", "action" : "{action}"}}}}
+{{"chapter_title": "{title}", "plot_type based on Freytag's Theory" : "{plot_type}", "story": {{"story": "{story}", "action" : "{action}"}}}}
 ```
 
 """)
 
-	print(f"generated prompt:\n{prompt}")	
+	print(f"generated prompt:\n{prompt}")
 	parameters = {
 		'model': 'models/text-bison-001',
 		'candidate_count': 1,
-		'temperature': 0.7,
+		'temperature': 0.9,
 		'top_k': 40,
 		'top_p': 1,
 		'max_output_tokens': 4096,
