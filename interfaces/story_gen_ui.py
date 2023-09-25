@@ -141,14 +141,14 @@ JSON output:
 	}
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
-	cursors[cur_cursor]["story"] = story_content + "\n\n".join(response_json["paragraphs"])
+	cursors[cur_cursor]["story"] = story_content + "\n\n".join(response_json["next paragraphs"])
 	# cursors.append({
 	# 	"story": response_json["story"]["story"]
 	# })
 	# cur_cursor = cur_cursor + 1
 
 	return (
-		story_content + "\n\n".join(response_json["paragraphs"]),
+		story_content + "\n\n".join(response_json["next paragraphs"]),
 		cursors, cur_cursor,
 		gr.update(
 			maximum=len(cursors), value=cur_cursor+1,
@@ -157,9 +157,9 @@ JSON output:
 		gr.update(value=None, visible=False),
 		gr.update(value=None, visible=False),
 		gr.update(value=None, visible=False),
-		gr.update(value=response_json["actions"][0], interactive=True),
-		gr.update(value=response_json["actions"][1], interactive=True),
-		gr.update(value=response_json["actions"][2], interactive=True)
+		gr.update(value=response_json["next actions"][0], interactive=True),
+		gr.update(value=response_json["next actions"][1], interactive=True),
+		gr.update(value=response_json["next actions"][2], interactive=True)
 	)
 
 def video_gen(
