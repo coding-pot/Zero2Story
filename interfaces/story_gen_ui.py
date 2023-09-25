@@ -142,7 +142,7 @@ JSON output:
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
 	cursors.append({
-		"title": subtitle,
+		"title": subtitle.replace("## ", ""),
 		"plot_type": plot_type,
 		"story": "\n\n".join(response_json["next paragraphs"])
 	})

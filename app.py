@@ -434,7 +434,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			action_types, action_btn1,
-			title, story_content,
+			title, subtitle_display, story_content,
    			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
 			time_dd, place_dd, mood_dd, 
 			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
@@ -456,7 +456,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			action_types, action_btn2,
-			title, story_content,
+			title, subtitle_display, story_content,
    			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
 			time_dd, place_dd, mood_dd, 
 			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
@@ -478,7 +478,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			action_types, action_btn3,
-			title, story_content,
+			title, subtitle_display, story_content,
    			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
 			time_dd, place_dd, mood_dd, 
 			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
