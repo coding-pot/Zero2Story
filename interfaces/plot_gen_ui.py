@@ -88,7 +88,7 @@ outline: {plot}
 
     cursors.append({
         "title": response_json["chapter_title"],
-        "plot_type": response_json["plot_type based on Freytag's Theory"],
+        "plot_type": "rising action",
         "story": response_json["story"]["story"]
     })
 
