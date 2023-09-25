@@ -47,7 +47,10 @@ Output template is as follows: ```json{{"chapter_title": "chapter_title", "plot_
 	return (
 		response_json["story"]["story"],
 		cursors, cur_cursor,
-		gr.update(maximum=len(cursors), value=cur_cursor+1, visible=True),
+		gr.update(
+			maximum=len(cursors), value=cur_cursor+1,
+			label=f"{cur_cursor}/{len(cursors)}", visible=True
+		),
         gr.update(value=response_json["story"]["action1"], interactive=True),
         gr.update(value=response_json["story"]["action2"], interactive=True),
         gr.update(value=response_json["story"]["action3"], interactive=True)
@@ -138,9 +141,9 @@ def move_story_cursor(moved_cursor, cursors):
 	max_cursor = len(cursors)
 
 	action_btn = (
-			gr.update(interactive=True),
-			gr.update(interactive=True),
-			gr.update(interactive=True)
+			gr.update(interactive=False),
+			gr.update(interactive=False),
+			gr.update(interactive=False)
 	)
 
 	if moved_cursor == max_cursor:
@@ -153,6 +156,7 @@ def move_story_cursor(moved_cursor, cursors):
 	if "video" in cursor_content:
 		outputs = (
 			 moved_cursor-1,
+			 gr.update(label=f"{moved_cursor}/{len(cursors)}"),
 			 cursor_content["story"],
 			 None,
 			 None,
@@ -162,6 +166,7 @@ def move_story_cursor(moved_cursor, cursors):
 	else:
 		outputs = (
 			 moved_cursor-1,
+			 gr.update(label=f"{moved_cursor}/{len(cursors)}"),
 			 cursor_content["story"],
 			 cursor_content["img"] if "img" in cursor_content else None,
 			 cursor_content["audio"] if "audio" in cursor_content else None,

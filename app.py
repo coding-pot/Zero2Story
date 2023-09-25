@@ -221,7 +221,10 @@ with gr.Blocks(css=STYLE) as demo:
 		story_audio = gr.Audio(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
 		story_video = gr.Video(visible=False, interactive=False, elem_classes=["no-label-gallery"])
 
-		story_progress = gr.Slider(minimum=1, maximum=2, value=1, step=1, interactive=True, visible=True)
+		story_progress = gr.Slider(
+			1, 2, 1, step=1, interactive=True, 
+			label="1/2", visible=False
+		)
 
 		story_content = gr.Textbox(
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
@@ -415,6 +418,7 @@ with gr.Blocks(css=STYLE) as demo:
 		],
 		outputs=[
 			cur_cursor,
+			story_progress, 
 			story_content,
 			story_image, story_audio, story_video,
 			action_btn1, action_btn2, action_btn3,
