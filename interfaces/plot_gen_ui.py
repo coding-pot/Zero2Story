@@ -121,7 +121,7 @@ async def first_story_gen(
 ):
 	cur_side_chars = 1
 	
-	prompt = f"""Write the chapter title and the first few paragraphs of the "rising action" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. 
+	prompt = f"""Write the chapter title and the first few paragraphs of the "rising action" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. REMEMBER the first few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
 
 background information:
 - genre: string
