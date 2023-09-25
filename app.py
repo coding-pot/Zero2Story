@@ -390,6 +390,12 @@ with gr.Blocks(css=STYLE) as demo:
 		]
 	)
 	### Story generation
+	story_content.input(
+		story_gen_ui.update_story_content,
+		inputs=[story_content, cursors, cur_cursor],
+		outputs=[cursors],
+	)
+
 	image_gen_btn.click(
 		story_gen_ui.image_gen,
 		inputs=[

@@ -450,3 +450,7 @@ def move_story_cursor(moved_cursor, cursors):
 		)        
 
 	return outputs + action_btn
+
+def update_story_content(story_content, cursors, cur_cursor):
+	cursors[cur_cursor]["story"] = story_content
+	return cursors
