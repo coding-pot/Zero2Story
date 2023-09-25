@@ -37,7 +37,7 @@ side character #{cur_side_chars}
 
 async def next_story_gen(
 	action_type, action,
-	title, story_content,
+	title, subtitle, story_content,
  	rising_action, crisis, climax, falling_action, denouement,
 	time, place, mood,
 	side_char_enable1, side_char_enable2, side_char_enable3,
@@ -141,14 +141,15 @@ JSON output:
 	}
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
-	cursors[cur_cursor]["story"] = story_content + "\n\n" + "\n\n".join(response_json["next paragraphs"])
-	# cursors.append({
-	# 	"story": response_json["story"]["story"]
-	# })
-	# cur_cursor = cur_cursor + 1
+	cursors.append({
+		"title": subtitle,
+		"plot_type": plot_type,
+		"story": "\n\n".join(response_json["next paragraphs"])
+	})
+	cur_cursor = cur_cursor + 1
 
 	return (
-		story_content + "\n\n" + "\n\n".join(response_json["next paragraphs"]),
+		"\n\n".join(response_json["next paragraphs"]),
 		cursors, cur_cursor,
 		gr.update(
 			maximum=len(cursors), value=cur_cursor+1,
