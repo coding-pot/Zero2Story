@@ -386,19 +386,21 @@ with gr.Blocks(css=STYLE) as demo:
 	image_gen_btn.click(
 		story_gen_ui.image_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor
+			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor, 
+			story_image, story_audio
 		],
 		outputs=[
-			story_image, cursors, progress_comp,
+			story_image, img_audio_combine_btn, cursors, progress_comp,
 		]
 	)
 
 	audio_gen_btn.click(
 		story_gen_ui.audio_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor
+			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor,
+			story_image, story_audio
 		],
-		outputs=[story_audio, cursors, progress_comp]
+		outputs=[story_audio, img_audio_combine_btn, cursors, progress_comp]
 	)
 
 	img_audio_combine_btn.click(
@@ -434,7 +436,38 @@ with gr.Blocks(css=STYLE) as demo:
 		],
 		outputs=[
 			story_content,
-			cursors, cur_cursor, story_progress, 
+			cursors, cur_cursor, story_progress,
+			story_image, story_audio, story_video,
+			action_btn1, action_btn2, action_btn3
+		]
+	)
+
+	action_btn2.click(
+		story_gen_ui.next_story_gen,
+		inputs=[
+			action_types, action_btn2,
+			title, plot, story_content,
+			cursors, cur_cursor
+		],
+		outputs=[
+			story_content,
+			cursors, cur_cursor, story_progress,
+			story_image, story_audio, story_video,
+			action_btn1, action_btn2, action_btn3
+		]
+	)	
+
+	action_btn3.click(
+		story_gen_ui.next_story_gen,
+		inputs=[
+			action_types, action_btn3,
+			title, plot, story_content,
+			cursors, cur_cursor
+		],
+		outputs=[
+			story_content,
+			cursors, cur_cursor, story_progress,
+			story_image, story_audio, story_video,
 			action_btn1, action_btn2, action_btn3
 		]
 	)

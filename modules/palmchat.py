@@ -102,7 +102,7 @@ async def gen_text(
                 'top_k': top_k,
                 'top_p': top_p,
                 'max_output_tokens': max_output_tokens,
-            }            
+            }
 
     if mode == "chat":
         response = await palm_api.chat_async(**parameters, messages=prompt)

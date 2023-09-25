@@ -59,6 +59,9 @@ Output template is as follows: ```json{{"chapter_title": "chapter_title", "plot_
 			maximum=len(cursors), value=cur_cursor+1,
 			label=f"{cur_cursor} out of {len(cursors)} stories", visible=True
 		),
+		gr.update(value=None, visible=False),
+		gr.update(value=None, visible=False),
+		gr.update(value=None, visible=False),
         gr.update(value=response_json["story"]["action1"], interactive=True),
         gr.update(value=response_json["story"]["action2"], interactive=True),
         gr.update(value=response_json["story"]["action3"], interactive=True)
@@ -93,7 +96,7 @@ def video_gen(
 
 
 def image_gen(
-	time, place, mood, title, story_content, cursors, cur_cursor
+	time, place, mood, title, story_content, cursors, cur_cursor, story_audio
 ):
 	# generate prompts for background image with PaLM
 	for _ in range(3):
@@ -111,15 +114,20 @@ def image_gen(
 	img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='16:9', cfg=4.5)
 	cursors[cur_cursor]["img"] = img_filename
 
+	video_gen_btn_state = gr.update(interactive=False)
+	if story_audio is not None:
+		video_gen_btn_state = gr.update(interactive=True)
+
 	return  (
 		gr.update(visible=True, value=img_filename),
+		video_gen_btn_state,
 		cursors,
 		"  "
 	)
 
 
 def audio_gen(
-	time, place, mood, title, story_content, cursors, cur_cursor
+	time, place, mood, title, story_content, cursors, cur_cursor, story_image
 ):
 	# generate prompt for background music with PaLM
 	for _ in range(3):
@@ -136,8 +144,13 @@ def audio_gen(
 	bgm_filename = bgm_maker.text2music(prompt, length=60)
 	cursors[cur_cursor]["audio"] = bgm_filename
 
+	video_gen_btn_state = gr.update(interactive=False)
+	if story_image is not None:
+		video_gen_btn_state = gr.update(interactive=True)
+
 	return (
 		gr.update(visible=True, value=bgm_filename),
+		video_gen_btn_state,
 		cursors,
 		" "
 	)
