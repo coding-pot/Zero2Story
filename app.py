@@ -45,6 +45,7 @@ with gr.Blocks(css=STYLE) as demo:
 	with gr.Accordion("determine four characters' traits", open=False) as character_setup_section:
 		with gr.Row():
 			with gr.Column():
+				gr.Checkbox(label="character include/enable", value=True, interactive=False)
 				char_gallery1 = gr.Gallery(value=default_character_images, height=256, preview=True)
 
 				with gr.Row(elem_classes=["no-gap"]):
