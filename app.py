@@ -345,7 +345,6 @@ with gr.Blocks(css=STYLE) as demo:
 	plot_gen_btn.click(
 		plot_gen_ui.plot_gen,
 		inputs= [
-			cursors, cur_cursor,
 			time_dd, place_dd, mood_dd, 
 			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
