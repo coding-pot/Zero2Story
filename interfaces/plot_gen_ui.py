@@ -71,7 +71,10 @@ personality: {personality1}
     )
 
 
-async def first_story_gen(title, plot):
+async def first_story_gen(
+    title, plot,
+    cursors, cur_cursor
+):
     prompt = f"""You are a world-renowned novelist and TRPG creator. You specialize in long, descriptive sentences and enigmatic plots. When writing, you must follow Ronald Tobias's plot theory. You must tell a story based on a given plot. Your story must include descriptive sentences and dialog. Your story must be a minimum of 1500 words and a maximum of 2500 words. At the end of the story, you must create 3 actions, each of which must be different and affect the next story. YOU MUST FOLLOW THESE RULES.
 
 Output template is as follows: ```json{{"chapter_title": "chapter_title", "story": {{"story" : "story", "action1 " : "action1", "action2" : "action2", "action3" : "action3"}}```. DO NOT output anything other than JSON values. ONLY JSON is allowed. The JSON key name should not be changed.
@@ -83,8 +86,16 @@ outline: {plot}
     print(f"generated prompt:\n{prompt}")
     response_json = await utils.retry_until_valid_json(prompt)
 
+    cursors.append({
+        "story": response_json["story"]["story"]
+    })
+    cur_cursor = cur_cursor + 1
+
     return (
         response_json["story"]["story"],
+        cursors,
+        cur_cursor, 
+        cur_cursor+1,
         gr.update(interactive=True),
         gr.update(interactive=True),
         gr.update(value=response_json["story"]["action1"], interactive=True),

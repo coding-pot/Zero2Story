@@ -21,7 +21,8 @@ with gr.Blocks(css=STYLE) as demo:
 		"export_chat": GradioPaLMChatPPManager(),
 	})
  
-	plot_cursor = gr.State(0)
+	cur_cursor = gr.State(0)
+	cursors = gr.State([])
 
 	gallery_images1 = gr.State(default_character_images)
 	gallery_images2 = gr.State(default_character_images)
@@ -220,6 +221,8 @@ with gr.Blocks(css=STYLE) as demo:
 		story_audio = gr.Audio(None, visible=False, type="filepath", elem_classes=["no-label-image-audio"])
 		story_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
 
+		story_progress = gr.Slider(minimum=1, maximum=1, value=1, interactive=True)
+
 		story_content = gr.Textbox(
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
 				lines=12,
@@ -342,6 +345,7 @@ with gr.Blocks(css=STYLE) as demo:
 	plot_gen_btn.click(
 		plot_gen_ui.plot_gen,
 		inputs= [
+			cursors, cur_cursor,
 			time_dd, place_dd, mood_dd, 
 			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
@@ -358,9 +362,12 @@ with gr.Blocks(css=STYLE) as demo:
     	]
 	).then(
 		plot_gen_ui.first_story_gen,
-		inputs=[title, plot],
+		inputs=[
+			title, plot, cursors, cur_cursor
+		],
 		outputs=[
-			story_content, 
+			story_content,
+			cursors, cur_cursor, story_progress,
 			image_gen_btn, audio_gen_btn,
 			action_btn1, action_btn2, action_btn3
 		]
@@ -369,139 +376,44 @@ with gr.Blocks(css=STYLE) as demo:
 	image_gen_btn.click(
 		story_gen_ui.image_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, plot, story_content, plot_cursor
+			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor
 		],
-		outputs=[story_image, progress_comp]
+		outputs=[
+			story_image, cursors, progress_comp,
+		]
 	)
 
 	audio_gen_btn.click(
 		story_gen_ui.audio_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, plot, story_content, plot_cursor
+			time_dd, place_dd, mood_dd, plot, story_content, cursors, cur_cursor
 		],
-		outputs=[story_audio, progress_comp]		
+		outputs=[story_audio, cursors, progress_comp]
 	)
 
 	img_audio_combine_btn.click(
 		story_gen_ui.video_gen,
-		inputs=[story_image, story_audio, chapter1_title],
-		outputs=[story_image, story_audio, story_video, progress_comp],
+		inputs=[
+			story_image, story_audio, "", cursors, cur_cursor
+		],
+		outputs=[
+			story_image, story_audio, story_video, cursors, progress_comp
+		],
 	)	
-	###### Chapter 1
-	# chapter1_image_gen_btn.click(
-	# 	story_gen_ui.image_gen,
-	# 	inputs=[
-	# 		time_dd, place_dd, mood_dd,
-	# 		title, chapter1_title, chapter1_plot,
-	# 	], 
-	# 	outputs=[chapter1_image, progress_comp]
-	# )
- 
-	# chapter1_audio_gen_btn.click(
-	# 	story_gen_ui.audio_gen,
-	# 	inputs=[
-	# 		time_dd, place_dd, mood_dd,
-	# 		title, chapter1_title, chapter1_plot,
-	# 	], 
-	# 	outputs=[chapter1_audio, progress_comp]
-	# )
- 
-	# chapter1_image_audio_combine_btn.click(
-	# 	story_gen_ui.video_gen,
-	# 	inputs=[chapter1_image, chapter1_audio, chapter1_title],
-	# 	outputs=[chapter1_image, chapter1_audio, chapter1_video, progress_comp],
-	# )
 
-	###### Chapter 2
-	# chapter2_image_gen_btn.click(
-	# 	story_gen_ui.image_gen,
-	# 	inputs=[
-	# 		time_dd, place_dd, mood_dd,
-	# 		title, chapter2_title, chapter2_plot,
-	# 	],
-	# 	outputs=[chapter2_image]
-	# )
+	story_progress.input(
+		story_gen_ui.move_story_cursor,
+		inputs=[
+			story_progress, cursors, cur_cursor
+		],
+		outputs=[
+			cur_cursor,
+			story_content,
+			story_image, story_audio, story_video,
+			action_btn1, action_btn2, action_btn3,
+		]
+	)
 
-	# chapter2_audio_gen_btn.click(
-	# 	story_gen_ui.audio_gen,
-	# 	inputs=[
-	# 		time_dd, place_dd, mood_dd,
-	# 		title, chapter2_title, chapter2_plot,
-	# 	],
-	# 	outputs=[chapter2_audio]
-	# )
-
-	# chapter2_image_audio_combine_btn.click(
-	# 	story_gen_ui.video_gen,
-	# 	inputs=[chapter2_image, chapter2_audio, chapter2_title],
-	# 	outputs=[chapter2_image, chapter2_audio, chapter2_video],
-	# )
-
-	###### Chapter 3
-	# chapter3_image_gen_btn.click(
-	# 	story_gen_ui.image_gen,
-	# 	inputs=[
-	# 		time_dd, place_dd, mood_dd,
-	# 		title, chapter3_title, chapter3_plot,
-	# 	],
-	# 	outputs=[chapter3_image]
-	# )
-
-	# chapter3_audio_gen_btn.click(
-	# 	story_gen_ui.audio_gen,
-	# 	inputs=[
-	# 		time_dd, place_dd, mood_dd,
-	# 		title, chapter3_title, chapter3_plot,
-	# 	],
-	# 	outputs=[chapter3_audio]
-	# )
-
-	# chapter3_image_audio_combine_btn.click(
-	# 	story_gen_ui.video_gen,
-	# 	inputs=[chapter3_image, chapter3_audio, chapter3_title],
-	# 	outputs=[chapter3_image, chapter3_audio, chapter3_video],
-	# )
-
-	###### Chapter 4
-	# chapter4_image_gen_btn.click(
-	# 	story_gen_ui.image_gen,
-	# 	inputs=[
-	# 		time_dd, place_dd, mood_dd,
-	# 		title, chapter4_title, chapter4_plot,
-	# 	],
-	# 	outputs=[chapter4_image]
-	# )
-
-	# chapter4_audio_gen_btn.click(
-	# 	story_gen_ui.audio_gen,
-	# 	inputs=[
-	# 		time_dd, place_dd, mood_dd,
-	# 		title, chapter4_title, chapter4_plot,
-	# 	],
-	# 	outputs=[chapter4_audio]
-	# )
-
-	# chapter4_image_audio_combine_btn.click(
-	# 	story_gen_ui.video_gen,
-	# 	inputs=[chapter4_image, chapter4_audio, chapter4_title],
-	# 	outputs=[chapter4_image, chapter4_audio, chapter4_video],
-	# )
- 
-	# chapter1_action1.click(
-	# 	story_gen_ui.next_paragraph_gen,
-	# 	inputs = [
-    #   		chapter1_action1,
-	# 		chapter1_progress,
-	# 		time_dd, place_dd, mood_dd, 
-	# 		name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-	# 		name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-	# 		name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-	# 		name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-	# 		chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
-	# 	],
-	# 	outputs = [chapter1_progress, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
-	# )
- 
 	### Chatbot
 
 	chat_input_txt.submit(
