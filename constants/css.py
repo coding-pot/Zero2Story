@@ -164,4 +164,8 @@ textarea {
   font-size: 19pt !important;
   text-align: center;
 }
+
+.no-label-image-audio > div:nth-child(2) {
+  display: none;
+}
 """
