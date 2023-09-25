@@ -8,13 +8,14 @@ def _add_side_character(
 ):
 	if enable:
 		prompt = prompt + f"""
-side character{cur_side_chars}: {{
-name: {name},
-job: {job},
-age: {age},
-mbti: {mbti},
-personality: {personality}
-}}"""
+side character #{cur_side_chars}
+- name: {name},
+- job: {job},
+- age: {age},
+- mbti: {mbti},
+- personality: {personality}
+
+"""
 		cur_side_chars = cur_side_chars + 1
 		
 	return prompt, cur_side_chars
@@ -30,28 +31,33 @@ async def plot_gen(
 	name4, age4, mbti4, personality4, job4,
 ):
 	cur_side_chars = 1
-	
-	prompt = ("You are a world-renowned novelist and TRPG creator. You specialize in long, "
-	"descriptive sentences and enigmatic plots. As you write, you need to follow Ronald To"
-	"bias's plot theory. You also need to create a outline for your novel based on the inp"
-	"ut we give you, and generate a title based on the outline. You must create the outlin"
-	"e at least more tham 2000 words long. YOU MUST FOLLOW THESE RULES.\n"
-	"Output template is as follows: ```json{\"title\": \"title\", \"outline\": \"outline\""
-	"}```. DO NOT output anything other than JSON values. ONLY JSON is allowed."
-	f"""
-when: {time}
-where: {place}
-mood: {mood}
+	prompt = (
+		"As a world-renowned novelist and TRPG creator, write a title and an outline of a "
+		"novel based on the background and character information below in Ronald Tobias's "
+		"plot theory. The outline should be very much detailed according to \"rising actio"
+		"n\", \"crisis\", \"climax\", \"falling action\", and \"denouncement\" plot types."
+		"\n\n"
+		"Output template is as follows: \n"
+		"```json\n"
+		"{\"title\": \"string\", \"outline\": {\"rising action\": \"string\", \"crisis\": \""
+		"string\", \"climax\": \"string\", \"falling action\": \"string\", \"denouncement\": \"string\"}}\n"
+		"```\n"
+		f"""
+background information:
+- genre: {time}
+- where: {place}
+- mood: {mood}
 
-main character: {{
-name: {name1},
-job: {job1},
-age: {age1},
-mbti: {mbti1},
-personality: {personality1} 
-}}
+character information:
+main character
+- name: {name1}
+- job: {job1},
+- age: {age1},
+- mbti: {mbti1},
+- personality: {personality1}
 
-""")
+"""
+	)
 
 	prompt, cur_side_chars = _add_side_character(
 		side_char_enable1, prompt, cur_side_chars,
@@ -65,6 +71,8 @@ personality: {personality1}
 		side_char_enable3, prompt, cur_side_chars,
 		name4, job4, age4, mbti4, personality4
 	)
+
+	prompt = prompt + "output:\n"
 	
 	print(f"generated prompt:\n{prompt}")
 	parameters = {
