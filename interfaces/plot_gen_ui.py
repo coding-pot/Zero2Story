@@ -85,10 +85,14 @@ main character
 	}    	
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
+	outline = ""
+	for plot_type, plot in response_json['outline'].items():
+		outline = outline + f"# {plot_type}\n{plot}\n\n"
+
 	return (
 		response_json['title'],
 		f"## {response_json['title']}",
-		response_json['outline']
+		outline
 	)
 
 
