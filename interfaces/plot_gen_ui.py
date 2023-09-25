@@ -147,7 +147,7 @@ JSON output:
 {{
 	"chapter_title": "string",
 	"paragraphs": ["string", "string", ...],
-	"actions:": ["string", "string", "string"]
+	"actions": ["string", "string", "string"]
 }}
 
 background information:
