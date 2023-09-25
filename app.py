@@ -445,6 +445,7 @@ with gr.Blocks(css=STYLE) as demo:
 			cursors, cur_cursor
 		],
 		outputs=[
+			subtitle_display,
 			story_content,
 			cursors, cur_cursor, story_progress,
 			story_image, story_audio, story_video,
@@ -467,6 +468,7 @@ with gr.Blocks(css=STYLE) as demo:
 			cursors, cur_cursor
 		],
 		outputs=[
+			subtitle_display,
 			story_content,
 			cursors, cur_cursor, story_progress,
 			story_image, story_audio, story_video,
@@ -489,6 +491,7 @@ with gr.Blocks(css=STYLE) as demo:
 			cursors, cur_cursor
 		],
 		outputs=[
+			subtitle_display,
 			story_content,
 			cursors, cur_cursor, story_progress,
 			story_image, story_audio, story_video,

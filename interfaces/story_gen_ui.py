@@ -17,6 +17,18 @@ bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
+def _get_next_plot_types(cur_plot_type):
+	if cur_plot_type == "rising action":
+		return "crisis"
+	elif cur_plot_type == "crisis":
+		return "climax"
+	elif cur_plot_type == "climax":
+		return "falling action"
+	elif cur_plot_type == "falling action":
+		return "denouement"
+	else:
+		return "end"
+
 def _add_side_character(
 	enable, prompt, cur_side_chars,
 	name, age, mbti, personality, job
@@ -43,7 +55,7 @@ def _add_contents_by_content_types(cursors, plot_type):
 		if cursor["plot_type"] not in plot_contents:
 			plot_contents[cursor["plot_type"]] = cursor["story"]
 		else:
-	  		plot_contents[cursor["plot_type"]] = plot_contents[cursor["plot_type"]] + cursor["story"]
+			plot_contents[cursor["plot_type"]] = plot_contents[cursor["plot_type"]] + cursor["story"]
  
 	for t in ["rising action", "crisis", "climax", "falling action", "denouement"]:
 		if t == plot_type:
@@ -72,7 +84,7 @@ async def next_story_gen(
 	plot_type = cursors[cur_cursor]["plot_type"]
 
 	if action_type != "move to the next phase":
-		prompt = f"""Write the chapter title and the first few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. REMEMBER the first few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
+		prompt = f"""Write the chapter title and the first few paragraphs of the "{_get_next_plot_types(plot_type)}" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. REMEMBER the first few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
 
 background information:
 - genre: string
@@ -94,13 +106,26 @@ overall outline
 - falling action: string
 - denouement: string
 
-"""
-		prompt = prompt + _add_contents_by_content_types(cursors, plot_type)
-f"""
+rising action contents
+- paragraphs: string
+
+crisis contents
+- paragraphs: string
+
+climax contents
+- paragraphs: string
+
+falling action contents
+- paragraphs: string
+
+denouement contents
+- paragraphs: string
+
 JSON output:
 {{
-	"next paragraphs": ["string", "string", ...],
-	"next actions": ["string", "string", "string"]
+	"chapter_title": "string",
+	"paragraphs": ["string", "string", ...],
+	"actions": ["string", "string", "string"]
 }}
 
 background information:
@@ -139,12 +164,45 @@ overall outline
 - falling action: {falling_action}
 - denouement: {denouement}
 
-rising action contents
-- current paragraphs: {story_content.replace(line_break, "")}
-
+"""
+		prompt = prompt + _add_contents_by_content_types(cursors, plot_type)
+		prompt = prompt + """
 JSON output:
 """
 
+		print(f"generated prompt:\n{prompt}")
+		parameters = {
+			'model': 'models/text-bison-001',
+			'candidate_count': 1,
+			'temperature': 0.9,
+			'top_k': 40,
+			'top_p': 1,
+			'max_output_tokens': 4096,
+		}
+		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+
+		cursors.append({
+			"title": response_json["chapter_title"],
+			"plot_type": _get_next_plot_types(plot_type),
+			"story": "\n\n".join(response_json["paragraphs"])
+		})
+		cur_cursor = cur_cursor + 1
+
+		return (
+			f"## {response_json['chapter_title']}",
+			"\n\n".join(response_json["paragraphs"]),
+			cursors, cur_cursor,
+			gr.update(
+				maximum=len(cursors), value=cur_cursor+1,
+				label=f"{cur_cursor} out of {len(cursors)} chapters", visible=True
+			),
+			gr.update(value=None, visible=False),
+			gr.update(value=None, visible=False),
+			gr.update(value=None, visible=False),
+			gr.update(value=response_json["next actions"][0], interactive=True),
+			gr.update(value=response_json["next actions"][1], interactive=True),
+			gr.update(value=response_json["next actions"][2], interactive=True)
+		)
 	else:
 		prompt = f"""Write the next few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. The next few paragraphs should be naturally connected to the current paragraphs, and they should be written based on the "action choice". Also, suggest three choosable actions to drive current story in different directions. The choosable actions should not have a duplicate action of the action choice. The next few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. Each paragraph should consist of at least five sentences. REMEMBER the next few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
 
@@ -240,6 +298,7 @@ JSON output:
 		cur_cursor = cur_cursor + 1
 
 		return (
+			subtitle,
 			"\n\n".join(response_json["next paragraphs"]),
 			cursors, cur_cursor,
 			gr.update(
