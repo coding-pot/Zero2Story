@@ -95,7 +95,6 @@ outline: {plot}
         response_json["story"]["story"],
         cursors,
         cur_cursor, 
-        cur_cursor+1,
         gr.update(interactive=True),
         gr.update(interactive=True),
         gr.update(value=response_json["story"]["action1"], interactive=True),
