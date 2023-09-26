@@ -6,6 +6,24 @@ import random
 from modules import palmchat
 from pingpong.context import CtxLastWindowStrategy
 
+def add_side_character(
+	enable, prompt, cur_side_chars,
+	name, age, mbti, personality, job
+):
+	if enable:
+		prompt = prompt + f"""
+side character #{cur_side_chars}
+- name: {name},
+- job: {job},
+- age: {age},
+- mbti: {mbti},
+- personality: {personality}
+
+"""
+		cur_side_chars = cur_side_chars + 1
+		
+	return prompt, cur_side_chars
+
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
 
