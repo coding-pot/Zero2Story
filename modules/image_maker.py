@@ -17,6 +17,7 @@ from diffusers import (
     DPMSolverSinglestepScheduler,
     DPMSolverSDEScheduler,
 )
+from xformers.ops import MemoryEfficientAttentionFlashAttentionOp
 
 from .utils import (
     set_all_seeds,
@@ -67,7 +68,7 @@ class ImageMaker:
         print("Loading the Stable Diffusion model into memory...")
         self.__sd_model = StableDiffusionPipeline.from_single_file(self.model_base,
                                                                    torch_dtype=torch.float16,
-                                                                   custom_pipeline="lpw_stable_diffusion",
+                                                                   # custom_pipeline="lpw_stable_diffusion", 
                                                                    use_safetensors=True)
 
         # Clip Skip
@@ -92,6 +93,7 @@ class ImageMaker:
 
         print(f"Loaded model to {self.device}")
         self.__sd_model = self.__sd_model.to(self.device)
+        self.__sd_model.enable_xformers_memory_efficient_attention(attention_op=MemoryEfficientAttentionFlashAttentionOp)
         
         output_dir = Path('.') / 'outputs'
         if not output_dir.exists():
@@ -122,11 +124,19 @@ class ImageMaker:
 
         output_filename = Path('.') / 'outputs' / str(uuid.uuid4())
 
+
+        seed = 32
+
         if not seed or seed == -1:
             seed = torch.randint(0, 2**32 - 1, (1,)).item()
         set_all_seeds(seed)
 
         width, height = self.__ratio[ratio]
+
+        prompt = "cat+++ best_quality (1girl:1.3) bow bride brown_hair closed_mouth frilled_bow frilled_hair_tubes frills (full_body:1.3) fox_ear hair_bow hair_tubes happy hood japanese_clothes kimono long_sleeves red_bow smile solo tabi uchikake white_kimono wide_sleeves cherry_blossoms 1cat furry detailed_background"
+        neg_prompt = "lowres, bad_anatomy, error_body, error_hair, error_arm, error_hands, bad_hands, error_fingers, bad_fingers, missing_fingers, error_legs, bad_legs, multiple_legs, missing_legs, error_lighting, error_shadow, error_reflection, text, error, extra_digit, fewer_digits, cropped, worst_quality, low_quality, normal_quality, jpeg_artifacts, signature, watermark, username, blurry"
+
+        print(self.__sd_model.scheduler)
 
         # Generate the image
         img = self.__sd_model(prompt,
