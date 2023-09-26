@@ -246,8 +246,8 @@ with gr.Blocks(css=STYLE) as demo:
 			gr.Button("Run custom action", interactive=False, elem_classes=["control-button"], scale=1)
 
 		with gr.Accordion("regeneration controls", open=False):
-			gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
-			gr.Button("Re-suggest whole things", interactive=True, elem_classes=["control-button"])
+			regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
+			regen_story_btn = gr.Button("Re-suggest whole things", interactive=True, elem_classes=["control-button"])
 
 	gr.Markdown("### 📤 Export output")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
@@ -308,6 +308,22 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[
 			action_btn1, action_btn2, action_btn3
 		]
+	)
+
+	regen_actions_btn.click(
+		story_gen_ui.actions_gen,
+		inputs=[
+			cursors,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+			regen_actions_btn
+		],
+		outputs=[
+			action_btn1, action_btn2, action_btn3
+		]		
 	)
 
 	# main_tabs.select(

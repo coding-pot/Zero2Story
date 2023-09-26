@@ -18,32 +18,20 @@ bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
-		# story_gen_ui.first_story_gen,
-		# inputs=[			
-		# 	time_dd, place_dd, mood_dd, 
-		# 	name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-		# 	side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-		# 	side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-		# 	side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-		# ],
-		# outputs=[
-		# 	cursors, cur_cursor,
-		# 	title_display, subtitle_display, story_content,
-		# 	image_gen_btn, audio_gen_btn, action_btn1, action_btn2, action_btn3,
-		# ]
-
 async def actions_gen(
 	cursors,
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
 	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
-	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3	
+	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+	regen_actions_btn=None
 ):
 	stories = ""
 	cur_side_chars = 1
+	end_idx = len(cursors) if regen_actions_btn is None else len(cursors)-1
 
-	for cursor in cursors:
+	for cursor in cursors[:end_idx]:
 		stories = stories + cursor["story"]
 
 	prompt = f"""Suggest the three options to drive the stories to the next based on the information below. 
