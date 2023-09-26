@@ -148,20 +148,6 @@ Fill in the following JSON output format:
 		gr.update(value=None, visible=False, interactive=True),	
 	)
 
-def actions_random(
-	cursors, cur_cursor,
-	action1, action2, action3
-):
-	actions = cursors[cur_cursor]["actions"]
-	random_actions = random.sample(actions, 3)
-
-	return (
-		random_actions[0],
-		random_actions[1],
-		random_actions[2],
-		"     "
-	)
-
 async def actions_gen(
 	cursors,
 	genre, place, mood,
@@ -244,13 +230,12 @@ Fill in the following JSON output format:
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 	actions = response_json["options"]
 
-	last_cursor_idx = len(cursors)-1
-	cursors[last_cursor_idx]["actions"] = actions
+	random_actions = random.sample(actions, 3)
 
 	return (
-		gr.update(value=actions[0], interactive=True),
-		gr.update(value=actions[1], interactive=True),
-		gr.update(value=actions[2], interactive=True),
+		gr.update(value=random_actions[0], interactive=True),
+		gr.update(value=random_actions[1], interactive=True),
+		gr.update(value=random_actions[2], interactive=True),
 		"   "
 	)
 
