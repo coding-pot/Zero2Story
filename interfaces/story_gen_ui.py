@@ -282,8 +282,13 @@ Fill in the following JSON output format:
 		cursors[cur_cursor_idx]["story"] = story
 
 	return (
-		cursors,
+		cursors, len(cursors)-1,
 		story,
+		gr.update(
+			maximum=len(cursors), value=len(cursors),
+			label=f"{len(cursors)} out of {len(cursors)} stories",
+			visible=False if cur_cursor_idx is None else True, interactive=True
+		),
 		gr.update(interactive=True),
 		gr.update(interactive=True),		
 	)
