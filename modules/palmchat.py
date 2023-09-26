@@ -80,7 +80,7 @@ async def gen_text(
     use_filter=True
 ):
     if parameters is None:
-        temperature = 0.7
+        temperature = 1.0
         top_k = 40
         top_p = 0.95
         max_output_tokens = 1024
@@ -102,7 +102,7 @@ async def gen_text(
                 'top_k': top_k,
                 'top_p': top_p,
                 'max_output_tokens': max_output_tokens,
-            }            
+            }
 
     if mode == "chat":
         response = await palm_api.chat_async(**parameters, messages=prompt)

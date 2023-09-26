@@ -20,6 +20,9 @@ with gr.Blocks(css=STYLE) as demo:
 		"story_chat": GradioPaLMChatPPManager(),
 		"export_chat": GradioPaLMChatPPManager(),
 	})
+ 
+	cur_cursor = gr.State(0)
+	cursors = gr.State([])
 
 	gallery_images1 = gr.State(default_character_images)
 	gallery_images2 = gr.State(default_character_images)
@@ -40,162 +43,160 @@ with gr.Blocks(css=STYLE) as demo:
 
 	gr.Markdown("### 👥 Character setup")
 	with gr.Accordion("determine four characters' traits", open=False) as character_setup_section:
-		with gr.Tab("main character"):
-			char_gallery1 = gr.Gallery(value=default_character_images, height=256, preview=True)
+		with gr.Row():
+			with gr.Column():
+				gr.Checkbox(label="character include/enable", value=True, interactive=False)
+				char_gallery1 = gr.Gallery(value=default_character_images, height=256, preview=True)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
-				name_txt1 = gr.Textbox(random_names[0], elem_classes=["no-label"], scale=3)
-				random_name_btn1 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
+					name_txt1 = gr.Textbox(random_names[0], elem_classes=["no-label"], scale=3)
+					random_name_btn1 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
-				age_dd1 = gr.Dropdown(label=None, choices=ages, value=ages[0], elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
+					age_dd1 = gr.Dropdown(label=None, choices=ages, value=ages[0], elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
-				mbti_dd1 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[0], interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
+					mbti_dd1 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[0], interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("nature", elem_classes=["markdown-left"], scale=3)
-				personality_dd1 = gr.Dropdown(label=None, choices=personalities, value=personalities[0], interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("nature", elem_classes=["markdown-left"], scale=3)
+					personality_dd1 = gr.Dropdown(label=None, choices=personalities, value=personalities[0], interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
-				job_dd1 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
+					job_dd1 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
-				creative_dd1 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"], visible=False):
+					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
+					creative_dd1 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-			gen_char_btn1 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
+				gen_char_btn1 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
-		with gr.Tab("side character 1"):
-			char_gallery2 = gr.Gallery(value=default_character_images, height=256, preview=True)
+			with gr.Column():
+				side_char_enable_ckb1 = gr.Checkbox(label="character include/enable", value=False)
+				char_gallery2 = gr.Gallery(value=default_character_images, height=256, preview=True)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
-				name_txt2 = gr.Textbox(random_names[1], elem_classes=["no-label"], scale=3)
-				random_name_btn2 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
+					name_txt2 = gr.Textbox(random_names[1], elem_classes=["no-label"], scale=3)
+					random_name_btn2 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
-				age_dd2 = gr.Dropdown(label=None, choices=ages, value=ages[1], elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
+					age_dd2 = gr.Dropdown(label=None, choices=ages, value=ages[1], elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
-				mbti_dd2 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[1], interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
+					mbti_dd2 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[1], interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("nature", elem_classes=["markdown-left"], scale=3)
-				personality_dd2 = gr.Dropdown(label=None, choices=personalities, value=personalities[1], interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("nature", elem_classes=["markdown-left"], scale=3)
+					personality_dd2 = gr.Dropdown(label=None, choices=personalities, value=personalities[1], interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
-				job_dd2 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][1], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
+					job_dd2 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][1], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
-				creative_dd2 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"], visible=False):
+					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
+					creative_dd2 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-			gen_char_btn2 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
+				gen_char_btn2 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
-		with gr.Tab("side character 2"):
-			char_gallery3 = gr.Gallery(value=default_character_images, height=256, preview=True)
+			with gr.Column():
+				side_char_enable_ckb2 = gr.Checkbox(label="character include/enable", value=False)
+				char_gallery3 = gr.Gallery(value=default_character_images, height=256, preview=True)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
-				name_txt3 = gr.Textbox(random_names[2], elem_classes=["no-label"], scale=3)
-				random_name_btn3 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
+					name_txt3 = gr.Textbox(random_names[2], elem_classes=["no-label"], scale=3)
+					random_name_btn3 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
-				age_dd3 = gr.Dropdown(label=None, choices=ages, value=ages[2], elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
+					age_dd3 = gr.Dropdown(label=None, choices=ages, value=ages[2], elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
-				mbti_dd3 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[2], interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
+					mbti_dd3 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[2], interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("nature", elem_classes=["markdown-left"], scale=3)
-				personality_dd3 = gr.Dropdown(label=None, choices=personalities, value=personalities[2], interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("nature", elem_classes=["markdown-left"], scale=3)
+					personality_dd3 = gr.Dropdown(label=None, choices=personalities, value=personalities[2], interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
-				job_dd3 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][2], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
+					job_dd3 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][2], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
-				creative_dd3 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"], visible=False):
+					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
+					creative_dd3 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-			gen_char_btn3 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
+				gen_char_btn3 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
-		with gr.Tab("side character 3"):
-			char_gallery4 = gr.Gallery(value=default_character_images, height=256, preview=True)
+			with gr.Column():
+				side_char_enable_ckb3 = gr.Checkbox(label="character include/enable", value=False)
+				char_gallery4 = gr.Gallery(value=default_character_images, height=256, preview=True)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
-				name_txt4 = gr.Textbox(random_names[3], elem_classes=["no-label"], scale=3)
-				random_name_btn4 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
+					name_txt4 = gr.Textbox(random_names[3], elem_classes=["no-label"], scale=3)
+					random_name_btn4 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
-				age_dd4 = gr.Dropdown(label=None, choices=ages, value=ages[3], elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
+					age_dd4 = gr.Dropdown(label=None, choices=ages, value=ages[3], elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
-				mbti_dd4 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[3], interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
+					mbti_dd4 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[3], interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("nature", elem_classes=["markdown-left"], scale=3)
-				personality_dd4 = gr.Dropdown(label=None, choices=personalities, value=personalities[3], interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("nature", elem_classes=["markdown-left"], scale=3)
+					personality_dd4 = gr.Dropdown(label=None, choices=personalities, value=personalities[3], interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
-				job_dd4 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][3], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"]):
+					gr.Markdown("job", elem_classes=["markdown-left"], scale=3)
+					job_dd4 = gr.Dropdown(label=None, choices=jobs["Middle Ages"], value=jobs["Middle Ages"][3], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-			with gr.Row(elem_classes=["no-gap"]):
-				gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
-				creative_dd4 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
+				with gr.Row(elem_classes=["no-gap"], visible=False):
+					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
+					creative_dd4 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-			gen_char_btn4 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
+				gen_char_btn4 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
 
 		character_setup_confirm_btn = gr.Button("Confirm", elem_classes=["wrap", "control-button"])
 
 	gr.Markdown("### 💡 Plot setup")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as plot_setup_section:
-		title = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"])
+		title = gr.Textbox("Title Undetermined Yet", elem_classes=["no-label", "font-big"])
+		# plot = gr.Textbox(lines=10, elem_classes=["no-label", "small-big-textarea"])
 
-		with gr.Row():
-			gr.Textbox("Chapter 1.", elem_classes=["no-label"], scale=1)
-			chapter1_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
-
+		gr.Textbox("Rising action", elem_classes=["no-label"])
 		with gr.Row(elem_classes=["left-margin"]):
 			chapter1_plot = gr.Textbox(placeholder="The plot of the first chapter will be generated here", lines=3, elem_classes=["no-label"])
 
-		with gr.Row():
-			gr.Textbox("Chapter 2.", elem_classes=["no-label"], scale=1)
-			chapter2_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
-
-		with gr.Row(elem_classes=["left-margin"]):
+		gr.Textbox("Crisis", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
 			chapter2_plot = gr.Textbox(placeholder="The plot of the second chapter will be generated here", lines=3, elem_classes=["no-label"])
 
-		with gr.Row():
-			gr.Textbox("Chapter 3.", elem_classes=["no-label"], scale=1)
-			chapter3_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
-
-		with gr.Row(elem_classes=["left-margin"]):
+		gr.Textbox("Climax", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
 			chapter3_plot = gr.Textbox(placeholder="The plot of the third chapter will be generated here", lines=3, elem_classes=["no-label"])
 
-		with gr.Row():
-			gr.Textbox("Chapter 4.", elem_classes=["no-label"], scale=1)
-			chapter4_title = gr.Textbox(placeholder="Placeholder", elem_classes=["no-label"], scale=5)
-
-		with gr.Row(elem_classes=["left-margin"]):
+		gr.Textbox("Falling action", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
 			chapter4_plot = gr.Textbox(placeholder="The plot of the fourth chapter will be generated here", lines=3, elem_classes=["no-label"])
 
+		gr.Textbox("Denouement", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
+			chapter5_plot = gr.Textbox(placeholder="The plot of the fifth chapter will be generated here", lines=3, elem_classes=["no-label"])
+
 		with gr.Row():
-			gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
+			plot_gen_temp = gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
 			plot_gen_btn = gr.Button("gen plot", elem_classes=["control-button"])
 
 		plot_setup_confirm_btn = gr.Button("confirm", elem_classes=["control-button"])
@@ -203,102 +204,50 @@ with gr.Blocks(css=STYLE) as demo:
 	gr.Markdown("### ✍🏼 Story writing")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as story_writing_section:
 		title_display = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"])
+		subtitle_display = gr.Markdown("### Title Undetermined Yet", elem_classes=["markdown-center"])
+		progress_comp = gr.Textbox(label=None, elem_classes=["no-label"], interactive=False)
 
-		with gr.Tab("Chapter 1"):
-			chapter1_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
+		with gr.Row():
+			image_gen_btn = gr.Button("🏞️", interactive=False)
+			audio_gen_btn = gr.Button("🔊", interactive=False)
+			img_audio_combine_btn = gr.Button("📀", interactive=False)
+  
+		story_image = gr.Image(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
+		story_audio = gr.Audio(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
+		story_video = gr.Video(visible=False, interactive=False, elem_classes=["no-label-gallery"])
 
-			chapter1_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
-   
-			with gr.Row():
-				chapter1_image_gen_btn = gr.Button("🏞️")
-				chapter1_audio_gen_btn = gr.Button("🔊")
-				chapter1_image_audio_combine_btn = gr.Button("📀")
-       
-			chapter1_image = gr.Image("assets/background.png", visible=False, type="filepath")
-			chapter1_audio = gr.Audio("assets/music.wav", visible=False, type="filepath")
-			chapter1_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
-			chapter1_content = gr.Textbox(
-					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
-					lines=12,
-					elem_classes=["no-label", "small-big-textarea"]
-			)
+		story_progress = gr.Slider(
+			1, 2, 1, step=1, interactive=True, 
+			label="1/2", visible=False
+		)
 
-			with gr.Row():
-				chapter1_action1 = gr.Button("Action Choice 1", elem_classes=["control-button"])
-				chapter1_action2 = gr.Button("Action Choice 2", elem_classes=["control-button"])
-				chapter1_action3 = gr.Button("Action Choice 3", elem_classes=["control-button"])
+		story_content = gr.Textbox(
+				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
+				lines=12,
+				elem_classes=["no-label", "small-big-textarea"]
+		)		
 
-		with gr.Tab("Chapter 2"):
-			chapter2_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
+		action_types = gr.Radio(
+			choices=[
+				"continue current phase", "move to the next phase"
+			],
+			value="continue current phase",
+			interactive=True,
+			elem_classes=["no-label-radio"]
+		)
 
-			chapter2_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
-   
-			with gr.Row():
-				chapter2_image_gen_btn = gr.Button("🏞️")
-				chapter2_audio_gen_btn = gr.Button("🔊")
-				chapter2_image_audio_combine_btn = gr.Button("📀")
-       
-			chapter2_image = gr.Image("assets/background.png", visible=False, type="filepath")
-			chapter2_audio = gr.Audio("assets/music.wav", visible=False, type="filepath")
-			chapter2_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
-			chapter2_content = gr.Textbox(
-					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
-					lines=12,
-					elem_classes=["no-label", "small-big-textarea"]
-			)
+		with gr.Row():
+			action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button"])
+			action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button"])
+			action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
 
-			with gr.Row():
-				chapter2_action1 = gr.Button("Action Choice 1", elem_classes=["control-button"])
-				chapter2_action2 = gr.Button("Action Choice 2", elem_classes=["control-button"])
-				chapter2_action3 = gr.Button("Action Choice 3", elem_classes=["control-button"])
+		with gr.Row():
+			gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
+			gr.Button("Run custom action", interactive=False, elem_classes=["control-button"], scale=1)
 
-		with gr.Tab("Chapter 3"):
-			chapter3_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
-
-			chapter3_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
-   
-			with gr.Row():
-				chapter3_image_gen_btn = gr.Button("🏞️")
-				chapter3_audio_gen_btn = gr.Button("🔊")
-				chapter3_image_audio_combine_btn = gr.Button("📀")
-       
-			chapter3_image = gr.Image("assets/background.png", visible=False, type="filepath")
-			chapter3_audio = gr.Audio("assets/music.wav", visible=False, type="filepath")
-			chapter3_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
-			chapter3_content = gr.Textbox(
-					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
-					lines=12,
-					elem_classes=["no-label", "small-big-textarea"]
-			)
-
-			with gr.Row():
-				chapter3_action1 = gr.Button("Action Choice 1", elem_classes=["control-button"])
-				chapter3_action2 = gr.Button("Action Choice 2", elem_classes=["control-button"])
-				chapter3_action3 = gr.Button("Action Choice 3", elem_classes=["control-button"])
-
-		with gr.Tab("Chapter 4"):
-			chapter4_title_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
-
-			chapter4_progress = gr.Markdown("🔘&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️&nbsp; &nbsp;⎯⎯⎯&nbsp; &nbsp;⚪️", elem_classes=["markdown-center", "small-big"])
-   
-			with gr.Row():
-				chapter4_image_gen_btn = gr.Button("🏞️")
-				chapter4_audio_gen_btn = gr.Button("🔊")
-				chapter4_image_audio_combine_btn = gr.Button("📀")
-       
-			chapter4_image = gr.Image("assets/background.png", visible=False, type="filepath")
-			chapter4_audio = gr.Audio("assets/music.wav", visible=False, type="filepath")
-			chapter4_video = gr.Video(visible=False, elem_classes=["no-label-gallery"])
-			chapter4_content = gr.Textbox(
-					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
-					lines=12,
-					elem_classes=["no-label", "small-big-textarea"]
-			)
-
-			with gr.Row():
-				chapter4_action1 = gr.Button("Action Choice 1", elem_classes=["control-button"])
-				chapter4_action2 = gr.Button("Action Choice 2", elem_classes=["control-button"])
-				chapter4_action3 = gr.Button("Action Choice 3", elem_classes=["control-button"])
+		with gr.Accordion("regeneration controls", open=False):
+			gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
+			gr.Button("Re-suggest whole things", interactive=True, elem_classes=["control-button"])
 
 	gr.Markdown("### 📤 Export output")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
@@ -411,151 +360,177 @@ with gr.Blocks(css=STYLE) as demo:
 	plot_gen_btn.click(
 		plot_gen_ui.plot_gen,
 		inputs= [
+			plot_gen_temp,
 			time_dd, place_dd, mood_dd, 
+			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
 			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
 		],
 		outputs = [
-			title, title_display,
-    		chapter1_title, chapter2_title, chapter3_title, chapter4_title,
-		    chapter1_title_display, chapter2_title_display, chapter3_title_display, chapter4_title_display,
-      		chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
-    	]
+			title, title_display, 
+			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot
+   			# title_display,
+			# chapter1_title, chapter2_title, chapter3_title, chapter4_title,
+			# chapter1_title_display, chapter2_title_display, chapter3_title_display, chapter4_title_display,
+	  		# chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
+		]
+	).then(
+		plot_gen_ui.first_story_gen,
+		inputs=[
+			title, 
+   			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
+			time_dd, place_dd, mood_dd, 
+			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+      		cursors, cur_cursor
+		],
+		outputs=[
+			subtitle_display,
+			story_content,
+			cursors, cur_cursor,
+			image_gen_btn, audio_gen_btn,
+			action_btn1, action_btn2, action_btn3
+		]
 	)
 	### Story generation
-	###### Chapter 1
-	chapter1_image_gen_btn.click(
+	story_content.input(
+		story_gen_ui.update_story_content,
+		inputs=[story_content, cursors, cur_cursor],
+		outputs=[cursors],
+	)
+
+	image_gen_btn.click(
 		story_gen_ui.image_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd,
-			title, chapter1_title, chapter1_plot,
-		], 
-		outputs=[chapter1_image]
+			time_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor, story_audio
+		],
+		outputs=[
+			story_image, img_audio_combine_btn, cursors, progress_comp,
+		]
 	)
- 
-	chapter1_audio_gen_btn.click(
+
+	audio_gen_btn.click(
 		story_gen_ui.audio_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd,
-			title, chapter1_title, chapter1_plot,
-		], 
-		outputs=[chapter1_audio]
+			time_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor, story_image
+		],
+		outputs=[story_audio, img_audio_combine_btn, cursors, progress_comp]
 	)
- 
-	chapter1_image_audio_combine_btn.click(
+
+	img_audio_combine_btn.click(
 		story_gen_ui.video_gen,
-		inputs=[chapter1_image, chapter1_audio, chapter1_title],
-		outputs=[chapter1_image, chapter1_audio, chapter1_video],
-	)
-
-	###### Chapter 2
-	chapter2_image_gen_btn.click(
-		story_gen_ui.image_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd,
-			title, chapter2_title, chapter2_plot,
+			story_image, story_audio, story_content, cursors, cur_cursor
 		],
-		outputs=[chapter2_image]
-	)
+		outputs=[
+			story_image, story_audio, story_video, cursors, progress_comp
+		],
+	)	
 
-	chapter2_audio_gen_btn.click(
-		story_gen_ui.audio_gen,
+	story_progress.input(
+		story_gen_ui.move_story_cursor,
 		inputs=[
-			time_dd, place_dd, mood_dd,
-			title, chapter2_title, chapter2_plot,
+			story_progress, cursors
 		],
-		outputs=[chapter2_audio]
+		outputs=[
+			cur_cursor,
+			story_progress, 
+			subtitle_display,
+			story_content,
+			story_image, story_audio, story_video,
+			action_btn1, action_btn2, action_btn3,
+		]
 	)
 
-	chapter2_image_audio_combine_btn.click(
-		story_gen_ui.video_gen,
-		inputs=[chapter2_image, chapter2_audio, chapter2_title],
-		outputs=[chapter2_image, chapter2_audio, chapter2_video],
-	)
-
-	###### Chapter 3
-	chapter3_image_gen_btn.click(
-		story_gen_ui.image_gen,
+	action_btn1.click(
+		story_gen_ui.next_story_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd,
-			title, chapter3_title, chapter3_plot,
+			action_types, action_btn1,
+			title, subtitle_display, story_content,
+   			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
+			time_dd, place_dd, mood_dd, 
+			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,   
+			cursors, cur_cursor
 		],
-		outputs=[chapter3_image]
+		outputs=[
+			subtitle_display,
+			story_content,
+			cursors, cur_cursor, story_progress,
+			story_image, story_audio, story_video,
+			action_btn1, action_btn2, action_btn3
+		]
 	)
 
-	chapter3_audio_gen_btn.click(
-		story_gen_ui.audio_gen,
+	action_btn2.click(
+		story_gen_ui.next_story_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd,
-			title, chapter3_title, chapter3_plot,
+			action_types, action_btn2,
+			title, subtitle_display, story_content,
+   			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
+			time_dd, place_dd, mood_dd, 
+			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,   
+			cursors, cur_cursor
 		],
-		outputs=[chapter3_audio]
+		outputs=[
+			subtitle_display,
+			story_content,
+			cursors, cur_cursor, story_progress,
+			story_image, story_audio, story_video,
+			action_btn1, action_btn2, action_btn3
+		]
 	)
 
-	chapter3_image_audio_combine_btn.click(
-		story_gen_ui.video_gen,
-		inputs=[chapter3_image, chapter3_audio, chapter3_title],
-		outputs=[chapter3_image, chapter3_audio, chapter3_video],
-	)
-
-	###### Chapter 4
-	chapter4_image_gen_btn.click(
-		story_gen_ui.image_gen,
+	action_btn3.click(
+		story_gen_ui.next_story_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd,
-			title, chapter4_title, chapter4_plot,
+			action_types, action_btn3,
+			title, subtitle_display, story_content,
+   			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
+			time_dd, place_dd, mood_dd, 
+			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,   
+			cursors, cur_cursor
 		],
-		outputs=[chapter4_image]
+		outputs=[
+			subtitle_display,
+			story_content,
+			cursors, cur_cursor, story_progress,
+			story_image, story_audio, story_video,
+			action_btn1, action_btn2, action_btn3
+		]
 	)
+	### Chatbot
 
-	chapter4_audio_gen_btn.click(
-		story_gen_ui.audio_gen,
-		inputs=[
-			time_dd, place_dd, mood_dd,
-			title, chapter4_title, chapter4_plot,
-		],
-		outputs=[chapter4_audio]
-	)
-
-	chapter4_image_audio_combine_btn.click(
-		story_gen_ui.video_gen,
-		inputs=[chapter4_image, chapter4_audio, chapter4_title],
-		outputs=[chapter4_image, chapter4_audio, chapter4_video],
-	)
- 
-	# chapter1_action1.click(
-	# 	story_gen_ui.next_paragraph_gen,
-	# 	inputs = [
-    #   		chapter1_action1,
-	# 		chapter1_progress,
+	# chat_input_txt.submit(
+	# 	chat_ui.chat,
+	# 	inputs=[
+	# 		chat_input_txt, chat_mode, chat_state,
 	# 		time_dd, place_dd, mood_dd, 
 	# 		name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 	# 		name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 	# 		name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
 	# 		name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-	# 		chapter1_title, chapter2_title, chapter3_title, chapter4_title, chapter1_content
+	# 		chapter1_title, chapter2_title, chapter3_title, chapter4_title,
+	# 		chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
 	# 	],
-	# 	outputs = [chapter1_progress, chapter1_content, chapter1_action1, chapter1_action2, chapter1_action3]
+	# 	outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	# )
- 
-	### Chatbot
-
-	chat_input_txt.submit(
-		chat_ui.chat,
-		inputs=[
-			chat_input_txt, chat_mode, chat_state,
-			time_dd, place_dd, mood_dd, 
-			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-			chapter1_title, chapter2_title, chapter3_title, chapter4_title,
-			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
-		],
-		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
-	)
  
 	regen_btn.click(
 		chat_ui.rollback_last_ui,

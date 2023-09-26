@@ -159,4 +159,17 @@ textarea {
     width: 95%;
   }
 }
+
+.font-big textarea {
+  font-size: 19pt !important;
+  text-align: center;
+}
+
+.no-label-image-audio > div:nth-child(2) {
+  display: none;
+}
+
+.no-label-radio > span {
+  display: none;
+}
 """
