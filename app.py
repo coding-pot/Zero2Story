@@ -204,7 +204,7 @@ with gr.Blocks(css=STYLE) as demo:
 	gr.Markdown("### ✍🏼 Story writing")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as story_writing_section:
 		title_display = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"])
-		subtitle_display = gr.Markdown("## Title Undetermined Yet", elem_classes=["markdown-center"])
+		subtitle_display = gr.Markdown("### Title Undetermined Yet", elem_classes=["markdown-center"])
 		progress_comp = gr.Textbox(label=None, elem_classes=["no-label"], interactive=False)
 
 		with gr.Row():
@@ -432,6 +432,7 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[
 			cur_cursor,
 			story_progress, 
+			subtitle_display,
 			story_content,
 			story_image, story_audio, story_video,
 			action_btn1, action_btn2, action_btn3,
