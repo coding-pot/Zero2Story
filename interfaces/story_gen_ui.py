@@ -183,7 +183,7 @@ async def actions_gen(
 {stories}
 
 """
-	print(f"generated prompt:\n{prompt}")
+	print(f"generated prompt:\n{summary_prompt}")
 	parameters = {
 		'model': 'models/text-bison-001',
 		'candidate_count': 1,
