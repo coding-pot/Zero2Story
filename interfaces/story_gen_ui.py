@@ -38,16 +38,16 @@ async def next_story_gen(
 	prompt = f"""Write the next paragraphs. The next paragraphs should be determined by an option and well connected to the current stories. 
 
 background information:
-- genre: Horror
-- where: Abandoned House
-- mood: Ominous
+- genre: {genre}
+- where: {place}
+- mood: {mood}
 
 main character
-- name: Aaron
-- job: Doctor
-- age: 30s
-- mbti: ESTJ
-- personality: Optimistic
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- mbti: {main_char_mbti}
+- personality: {main_char_personality}
 """
 
 	prompt, cur_side_chars = utils.add_side_character(
