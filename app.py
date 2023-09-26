@@ -315,7 +315,7 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	regen_actions_btn.click(
-		story_gen_ui.actions_random,
+		story_gen_ui.actions_gen,
 		inputs=[
 			cursors,
 			time_dd, place_dd, mood_dd, 
