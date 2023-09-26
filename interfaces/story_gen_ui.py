@@ -18,6 +18,92 @@ bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
+async def next_story_gen(
+	cursors,
+	action,
+	genre, place, mood,
+	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,	
+	regen_actions_btn = None
+):
+	stories = ""
+	cur_side_chars = 1
+	end_idx = len(cursors) if regen_actions_btn is None else len(cursors)-1
+
+	for cursor in cursors[:end_idx]:
+		stories = stories + cursor["story"]
+
+	prompt = f"""Write the next paragraphs. The next paragraphs should be determined by an option and well connected to the current stories. 
+
+background information:
+- genre: Horror
+- where: Abandoned House
+- mood: Ominous
+
+main character
+- name: Aaron
+- job: Doctor
+- age: 30s
+- mbti: ESTJ
+- personality: Optimistic
+"""
+
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable1, prompt, cur_side_chars,
+		side_char_name1, side_char_job1, side_char_age1, side_char_mbti1, side_char_personality1
+	)
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable2, prompt, cur_side_chars,
+		side_char_name2, side_char_job2, side_char_age2, side_char_mbti2, side_char_personality2
+	)
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable3, prompt, cur_side_chars,
+		side_char_name3, side_char_job3, side_char_age3, side_char_mbti3, side_char_personality3
+	)
+
+	prompt = prompt + f"""
+stories
+{stories}
+
+option to the next stories: {action}
+
+Fill in the following JSON output format:
+{
+	"paragraphs": "string"
+}
+
+"""
+
+	print(f"generated prompt:\n{prompt}")
+	parameters = {
+		'model': 'models/text-bison-001',
+		'candidate_count': 1,
+		'temperature': 1.0,
+		'top_k': 40,
+		'top_p': 1,
+		'max_output_tokens': 4096,
+	}    	
+	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+
+	story = response_json["paragraphs"]
+	cursors.append({
+		"title": "",
+		"story": response_json["paragraphs"]
+	})
+
+	return (
+		cursors, len(cursors)-1,
+		story,
+		gr.update(
+			maximum=len(cursors), value=len(cursors),
+			label=f"{len(cursors)} out of {len(cursors)} stories"
+		),
+		gr.update(interactive=True),
+		gr.update(interactive=True),		
+	)
+
 async def actions_gen(
 	cursors,
 	genre, place, mood,
@@ -25,13 +111,11 @@ async def actions_gen(
 	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
-	regen_actions_btn=None
 ):
 	stories = ""
 	cur_side_chars = 1
-	end_idx = len(cursors) if regen_actions_btn is None else len(cursors)-1
 
-	for cursor in cursors[:end_idx]:
+	for cursor in cursors:
 		stories = stories + cursor["story"]
 
 	prompt = f"""Suggest the three options to drive the stories to the next based on the information below. 
@@ -88,6 +172,7 @@ Fill in the following JSON output format:
 		gr.update(value=actions[0], interactive=True),
 		gr.update(value=actions[1], interactive=True),
 		gr.update(value=actions[2], interactive=True),
+		"   "
 	)
 
 async def first_story_gen(
@@ -96,7 +181,7 @@ async def first_story_gen(
 	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
 	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
-	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3
+	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
 ):
 	cur_side_chars = 1
 
@@ -249,8 +334,6 @@ def audio_gen(
 	)
 
 def move_story_cursor(moved_cursor, cursors):
-	print(moved_cursor)
-
 	cursor_content = cursors[moved_cursor-1]
 	max_cursor = len(cursors)
 
@@ -290,7 +373,6 @@ def move_story_cursor(moved_cursor, cursors):
 		outputs = (
 			moved_cursor-1,
 			gr.update(label=f"{moved_cursor} out of {len(cursors)} stories"),
-			cursor_content["title"],
 			cursor_content["story"],
 			image_container,
 			audio_container,
