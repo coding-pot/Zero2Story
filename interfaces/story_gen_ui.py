@@ -88,6 +88,8 @@ Fill in the following JSON output format:
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
 	story = response_json["paragraphs"]
+	if isinstance(story, list):
+		story = "\n\n".join(story)
 	cursors.append({
 		"title": "",
 		"story": response_json["paragraphs"]
@@ -234,6 +236,8 @@ Fill in the following JSON output format:
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
 	story = response_json["paragraphs"]
+	if isinstance(story, list):
+		story = "\n\n".join(story)
 	cursors.append({
 		"title": "",
 		"story": response_json["paragraphs"]
