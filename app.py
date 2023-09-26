@@ -247,8 +247,12 @@ with gr.Blocks(css=STYLE) as demo:
 			custom_action_btn = gr.Button("Run custom action", interactive=False, elem_classes=["control-button"], scale=1)
 
 		with gr.Accordion("regeneration controls", open=False):
-			regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
-			regen_story_btn = gr.Button("Re-suggest whole things", interactive=True, elem_classes=["control-button"])
+			with gr.Row():
+				regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
+				regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button"])
+    
+			custom_prompt_txt = gr.Textbox(placeholder="your own custom request", elem_classes=["no-label", "small-big-textarea"])
+			custom_prompt_btn = gr.Button("update based on custom request", interactive=True, elem_classes=["control-button"])
 
 	gr.Markdown("### 📤 Export output")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
@@ -325,13 +329,7 @@ with gr.Blocks(css=STYLE) as demo:
 			action_btn1, action_btn2, action_btn3, progress_comp
 		]		
 	)
-
-	# main_tabs.select(
-	# 	ui.update_on_main_tabs,
-	# 	inputs=[chat_state],
-	# 	outputs=[chat_mode, chatbot]
-	# )
-
+ 
 	#### Setups
 
 	time_dd.select(
@@ -546,6 +544,18 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[
 			action_btn1, action_btn2, action_btn3, progress_comp
 		]
+	)
+
+	def update_custom_action_btn(custom_action_txt):
+		if custom_action_txt.strip() == "":
+			return gr.update(interactive=False)
+		else:
+			return gr.update(interactive=True)
+
+	custom_action_txt.input(
+		update_custom_action_btn,
+		inputs=custom_action_txt,
+		outputs=custom_action_btn
 	)
 
 	custom_action_btn.click(
