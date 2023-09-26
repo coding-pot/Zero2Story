@@ -148,6 +148,20 @@ Fill in the following JSON output format:
 		gr.update(value=None, visible=False, interactive=True),	
 	)
 
+def actions_random(
+	cursors, cur_cursor,
+	action1, action2, action3
+):
+	actions = cursors[cur_cursor]["actions"]
+	random_actions = random.sample(actions, 3)
+
+	return (
+		random_actions[0],
+		random_actions[1],
+		random_actions[2],
+		"     "
+	)
+
 async def actions_gen(
 	cursors,
 	genre, place, mood,
@@ -164,7 +178,23 @@ async def actions_gen(
 	for cursor in cursors[:end_idx]:
 		stories = stories + cursor["story"]
 
-	prompt = f"""Suggest the three options to drive the stories to the next based on the information below. 
+	summary_prompt = f"""Summarize the text below
+
+{stories}
+
+"""
+	print(f"generated prompt:\n{prompt}")
+	parameters = {
+		'model': 'models/text-bison-001',
+		'candidate_count': 1,
+		'temperature': 1.0,
+		'top_k': 40,
+		'top_p': 1,
+		'max_output_tokens': 4096,
+	}    	
+	_, summary = await palmchat.gen_text(summary_prompt, mode="text", parameters=parameters)
+
+	prompt = f"""Suggest the 30 options to drive the stories to the next based on the information below. 
 
 background information:
 - genre: {genre}
@@ -192,12 +222,12 @@ main character
 	)
 
 	prompt = prompt + f"""
-stories
-{stories}
+summary of the story
+{summary}
 
 Fill in the following JSON output format:
 {{
-    "options": ["string", "string", "string"]
+    "options": ["string", "string", "string", ...]
 }}
 
 """
@@ -213,6 +243,9 @@ Fill in the following JSON output format:
 	}    	
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 	actions = response_json["options"]
+
+	last_cursor_idx = len(cursors)-1
+	cursors[last_cursor_idx]["actions"] = actions
 
 	return (
 		gr.update(value=actions[0], interactive=True),
