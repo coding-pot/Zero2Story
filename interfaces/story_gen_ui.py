@@ -194,7 +194,7 @@ JSON output:
 			cursors, cur_cursor,
 			gr.update(
 				maximum=len(cursors), value=cur_cursor+1,
-				label=f"{cur_cursor} out of {len(cursors)} chapters", visible=True
+				label=f"{cur_cursor+1} out of {len(cursors)} stories", visible=True
 			),
 			gr.update(value=None, visible=False),
 			gr.update(value=None, visible=False),
@@ -303,7 +303,7 @@ JSON output:
 			cursors, cur_cursor,
 			gr.update(
 				maximum=len(cursors), value=cur_cursor+1,
-				label=f"{cur_cursor} out of {len(cursors)} chapters", visible=True
+				label=f"{cur_cursor+1} out of {len(cursors)} stories", visible=True
 			),
 			gr.update(value=None, visible=False),
 			gr.update(value=None, visible=False),
