@@ -294,7 +294,7 @@ Fill in the following JSON output format:
 		gr.update(
 			maximum=len(cursors), value=len(cursors),
 			label=f"{len(cursors)} out of {len(cursors)} stories",
-			visible=False if cur_cursor_idx is None else True, interactive=True
+			visible=False if len(cursors) == 1 else True, interactive=True
 		),
 		gr.update(interactive=True),
 		gr.update(interactive=True),		
@@ -335,6 +335,7 @@ def image_gen(
 	for _ in range(3):
 		try:
 			prompt, neg_prompt = img_maker.generate_background_prompts(time, place, mood, title, "", story_content)
+			neg_prompt
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
 		except Exception as e:

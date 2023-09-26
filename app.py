@@ -243,8 +243,7 @@ with gr.Blocks(css=STYLE) as demo:
 				regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
 				regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button"])
     
-			custom_prompt_txt = gr.Textbox(placeholder="your own custom request", elem_classes=["no-label", "small-big-textarea"])
-			custom_prompt_btn = gr.Button("update based on custom request", interactive=True, elem_classes=["control-button"])
+			custom_prompt_txt = gr.Textbox(placeholder="Re-suggest story and actions based on your own custom request", elem_classes=["no-label", "small-big-textarea"])
 
 		with gr.Row():
 			action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button"])
