@@ -68,6 +68,11 @@ def _add_contents_by_content_types(cursors, plot_type):
 
 	return sub_prompts
 
+def _get_list_of_next_plots(cur_plot_type):
+	plot_types = ["rising action", "crisis", "climax", "falling action", "denouement"]
+	cur_plot_type_idx = plot_types.index(cur_plot_type)
+	return ", ".join(plot_types[cur_plot_type_idx:])
+
 async def next_story_gen(
 	action_type, action,
 	title, subtitle, story_content,
@@ -86,7 +91,9 @@ async def next_story_gen(
 
 	if action_type == "move to the next phase":
 		prompt = f"""Write the chapter title and the first few paragraphs of the "{_get_next_plot_types(plot_type)}" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. REMEMBER the first few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
-REMEMBER to stay on the "{_get_next_plot_types(plot_type)}" plot. DO NOT suggest paragraphs involved in the other plots on the outline. Be consistant following the overall outline.
+
+REMEMBER to stay on the "{_get_next_plot_types(plot_type)}" plot. 
+The whole story SHOULD stick to the "rising action -> crisis -> climax -> falling action -> denouement" flow, so REMEMBER not to write anything mentioned from the next plots of {_get_list_of_next_plots(plot_type)} yet. Be consistant following the overall outline.
 
 background information:
 - genre: string
@@ -211,7 +218,9 @@ JSON output:
 		)
 	else:
 		prompt = f"""Write the next few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. The next few paragraphs should be naturally connected to the current paragraphs, and they should be written based on the "action choice". Also, suggest three choosable actions to drive current story in different directions. The choosable actions should not have a duplicate action of the action choice. The next few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. Each paragraph should consist of at least five sentences. 
-REMEMBER to stay on the "{plot_type}" plot. DO NOT suggest paragraphs involved in the other plots on the outline. Be consistant following the overall outline.
+
+REMEMBER to stay on the "{plot_type}" plot. 
+The whole story SHOULD stick to the "rising action -> crisis -> climax -> falling action -> denouement" flow, so REMEMBER not to write anything mentioned from the next plots of {_get_list_of_next_plots(plot_type)} yet. Be consistant following the overall outline.
 
 background information:
 - genre: string
@@ -449,7 +458,7 @@ def move_story_cursor(moved_cursor, cursors):
 
 		outputs = (
 			moved_cursor-1,
-			gr.update(label=f"{moved_cursor} out of {len(cursors)} chapters"),
+			gr.update(label=f"{moved_cursor} out of {len(cursors)} stories"),
 			cursor_content["title"],
 			cursor_content["story"],
 			image_container,
