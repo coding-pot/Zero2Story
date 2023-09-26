@@ -304,6 +304,9 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
 			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs=[
+			action_btn1, action_btn2, action_btn3
 		]
 	)
 
