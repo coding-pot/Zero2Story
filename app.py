@@ -234,7 +234,8 @@ with gr.Blocks(css=STYLE) as demo:
 			],
 			value="continue current phase",
 			interactive=True,
-			elem_classes=["no-label-radio"]
+			elem_classes=["no-label-radio"],
+			visible=False,
 		)
 
 		with gr.Row():
@@ -242,9 +243,7 @@ with gr.Blocks(css=STYLE) as demo:
 			action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button"])
 			action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
 
-		with gr.Row():
-			custom_action_txt = gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
-			custom_action_btn = gr.Button("Run custom action", interactive=False, elem_classes=["control-button"], scale=1)
+		custom_action_txt = gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
 
 		with gr.Accordion("regeneration controls", open=False):
 			with gr.Row():
@@ -328,6 +327,16 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[
 			action_btn1, action_btn2, action_btn3, progress_comp
 		]		
+	)
+ 
+	regen_story_btn.click(
+		story_gen_ui.update_story_gen,
+		inputs=[
+			
+		],
+		outputs=[
+			
+		]
 	)
  
 	#### Setups
@@ -546,19 +555,7 @@ with gr.Blocks(css=STYLE) as demo:
 		]
 	)
 
-	def update_custom_action_btn(custom_action_txt):
-		if custom_action_txt.strip() == "":
-			return gr.update(interactive=False)
-		else:
-			return gr.update(interactive=True)
-
-	custom_action_txt.input(
-		update_custom_action_btn,
-		inputs=custom_action_txt,
-		outputs=custom_action_btn
-	)
-
-	custom_action_btn.click(
+	custom_action_txt.submit(
 		lambda: (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)),
 		inputs=None,
 		outputs=[

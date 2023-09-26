@@ -18,6 +18,35 @@ bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
+async def update_story_gen(
+	cursors, cur_cursor_idx,
+	genre, place, mood,
+	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+):
+    if len(cursors) == 1:
+        return await first_story_gen(
+			cursors,
+			genre, place, mood,
+			main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+			side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+			side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+			side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+			cur_cursor_idx=cur_cursor_idx
+		)
+    else:
+        return await first_story_gen(
+			cursors,
+			genre, place, mood,
+			main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+			side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+			side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+			side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+			regen_actions_btn="not none", cur_cursor_idx=cur_cursor_idx
+		)
+
 async def next_story_gen(
 	cursors,
 	action,
@@ -26,7 +55,7 @@ async def next_story_gen(
 	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,	
-	regen_actions_btn = None
+	regen_actions_btn=None, cur_cursor_idx=None
 ):
 	stories = ""
 	cur_side_chars = 1
@@ -90,10 +119,14 @@ Fill in the following JSON output format:
 	story = response_json["paragraphs"]
 	if isinstance(story, list):
 		story = "\n\n".join(story)
-	cursors.append({
-		"title": "",
-		"story": response_json["paragraphs"]
-	})
+  
+	if cur_cursor_idx is None:
+		cursors.append({
+			"title": "",
+			"story": story
+		})
+	else:
+		cursors[cur_cursor_idx]["story"] = story
 
 	return (
 		cursors, len(cursors)-1,
@@ -185,6 +218,7 @@ async def first_story_gen(
 	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+	cur_cursor_idx=None
 ):
 	cur_side_chars = 1
 
@@ -238,10 +272,14 @@ Fill in the following JSON output format:
 	story = response_json["paragraphs"]
 	if isinstance(story, list):
 		story = "\n\n".join(story)
-	cursors.append({
-		"title": "",
-		"story": response_json["paragraphs"]
-	})
+  
+	if cur_cursor_idx is None:
+		cursors.append({
+			"title": "",
+			"story": story
+		})
+	else:
+		cursors[cur_cursor_idx]["story"] = story
 
 	return (
 		cursors,
