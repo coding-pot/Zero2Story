@@ -445,7 +445,7 @@ def move_story_cursor(moved_cursor, cursors):
 		outputs = (
 			moved_cursor-1,
 			gr.update(label=f"{moved_cursor} out of {len(cursors)} chapters"),
-			cursor_content["title"]
+			cursor_content["title"],
 			cursor_content["story"],
 			image_container,
 			audio_container,
