@@ -70,9 +70,9 @@ stories
 option to the next stories: {action}
 
 Fill in the following JSON output format:
-{
+{{
 	"paragraphs": "string"
-}
+}}
 
 """
 
@@ -101,7 +101,7 @@ Fill in the following JSON output format:
 			label=f"{len(cursors)} out of {len(cursors)} stories"
 		),
 		gr.update(interactive=True),
-		gr.update(interactive=True),		
+		gr.update(interactive=True),
 	)
 
 async def actions_gen(
