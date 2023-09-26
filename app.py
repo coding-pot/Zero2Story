@@ -242,7 +242,7 @@ with gr.Blocks(css=STYLE) as demo:
 			action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
 
 		with gr.Row():
-			gr.Textbox(placeholder="write your own custom action", elem_classes=["small-big-textarea"], scale=3)
+			gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
 			gr.Button("Run custom action", interactive=False, elem_classes=["control-button"], scale=1)
 
 		with gr.Accordion("regeneration controls", open=False):
