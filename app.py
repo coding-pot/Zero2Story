@@ -246,7 +246,8 @@ with gr.Blocks(css=STYLE) as demo:
 			gr.Button("Run custom action", interactive=False, elem_classes=["control-button"], scale=1)
 
 		with gr.Accordion("regeneration controls", open=False):
-			gr.Button("Re-suggest actions", interactive=False, elem_classes=["control-button"])
+			gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
+			gr.Button("Re-suggest whole things", interactive=True, elem_classes=["control-button"])
 
 	gr.Markdown("### 📤 Export output")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
