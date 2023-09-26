@@ -98,7 +98,8 @@ Fill in the following JSON output format:
 		story,
 		gr.update(
 			maximum=len(cursors), value=len(cursors),
-			label=f"{len(cursors)} out of {len(cursors)} stories"
+			label=f"{len(cursors)} out of {len(cursors)} stories",
+			visible=True, interactive=True
 		),
 		gr.update(interactive=True),
 		gr.update(interactive=True),
