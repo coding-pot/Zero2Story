@@ -241,6 +241,13 @@ with gr.Blocks(css=STYLE) as demo:
 			action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button"])
 			action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
 
+		with gr.Row():
+			gr.Textbox(placeholder="write your own custom action", elem_classes=["small-big-textarea"], scale=3)
+			gr.Button("Run custom action", interactive=False, elem_classes=["control-button"], scale=1)
+
+		with gr.Accordion("regeneration controls", open=False):
+			gr.Button("Re-suggest actions", interactive=False, elem_classes=["control-button"])
+
 	gr.Markdown("### 📤 Export output")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
 		gr.Markdown("hello")

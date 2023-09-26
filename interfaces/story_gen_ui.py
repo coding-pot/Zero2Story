@@ -1,3 +1,4 @@
+import re
 import copy
 import random
 import gradio as gr
@@ -182,15 +183,19 @@ JSON output:
 		}
 		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
+		chapter_title = response_json["chapter_title"]
+		pattern = r"Chapter\s+\d+\s*[:.]"
+		chapter_title = re.sub(pattern, "", chapter_title)
+
 		cursors.append({
-			"title": response_json["chapter_title"],
+			"title": chapter_title,
 			"plot_type": _get_next_plot_types(plot_type),
 			"story": "\n\n".join(response_json["paragraphs"])
 		})
 		cur_cursor = cur_cursor + 1
 
 		return (
-			f"### {response_json['chapter_title']}",
+			f"### {chapter_title} (\"{_get_next_plot_types(plot_type)}\")",
 			"\n\n".join(response_json["paragraphs"]),
 			cursors, cur_cursor,
 			gr.update(

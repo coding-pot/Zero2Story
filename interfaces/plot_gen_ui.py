@@ -1,3 +1,4 @@
+import re
 import gradio as gr
 from interfaces import utils
 from modules import palmchat
@@ -200,14 +201,18 @@ JSON output:
 	}    
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
+	chapter_title = response_json["chapter_title"]
+	pattern = r"Chapter\s+\d+\s*[:.]"
+	chapter_title = re.sub(pattern, "", chapter_title)
+
 	cursors.append({
-		"title": response_json["chapter_title"],
+		"title": chapter_title,
 		"plot_type": "rising action",
 		"story": "\n\n".join(response_json["paragraphs"])
 	})
 
 	return (
-		f"### {response_json['chapter_title']}",
+		f"### {chapter_title} (\"rising action\")",
 		"\n\n".join(response_json["paragraphs"]),
 		cursors,
 		cur_cursor, 
