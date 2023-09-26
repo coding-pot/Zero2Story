@@ -37,14 +37,15 @@ async def update_story_gen(
 			cur_cursor_idx=cur_cursor_idx
 		)
     else:
-        return await first_story_gen(
+        return await next_story_gen(
 			cursors,
+			None,
 			genre, place, mood,
 			main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
 			side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
 			side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
 			side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
-			regen_actions_btn="not none", cur_cursor_idx=cur_cursor_idx
+			cur_cursor_idx=cur_cursor_idx
 		)
 
 async def next_story_gen(
@@ -55,11 +56,13 @@ async def next_story_gen(
 	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,	
-	regen_actions_btn=None, cur_cursor_idx=None
+	cur_cursor_idx=None
 ):
 	stories = ""
 	cur_side_chars = 1
-	end_idx = len(cursors) if regen_actions_btn is None else len(cursors)-1
+
+	action = cursors[cur_cursor_idx]["action"] if cur_cursor_idx is not None else action
+	end_idx = len(cursors) if cur_cursor_idx is None else len(cursors)-1
 
 	for cursor in cursors[:end_idx]:
 		stories = stories + cursor["story"]
@@ -123,10 +126,12 @@ Fill in the following JSON output format:
 	if cur_cursor_idx is None:
 		cursors.append({
 			"title": "",
-			"story": story
+			"story": story,
+			"action": action
 		})
 	else:
 		cursors[cur_cursor_idx]["story"] = story
+		cursors[cur_cursor_idx]["action"] = action
 
 	return (
 		cursors, len(cursors)-1,
@@ -147,11 +152,13 @@ async def actions_gen(
 	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+	cur_cursor_idx=None
 ):
 	stories = ""
 	cur_side_chars = 1
+	end_idx = len(cursors) if cur_cursor_idx is None else len(cursors)-1
 
-	for cursor in cursors:
+	for cursor in cursors[:end_idx]:
 		stories = stories + cursor["story"]
 
 	prompt = f"""Suggest the three options to drive the stories to the next based on the information below. 
