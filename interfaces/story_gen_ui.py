@@ -143,6 +143,8 @@ Fill in the following JSON output format:
 		),
 		gr.update(interactive=True),
 		gr.update(interactive=True),
+		gr.update(value=None, visible=False, interactive=True),
+		gr.update(value=None, visible=False, interactive=True),
 	)
 
 async def actions_gen(
@@ -297,7 +299,9 @@ Fill in the following JSON output format:
 			visible=False if len(cursors) == 1 else True, interactive=True
 		),
 		gr.update(interactive=True),
-		gr.update(interactive=True),		
+		gr.update(interactive=True),
+		gr.update(value=None, visible=False, interactive=True),
+		gr.update(value=None, visible=False, interactive=True),	
 	)
 
 def video_gen(
