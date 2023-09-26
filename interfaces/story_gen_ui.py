@@ -41,6 +41,8 @@ async def actions_gen(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3	
 ):
 	stories = ""
+	cur_side_chars = 1
+
 	for cursor in cursors:
 		stories = stories + cursor["story"]
 
@@ -138,7 +140,8 @@ main character
 		side_char_name3, side_char_job3, side_char_age3, side_char_mbti3, side_char_personality3
 	)
 
-	prompt = prompt + f"""Fill in the following JSON output format:
+	prompt = prompt + f"""
+Fill in the following JSON output format:
 {{
 	"paragraphs": "string"
 }}
