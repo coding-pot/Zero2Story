@@ -22,6 +22,7 @@ google-generativeai = "^0.1.0"
 bingbong = "^0.4.2"
 asyncio = "^3.4.3"
 toml = "^0.10.2"
+compel = "^2.0.2"
 
 [[tool.poetry.source]]
 name = "pytorch"
