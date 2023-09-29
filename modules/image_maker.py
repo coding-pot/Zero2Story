@@ -140,13 +140,17 @@ class ImageMaker:
         prompt_embeds, negative_prompt_embeds = self.__get_pipeline_embeds(prompt, neg_prompt or self.neg_prompt)
         
         # Generate the image
-        img = self.__sd_model(prompt_embeds=prompt_embeds,
+        result = self.__sd_model(prompt_embeds=prompt_embeds,
                               negative_prompt_embeds=negative_prompt_embeds,
                               guidance_scale=cfg,
                               num_inference_steps=step,
                               width=width,
                               height=height,
-                            ).images[0]
+                            )
+        if result.nsfw_content_detected:
+            raise ValueError("Potential NSFW content was detected in one or more images.")
+
+        img = result.images[0]
         img.save(str(output_filename.with_suffix('.png')))
 
         return str(output_filename.with_suffix('.png'))
@@ -187,8 +191,10 @@ class ImageMaker:
         
         try: 
             res_json = json.loads(response_txt)
-            positive = (res_json['main_sentence'] if not positive else f"{positive}, {res_json['main_sentence']}") + ", "
-            positive += ', '.join(res_json['words'])
+            positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
+            gender_keywords = ['1man', '1woman', '1boy', '1girl', '1male', '1female', '1gentleman', '1lady']
+            positive += ', '.join([w if w not in gender_keywords else w + '+++' for w in res_json['descriptors']])
+            positive = f'{job.lower()}+'.join(positive.split(job.lower()))
         except:
             print("=== PaLM Response ===")
             print(response.filters)
@@ -196,7 +202,7 @@ class ImageMaker:
             print("=== PaLM Response ===")            
             raise ValueError("The response from PaLM API is not in the expected format.")
             
-        return (positive, negative)
+        return (positive.lower(), negative.lower())
 
 
     def generate_background_prompts(self, time:str, place:str, mood:str,
@@ -246,7 +252,7 @@ class ImageMaker:
             print("=== PaLM Response ===")            
             raise ValueError("The response from PaLM API is not in the expected format.")
             
-        return (positive, negative)
+        return (positive.lower(), negative.lower())
 
 
     def __get_pipeline_embeds(self, prompt:str, negative_prompt:str) -> tuple[torch.Tensor, torch.Tensor]:

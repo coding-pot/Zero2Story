@@ -4,6 +4,7 @@ import gradio as gr
 
 import numpy
 import PIL
+from pathlib import Path
 
 from constants.init_values import (
 	places, moods, jobs, random_names, default_character_images
@@ -16,8 +17,8 @@ from modules import (
 from interfaces import utils
 
 # TODO: Replace checkpoint filename to Huggingface URL
-#img_maker = ImageMaker('hellonijicute25d_V10b.safetensors', vae="kl-f8-anime2.vae.safetensors", safety=False)
-img_maker = ImageMaker('hellonijicute25d_V10b.safetensors', safety=False) # without_VAE
+#img_maker = ImageMaker('hellonijicute25d_V10b.safetensors', vae="kl-f8-anime2.vae.safetensors")
+img_maker = ImageMaker('hellonijicute25d_V10b.safetensors') # without_VAE
 
 ############
 # for plotting
@@ -42,6 +43,7 @@ def gen_character_image(
 			prompt, neg_prompt = img_maker.generate_character_prompts(name, age, job, keywords=[mbti, personality, time, place, mood], creative_mode=creative_mode)
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
+			break
 		except Exception as e:
 			print(e)
 
@@ -49,7 +51,11 @@ def gen_character_image(
 		raise ValueError("Failed to generate prompts for character image.")
 
 	# generate image
-	img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='3:4', cfg=4.5)
+	try:
+		img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='3:4', cfg=4.5)
+	except ValueError as e:
+		print(e)
+		img_filename = str(Path('.') / 'assets' / 'nsfw_warning.png')
 
 	# update gallery
 	gen_image = numpy.asarray(PIL.Image.open(img_filename))
