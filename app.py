@@ -170,8 +170,8 @@ with gr.Blocks(css=STYLE) as demo:
 
 		character_setup_confirm_btn = gr.Button("Confirm", elem_classes=["wrap", "control-button"])
 
-	gr.Markdown("### 💡 Plot setup")
-	with gr.Accordion("generate chapter titles and each plot", open=False) as plot_setup_section:
+	gr.Markdown("### 💡 Plot setup", visible=False)
+	with gr.Accordion("generate chapter titles and each plot", open=False, visible=False) as plot_setup_section:
 		title = gr.Textbox("Title Undetermined Yet", elem_classes=["no-label", "font-big"])
 		# plot = gr.Textbox(lines=10, elem_classes=["no-label", "small-big-textarea"])
 
@@ -203,15 +203,16 @@ with gr.Blocks(css=STYLE) as demo:
 
 	gr.Markdown("### ✍🏼 Story writing")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as story_writing_section:
-		title_display = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"])
-		subtitle_display = gr.Markdown("### Title Undetermined Yet", elem_classes=["markdown-center"])
 		progress_comp = gr.Textbox(label=None, elem_classes=["no-label"], interactive=False)
+
+		title_display = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
+		subtitle_display = gr.Markdown("### Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
 
 		with gr.Row():
 			image_gen_btn = gr.Button("🏞️", interactive=False)
 			audio_gen_btn = gr.Button("🔊", interactive=False)
 			img_audio_combine_btn = gr.Button("📀", interactive=False)
-  
+
 		story_image = gr.Image(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
 		story_audio = gr.Audio(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
 		story_video = gr.Video(visible=False, interactive=False, elem_classes=["no-label-gallery"])
@@ -233,21 +234,23 @@ with gr.Blocks(css=STYLE) as demo:
 			],
 			value="continue current phase",
 			interactive=True,
-			elem_classes=["no-label-radio"]
+			elem_classes=["no-label-radio"],
+			visible=False,
 		)
+
+		with gr.Accordion("regeneration controls", open=False):
+			with gr.Row():
+				regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
+				regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button"])
+    
+			custom_prompt_txt = gr.Textbox(placeholder="Re-suggest story and actions based on your own custom request", elem_classes=["no-label", "small-big-textarea"])
 
 		with gr.Row():
 			action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button"])
 			action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button"])
 			action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
 
-		with gr.Row():
-			gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
-			gr.Button("Run custom action", interactive=False, elem_classes=["control-button"], scale=1)
-
-		with gr.Accordion("regeneration controls", open=False):
-			gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
-			gr.Button("Re-suggest whole things", interactive=True, elem_classes=["control-button"])
+		custom_action_txt = gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
 
 	gr.Markdown("### 📤 Export output")
 	with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
@@ -281,24 +284,86 @@ with gr.Blocks(css=STYLE) as demo:
 			gr.Accordion.update(open=True),
 		),
 		inputs=None,
-		outputs=[character_setup_section, plot_setup_section]
+		outputs=[character_setup_section, story_writing_section]
+	).then(
+		story_gen_ui.first_story_gen,
+		inputs=[			
+			cursors,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs=[
+			cursors, cur_cursor, story_content, story_progress, image_gen_btn, audio_gen_btn,
+			story_image, story_audio, story_video
+		]
+	).then(
+		story_gen_ui.actions_gen,
+		inputs=[
+			cursors,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs=[
+			action_btn1, action_btn2, action_btn3, progress_comp
+		]
 	)
 
-	plot_setup_confirm_btn.click(
+	regen_actions_btn.click(
+		story_gen_ui.actions_gen,
+		inputs=[
+			cursors,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs=[
+			action_btn1, action_btn2, action_btn3, progress_comp
+		]		
+	)
+ 
+	regen_story_btn.click(
 		lambda: (
 			gr.Accordion.update(open=False), 
 			gr.Accordion.update(open=True),
 		),
 		inputs=None,
-		outputs=[plot_setup_section, story_writing_section]
+		outputs=[character_setup_section, story_writing_section]
+	).then(     
+		story_gen_ui.update_story_gen,
+		inputs=[
+			cursors, cur_cursor,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,			
+		],
+		outputs=[
+			cursors, cur_cursor, story_content, story_progress, image_gen_btn, audio_gen_btn
+		]
+	).then(
+		story_gen_ui.actions_gen,
+		inputs=[
+			cursors,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs=[
+			action_btn1, action_btn2, action_btn3, progress_comp
+		]
 	)
-
-	# main_tabs.select(
-	# 	ui.update_on_main_tabs,
-	# 	inputs=[chat_state],
-	# 	outputs=[chat_mode, chatbot]
-	# )
-
+ 
 	#### Setups
 
 	time_dd.select(
@@ -355,48 +420,6 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[name_txt4],
 	)
  
-	### Plot generation
-
-	plot_gen_btn.click(
-		plot_gen_ui.plot_gen,
-		inputs= [
-			plot_gen_temp,
-			time_dd, place_dd, mood_dd, 
-			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
-			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-		],
-		outputs = [
-			title, title_display, 
-			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot
-   			# title_display,
-			# chapter1_title, chapter2_title, chapter3_title, chapter4_title,
-			# chapter1_title_display, chapter2_title_display, chapter3_title_display, chapter4_title_display,
-	  		# chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
-		]
-	).then(
-		plot_gen_ui.first_story_gen,
-		inputs=[
-			title, 
-   			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
-			time_dd, place_dd, mood_dd, 
-			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
-			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
-      		cursors, cur_cursor
-		],
-		outputs=[
-			subtitle_display,
-			story_content,
-			cursors, cur_cursor,
-			image_gen_btn, audio_gen_btn,
-			action_btn1, action_btn2, action_btn3
-		]
-	)
 	### Story generation
 	story_content.input(
 		story_gen_ui.update_story_content,
@@ -440,7 +463,6 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[
 			cur_cursor,
 			story_progress, 
-			subtitle_display,
 			story_content,
 			story_image, story_audio, story_video,
 			action_btn1, action_btn2, action_btn3,
@@ -448,73 +470,157 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	action_btn1.click(
+		lambda: (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)),
+		inputs=None,
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn
+		]
+	).then(
 		story_gen_ui.next_story_gen,
 		inputs=[
-			action_types, action_btn1,
-			title, subtitle_display, story_content,
-   			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
+			cursors,
+			action_btn1,
 			time_dd, place_dd, mood_dd, 
-			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,   
-			cursors, cur_cursor
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,	
 		],
 		outputs=[
-			subtitle_display,
-			story_content,
-			cursors, cur_cursor, story_progress,
-			story_image, story_audio, story_video,
-			action_btn1, action_btn2, action_btn3
+			cursors, cur_cursor,
+			story_content, story_progress,
+			image_gen_btn, audio_gen_btn,
+			story_image, story_audio, story_video
+		]
+	).then(
+		story_gen_ui.actions_gen,
+		inputs=[
+			cursors,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs=[
+			action_btn1, action_btn2, action_btn3, progress_comp
 		]
 	)
 
 	action_btn2.click(
+		lambda: (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)),
+		inputs=None,
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn
+		]
+	).then(
 		story_gen_ui.next_story_gen,
 		inputs=[
-			action_types, action_btn2,
-			title, subtitle_display, story_content,
-   			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
+			cursors,
+			action_btn2,
 			time_dd, place_dd, mood_dd, 
-			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,   
-			cursors, cur_cursor
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,	
 		],
 		outputs=[
-			subtitle_display,
-			story_content,
-			cursors, cur_cursor, story_progress,
-			story_image, story_audio, story_video,
-			action_btn1, action_btn2, action_btn3
+			cursors, cur_cursor,
+			story_content, story_progress,
+			image_gen_btn, audio_gen_btn,
+			story_image, story_audio, story_video
+		]
+	).then(
+		story_gen_ui.actions_gen,
+		inputs=[
+			cursors,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs=[
+			action_btn1, action_btn2, action_btn3, progress_comp
 		]
 	)
 
 	action_btn3.click(
+		lambda: (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)),
+		inputs=None,
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn
+		]
+	).then(
 		story_gen_ui.next_story_gen,
 		inputs=[
-			action_types, action_btn3,
-			title, subtitle_display, story_content,
-   			chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot, chapter5_plot,
+			cursors,
+			action_btn3,
 			time_dd, place_dd, mood_dd, 
-			side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,   
-			cursors, cur_cursor
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,	
 		],
 		outputs=[
-			subtitle_display,
-			story_content,
-			cursors, cur_cursor, story_progress,
-			story_image, story_audio, story_video,
-			action_btn1, action_btn2, action_btn3
+			cursors, cur_cursor,
+			story_content, story_progress,
+			image_gen_btn, audio_gen_btn,
+			story_image, story_audio, story_video
+		]
+	).then(
+		story_gen_ui.actions_gen,
+		inputs=[
+			cursors,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs=[
+			action_btn1, action_btn2, action_btn3, progress_comp
 		]
 	)
+
+	custom_action_txt.submit(
+		lambda: (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)),
+		inputs=None,
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn
+		]
+	).then(
+		story_gen_ui.next_story_gen,
+		inputs=[
+			cursors,
+			custom_action_txt,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,	
+		],
+		outputs=[
+			cursors, cur_cursor,
+			story_content, story_progress,
+			image_gen_btn, audio_gen_btn,
+			story_image, story_audio, story_video
+		]
+	).then(
+		story_gen_ui.actions_gen,
+		inputs=[
+			cursors,
+			time_dd, place_dd, mood_dd, 
+			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,
+		],
+		outputs=[
+			action_btn1, action_btn2, action_btn3, progress_comp
+		]
+	)
+
 	### Chatbot
 
 	# chat_input_txt.submit(

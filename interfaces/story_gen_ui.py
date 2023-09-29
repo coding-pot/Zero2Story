@@ -18,316 +18,311 @@ bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
-def _get_next_plot_types(cur_plot_type):
-	if cur_plot_type == "rising action":
-		return "crisis"
-	elif cur_plot_type == "crisis":
-		return "climax"
-	elif cur_plot_type == "climax":
-		return "falling action"
-	elif cur_plot_type == "falling action":
-		return "denouement"
-	else:
-		return "end"
-
-def _add_side_character(
-	enable, prompt, cur_side_chars,
-	name, age, mbti, personality, job
+async def update_story_gen(
+	cursors, cur_cursor_idx,
+	genre, place, mood,
+	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
 ):
-	if enable:
-		prompt = prompt + f"""
-side character #{cur_side_chars}
-- name: {name},
-- job: {job},
-- age: {age},
-- mbti: {mbti},
-- personality: {personality}
-
-"""
-		cur_side_chars = cur_side_chars + 1
-		
-	return prompt, cur_side_chars
-
-def _add_contents_by_content_types(cursors, plot_type):
-	plot_contents = {}
-	sub_prompts = ""
-	
-	for cursor in cursors:
-		if cursor["plot_type"] not in plot_contents:
-			plot_contents[cursor["plot_type"]] = cursor["story"]
-		else:
-			plot_contents[cursor["plot_type"]] = plot_contents[cursor["plot_type"]] + cursor["story"]
- 
-	for t in ["rising action", "crisis", "climax", "falling action", "denouement"]:
-		if t == plot_type:
-			break
-		else:
-			sub_prompts = sub_prompts + f"""{t} contents
-- paragraphs: {plot_contents[t]}
-"""
-
-	return sub_prompts
-
-def _get_list_of_next_plots(cur_plot_type):
-	plot_types = ["rising action", "crisis", "climax", "falling action", "denouement"]
-	cur_plot_type_idx = plot_types.index(cur_plot_type)
-	return ", ".join(plot_types[cur_plot_type_idx:])
+    if len(cursors) == 1:
+        return await first_story_gen(
+			cursors,
+			genre, place, mood,
+			main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+			side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+			side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+			side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+			cur_cursor_idx=cur_cursor_idx
+		)
+    else:
+        return await next_story_gen(
+			cursors,
+			None,
+			genre, place, mood,
+			main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+			side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+			side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+			side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+			cur_cursor_idx=cur_cursor_idx
+		)
 
 async def next_story_gen(
-	action_type, action,
-	title, subtitle, story_content,
- 	rising_action, crisis, climax, falling_action, denouement,
-	time, place, mood,
-	side_char_enable1, side_char_enable2, side_char_enable3,
-	name1, age1, mbti1, personality1, job1,
-	name2, age2, mbti2, personality2, job2,
-	name3, age3, mbti3, personality3, job3,
-	name4, age4, mbti4, personality4, job4, 
-	cursors, cur_cursor
+	cursors,
+	action,
+	genre, place, mood,
+	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,	
+	cur_cursor_idx=None
+):
+	stories = ""
+	cur_side_chars = 1
+
+	action = cursors[cur_cursor_idx]["action"] if cur_cursor_idx is not None else action
+	end_idx = len(cursors) if cur_cursor_idx is None else len(cursors)-1
+
+	for cursor in cursors[:end_idx]:
+		stories = stories + cursor["story"]
+
+	prompt = f"""Write the next paragraphs. The next paragraphs should be determined by an option and well connected to the current stories. 
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- mbti: {main_char_mbti}
+- personality: {main_char_personality}
+"""
+
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable1, prompt, cur_side_chars,
+		side_char_name1, side_char_job1, side_char_age1, side_char_mbti1, side_char_personality1
+	)
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable2, prompt, cur_side_chars,
+		side_char_name2, side_char_job2, side_char_age2, side_char_mbti2, side_char_personality2
+	)
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable3, prompt, cur_side_chars,
+		side_char_name3, side_char_job3, side_char_age3, side_char_mbti3, side_char_personality3
+	)
+
+	prompt = prompt + f"""
+stories
+{stories}
+
+option to the next stories: {action}
+
+Fill in the following JSON output format:
+{{
+	"paragraphs": "string"
+}}
+
+"""
+
+	print(f"generated prompt:\n{prompt}")
+	parameters = {
+		'model': 'models/text-bison-001',
+		'candidate_count': 1,
+		'temperature': 1.0,
+		'top_k': 40,
+		'top_p': 1,
+		'max_output_tokens': 4096,
+	}    	
+	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+
+	story = response_json["paragraphs"]
+	if isinstance(story, list):
+		story = "\n\n".join(story)
+  
+	if cur_cursor_idx is None:
+		cursors.append({
+			"title": "",
+			"story": story,
+			"action": action
+		})
+	else:
+		cursors[cur_cursor_idx]["story"] = story
+		cursors[cur_cursor_idx]["action"] = action
+
+	return (
+		cursors, len(cursors)-1,
+		story,
+		gr.update(
+			maximum=len(cursors), value=len(cursors),
+			label=f"{len(cursors)} out of {len(cursors)} stories",
+			visible=True, interactive=True
+		),
+		gr.update(interactive=True),
+		gr.update(interactive=True),
+		gr.update(value=None, visible=False, interactive=True),
+		gr.update(value=None, visible=False, interactive=True),
+		gr.update(value=None, visible=False, interactive=True),	
+	)
+
+async def actions_gen(
+	cursors,
+	genre, place, mood,
+	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+	cur_cursor_idx=None
+):
+	stories = ""
+	cur_side_chars = 1
+	end_idx = len(cursors) if cur_cursor_idx is None else len(cursors)-1
+
+	for cursor in cursors[:end_idx]:
+		stories = stories + cursor["story"]
+
+	summary_prompt = f"""Summarize the text below
+
+{stories}
+
+"""
+	print(f"generated prompt:\n{summary_prompt}")
+	parameters = {
+		'model': 'models/text-bison-001',
+		'candidate_count': 1,
+		'temperature': 1.0,
+		'top_k': 40,
+		'top_p': 1,
+		'max_output_tokens': 4096,
+	}    	
+	_, summary = await palmchat.gen_text(summary_prompt, mode="text", parameters=parameters)
+
+	prompt = f"""Suggest the 30 options to drive the stories to the next based on the information below. 
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- mbti: {main_char_mbti}
+- personality: {main_char_personality}
+"""
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable1, prompt, cur_side_chars,
+		side_char_name1, side_char_job1, side_char_age1, side_char_mbti1, side_char_personality1
+	)
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable2, prompt, cur_side_chars,
+		side_char_name2, side_char_job2, side_char_age2, side_char_mbti2, side_char_personality2
+	)
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable3, prompt, cur_side_chars,
+		side_char_name3, side_char_job3, side_char_age3, side_char_mbti3, side_char_personality3
+	)
+
+	prompt = prompt + f"""
+summary of the story
+{summary}
+
+Fill in the following JSON output format:
+{{
+    "options": ["string", "string", "string", ...]
+}}
+
+"""
+
+	print(f"generated prompt:\n{prompt}")
+	parameters = {
+		'model': 'models/text-bison-001',
+		'candidate_count': 1,
+		'temperature': 1.0,
+		'top_k': 40,
+		'top_p': 1,
+		'max_output_tokens': 4096,
+	}    	
+	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+	actions = response_json["options"]
+
+	random_actions = random.sample(actions, 3)
+
+	return (
+		gr.update(value=random_actions[0], interactive=True),
+		gr.update(value=random_actions[1], interactive=True),
+		gr.update(value=random_actions[2], interactive=True),
+		"   "
+	)
+
+async def first_story_gen(
+	cursors,
+	genre, place, mood,
+	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+	cur_cursor_idx=None
 ):
 	cur_side_chars = 1
-	line_break = '\n'
-	plot_type = cursors[cur_cursor]["plot_type"]
 
-	if action_type == "move to the next phase":
-		prompt = f"""Write the chapter title and the first few paragraphs of the "{_get_next_plot_types(plot_type)}" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. REMEMBER the first few paragraphs should not end the whole story and allow leaway for the next paragraphs to come.
-
-REMEMBER to stay on the "{_get_next_plot_types(plot_type)}" plot. 
-The whole story SHOULD stick to the "rising action -> crisis -> climax -> falling action -> denouement" flow, so REMEMBER not to write anything mentioned from the next plots of {_get_list_of_next_plots(plot_type)} yet. Be consistant following the overall outline.
+	prompt = f"""Write the first three paragraphs of a novel as much detailed as possible. They should be based on the background information. Blend 5W1H principle into the stories as a plain text. Don't let the paragraphs end the whole story.
 
 background information:
-- genre: string
-- where: string
-- mood: string
-
-main character
-- name: string
-- job: string
-- age: string
-- mbti: string
-- personality: string
-
-overall outline
-- title: string
-- rising action: string
-- crisis: string
-- climax: string
-- falling action: string
-- denouement: string
-
-rising action contents
-- paragraphs: string
-
-crisis contents
-- paragraphs: string
-
-climax contents
-- paragraphs: string
-
-falling action contents
-- paragraphs: string
-
-denouement contents
-- paragraphs: string
-
-JSON output:
-{{
-	"chapter_title": "string",
-	"paragraphs": ["string", "string", ...],
-	"actions": ["string", "string", "string"]
-}}
-
-background information:
-- genre: {time}
+- genre: {genre}
 - where: {place}
 - mood: {mood}
 
 main character
-- name: {name1}
-- job: {job1},
-- age: {age1},
-- mbti: {mbti1},
-- personality: {personality1}
-
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- mbti: {main_char_mbti}
+- personality: {main_char_personality}
 """
 
-		prompt, cur_side_chars = _add_side_character(
-			side_char_enable1, prompt, cur_side_chars,
-			name2, job2, age2, mbti2, personality2
-		)
-		prompt, cur_side_chars = _add_side_character(
-			side_char_enable2, prompt, cur_side_chars,
-			name3, job3, age3, mbti3, personality3
-		)
-		prompt, cur_side_chars = _add_side_character(
-			side_char_enable3, prompt, cur_side_chars,
-			name4, job4, age4, mbti4, personality4
-		)
-	
-		prompt = prompt + f"""
-overall outline
-- title: {title}
-- rising action: {rising_action}
-- crisis: {crisis}
-- climax: {climax}
-- falling action: {falling_action}
-- denouement: {denouement}
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable1, prompt, cur_side_chars,
+		side_char_name1, side_char_job1, side_char_age1, side_char_mbti1, side_char_personality1
+	)
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable2, prompt, cur_side_chars,
+		side_char_name2, side_char_job2, side_char_age2, side_char_mbti2, side_char_personality2
+	)
+	prompt, cur_side_chars = utils.add_side_character(
+		side_char_enable3, prompt, cur_side_chars,
+		side_char_name3, side_char_job3, side_char_age3, side_char_mbti3, side_char_personality3
+	)
 
-"""
-		prompt = prompt + _add_contents_by_content_types(cursors, plot_type)
-		prompt = prompt + """
-JSON output:
-"""
+	prompt = prompt + f"""
+Fill in the following JSON output format:
+{{
+	"paragraphs": "string"
+}}
 
-		print(f"generated prompt:\n{prompt}")
-		parameters = {
-			'model': 'models/text-bison-001',
-			'candidate_count': 1,
-			'temperature': 0.9,
-			'top_k': 40,
-			'top_p': 1,
-			'max_output_tokens': 4096,
-		}
-		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+"""	
 
-		chapter_title = response_json["chapter_title"]
-		pattern = r"Chapter\s+\d+\s*[:.]"
-		chapter_title = re.sub(pattern, "", chapter_title)
+	print(f"generated prompt:\n{prompt}")
+	parameters = {
+		'model': 'models/text-bison-001',
+		'candidate_count': 1,
+		'temperature': 1.0,
+		'top_k': 40,
+		'top_p': 1,
+		'max_output_tokens': 4096,
+	}    	
+	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
+	story = response_json["paragraphs"]
+	if isinstance(story, list):
+		story = "\n\n".join(story)
+  
+	if cur_cursor_idx is None:
 		cursors.append({
-			"title": chapter_title,
-			"plot_type": _get_next_plot_types(plot_type),
-			"story": "\n\n".join(response_json["paragraphs"])
+			"title": "",
+			"story": story
 		})
-		cur_cursor = cur_cursor + 1
-
-		return (
-			f"### {chapter_title} (\"{_get_next_plot_types(plot_type)}\")",
-			"\n\n".join(response_json["paragraphs"]),
-			cursors, cur_cursor,
-			gr.update(
-				maximum=len(cursors), value=cur_cursor+1,
-				label=f"{cur_cursor+1} out of {len(cursors)} stories", visible=True
-			),
-			gr.update(value=None, visible=False),
-			gr.update(value=None, visible=False),
-			gr.update(value=None, visible=False),
-			gr.update(value=response_json["actions"][0], interactive=True),
-			gr.update(value=response_json["actions"][1], interactive=True),
-			gr.update(value=response_json["actions"][2], interactive=True)
-		)
 	else:
-		prompt = f"""Write the next few paragraphs of the "{plot_type}" plot based on the background information below in Ronald Tobias's plot theory. The next few paragraphs should be naturally connected to the current paragraphs, and they should be written based on the "action choice". Also, suggest three choosable actions to drive current story in different directions. The choosable actions should not have a duplicate action of the action choice. The next few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. Each paragraph should consist of at least five sentences. 
+		cursors[cur_cursor_idx]["story"] = story
 
-REMEMBER to stay on the "{plot_type}" plot. 
-The whole story SHOULD stick to the "rising action -> crisis -> climax -> falling action -> denouement" flow, so REMEMBER not to write anything mentioned from the next plots of {_get_list_of_next_plots(plot_type)} yet. Be consistant following the overall outline.
-
-background information:
-- genre: string
-- where: string
-- mood: string
-
-main character
-- name: string
-- job: string
-- age: string
-- mbti: string
-- personality: string
-
-overall outline
-- title: string
-- rising action: string
-- crisis: string
-- climax: string
-- falling action: string
-- denouement: string
-
-{plot_type} contents
-- current paragraphs: string
-- action choice: string
-
-JSON output:
-{{
-	"next paragraphs": ["string", "string", ...],
-	"next actions": ["string", "string", "string"]
-}}
-
-background information:
-- genre: {time}
-- where: {place}
-- mood: {mood}
-
-main character
-- name: {name1}
-- job: {job1},
-- age: {age1},
-- mbti: {mbti1},
-- personality: {personality1}
-
-"""
-
-		prompt, cur_side_chars = _add_side_character(
-			side_char_enable1, prompt, cur_side_chars,
-			name2, job2, age2, mbti2, personality2
-		)
-		prompt, cur_side_chars = _add_side_character(
-			side_char_enable2, prompt, cur_side_chars,
-			name3, job3, age3, mbti3, personality3
-		)
-		prompt, cur_side_chars = _add_side_character(
-			side_char_enable3, prompt, cur_side_chars,
-			name4, job4, age4, mbti4, personality4
-		)
-	
-		prompt = prompt + f"""
-overall outline
-- title: {title}
-- rising action: {rising_action}
-- crisis: {crisis}
-- climax: {climax}
-- falling action: {falling_action}
-- denouement: {denouement}
-
-rising action contents
-- current paragraphs: {story_content.replace(line_break, "")}
-- action choice: {action}
-
-JSON output:
-"""
-
-		print(f"generated prompt:\n{prompt}")
-		parameters = {
-			'model': 'models/text-bison-001',
-			'candidate_count': 1,
-			'temperature': 0.9,
-			'top_k': 40,
-			'top_p': 1,
-			'max_output_tokens': 4096,
-		}
-		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
-
-		cursors.append({
-			"title": subtitle.replace("## ", ""),
-			"plot_type": plot_type,
-			"story": "\n\n".join(response_json["next paragraphs"])
-		})
-		cur_cursor = cur_cursor + 1
-
-		return (
-			subtitle,
-			"\n\n".join(response_json["next paragraphs"]),
-			cursors, cur_cursor,
-			gr.update(
-				maximum=len(cursors), value=cur_cursor+1,
-				label=f"{cur_cursor+1} out of {len(cursors)} stories", visible=True
-			),
-			gr.update(value=None, visible=False),
-			gr.update(value=None, visible=False),
-			gr.update(value=None, visible=False),
-			gr.update(value=response_json["next actions"][0], interactive=True),
-			gr.update(value=response_json["next actions"][1], interactive=True),
-			gr.update(value=response_json["next actions"][2], interactive=True)
-		)
+	return (
+		cursors, len(cursors)-1,
+		story,
+		gr.update(
+			maximum=len(cursors), value=len(cursors),
+			label=f"{len(cursors)} out of {len(cursors)} stories",
+			visible=False if len(cursors) == 1 else True, interactive=True
+		),
+		gr.update(interactive=True),
+		gr.update(interactive=True),
+		gr.update(value=None, visible=False, interactive=True),
+		gr.update(value=None, visible=False, interactive=True),	
+  		gr.update(value=None, visible=False, interactive=True),
+	)
 
 def video_gen(
 	image, audio, title, cursors, cur_cursor, use_ffmpeg=True
@@ -364,6 +359,7 @@ def image_gen(
 	for _ in range(3):
 		try:
 			prompt, neg_prompt = img_maker.generate_background_prompts(time, place, mood, title, "", story_content)
+			neg_prompt
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
 		except Exception as e:
@@ -418,8 +414,6 @@ def audio_gen(
 	)
 
 def move_story_cursor(moved_cursor, cursors):
-	print(moved_cursor)
-
 	cursor_content = cursors[moved_cursor-1]
 	max_cursor = len(cursors)
 
@@ -459,7 +453,6 @@ def move_story_cursor(moved_cursor, cursors):
 		outputs = (
 			moved_cursor-1,
 			gr.update(label=f"{moved_cursor} out of {len(cursors)} stories"),
-			cursor_content["title"],
 			cursor_content["story"],
 			image_container,
 			audio_container,
