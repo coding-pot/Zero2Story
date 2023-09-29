@@ -53,11 +53,16 @@ Print out no more than 45 words in syntactically valid JSON format.
 """
 
 [image_gen.background]
-gen_prompt = """Based on my brief descriptions of the background image, suggest a "primary descriptive sentence" and "concise descriptors" to visualize it. Ensure you consider elements like the historical or time setting, buildings or landscapes, surrounding geographical features, the sky's appearance (if visible), lighting, ambiance, camera angles, among others.
-Only the "words" section and a single "main_sentence" should be output in syntactically valid JSON format.
-The output template is as follows: {"primary_sentence":"primary descriptive sentence","descriptors":["concise descriptor 1","concise descriptor 2","concise descriptor 3"]}.
-You can enhance the quality of a character's detailed description or expression using words like the following examples. Of course, you can still suggest similar words not included here: "Ecstatic", "Melancholic", "Furious", "Startled", "Bewildered", "Pensive", "Overjoyed", "Crushed", "Elated", "Panicked", "Satisfied", "Cynical", "Apathetic", "Delighted", "Terrified", "Desperate", "Triumphant", "Mortified", "Envious", "Appreciative", "Blissful", "Heartbroken", "Livid", "Astounded", "Baffled", "Smiling", "Frowning", "Grinning", "Crying", "Pouting", "Glaring", "Blinking", "Winking", "Smirking", "Whistling", "masterpiece", "cinematic lighting", "detailed lighting", "tyndall effect", "soft lighting", "volumetric lighting", "close up", "wide shot", "glossy", "beautiful lighting", "warm lighting", "Extreme", "Ultimate", "Best", "Supreme", "Ultra", "Intense", "Powerful", "Exceptional", "Remarkable", "Strong", "Vigorous", "upper body", "very long hair", "looking at viewer", "thick lips", "skin spots", "acnes", "skin blemishes", "age spot", "dramatic", "sparkling", "waist up", "dynamic angle", "front view person", "bangs", "perfect eyes", "detailed eyes", "realistic eyes", "dynamic standing", "beautiful face", "necklace", "high detailed skin", "hair ornament", "blush", "shiny skin", "long sleeves", "cleavage", "rubber suit", "Bokeh".
-Do not exceed 35 words.
+gen_prompt = """Based on my brief descriptions of the scene, suggest a "primary descriptive sentence" and "concise descriptors" to visualize it. Ensure you consider elements like the setting's time of day, atmosphere, prominent objects, mood, location, natural phenomena, architecture, among others.
+Once complete, please output only a single "primary descriptive sentence" and the "concise descriptors" in a syntactically valid JSON format.
+The output template is as follows: {{"primary_sentence":"primary descriptive sentence","descriptors":["concise descriptor 1","concise descriptor 2","concise descriptor 3"]}}.
+To enhance the quality of your scene's description or expression, you might consider drawing from the following categories:
+Atmosphere and Time: "dawn", "dusk", "midday", "midnight", "sunset", "sunrise", "foggy", "misty", "stormy", "calm", "clear night", "starlit", "moonlit", "golden hour".
+Natural Phenomena: "rainbow", "thunderstorm", "snowfall", "aurora borealis", "shooting star", "rain shower", "windy", "sunny".
+Location and Architecture: "urban", "rural", "mountainous", "oceanfront", "forest", "desert", "island", "modern city", "ancient ruins", "castle", "village", "meadow", "cave", "bridge".
+Prominent Objects: "giant tree", "waterfall", "stream", "rock formation", "ancient artifact", "bonfire", "tent", "vehicle", "statue", "fountain".
+Visual Enhancements: "masterpiece", "cinematic lighting", "detailed lighting", "soft lighting", "volumetric lighting", "tyndall effect", "warm lighting", "close up", "wide shot", "beautiful perspective", "bokeh".
+Do note that this list isn't exhaustive, and you're encouraged to suggest similar terms not included here.
 Exclude words from the suggestion that are redundant or have conflicting meanings.
 Especially, Exclude words that conflict with the meaning of "main_sentence".
 Do not output anything other than JSON values.
@@ -66,22 +71,28 @@ Only JSON is allowed.
 ===
 This is some examples.
 Q:
-The character's name is Liam, their job is as the Secret Agent, and they are in their 50s. And the keywords that help in associating with the character are "Thriller, Underground Warehouse, Darkness, ESTP, Ambitious, Generous".
-Print out no more than 35 words in syntactically valid JSON format.
+The genre is "Fantasy", the place is "Enchanted Forest", the mood is "Mystical", the title of the novel is "Whispering Leaves", the chapter title is "The Elf's Lullaby", and the chapter plot revolves around "A hidden glade where elves sing under the moonlight".
+Print out no more than 40 words in syntactically valid JSON format.
 A:
-{{"main_sentence":"Middle-aged man pointing a gun in an underground warehouse","words":["1man","middle-aged","solo","masterpiece","best quality","secret agent","black suit","pistol in hand","absurdres","dramatic lighting","muscular adult male","chiseled physique","intense brown eyes","raven-black hair","stylish layer cut","age spot","determined gaze","looking at viewer","enigmatic presence","secret agent with a stealthy demeanor","cunning strategist","advanced techwear equipped with high-tech gadgets","sleek","night operative","shadowy figure","night cinematic atmosphere","under the moonlight operation","mysterious and captivating aura","highly detailed","film grain","finely detailed eyes and face"]}}
+{{"main_sentence":"a mystical glade in an enchanted forest where elves sing beneath the moonlight.","words":["no humans", "fantasy","enchanted forest","moonlit glade","mystical atmosphere","singing elves","luminous fireflies","ancient trees","shimmering leaves","whispering winds","hidden secrets","elven magic","masterpiece","soft lighting","silver glow","detailed shadows","enchanted mood"]}}
 
 Q:
-The character's name is Catherine, their job is as the Traveler, and they are in their 10s. And the keywords that help in associating with the character are "Romance, Starlit Bridge, Dreamy, ENTJ, Ambitious".
-Print out no more than 35 words in syntactically valid JSON format.
+The genre is "Science Fiction", the place is "Galactic Space Station", the mood is "Tense", the title of the novel is "Stars Unbound", the chapter title is "Void Negotiations", and the chapter plot revolves around "Ambassadors from different galaxies discussing a new treaty".
+Print out no more than 40 words in syntactically valid JSON format.
 A:
-{{"main_sentence":"A dreamy teenage girl standing on a starlit bridge with romantic ambitions","words":["1girl","teenage","solo","masterpiece","best quality","flowing skirt","sun hat","daydreaming","bright-eyed","nomadic","Map in hand","Ethereal beauty","Starry-eyed","Wanderlust","scarf","floating hair","whimsical","graceful poise","celestial allure","close-up","warm soft lighting","luminescent glow","gentle aura","mystic charm","smug","smirk","enigmatic presence","serene","Dreamy Landscape","fantastical essence","poetic demeanor","cinematic lighting","Extreme detailed","film grain","finely detailed eyes and face"]}}
+{{"main_sentence":"a tense gathering in a galactic space station where interstellar ambassadors negotiate.","words":["no humans""science fiction","galactic space station","star-studded backdrop","advanced technology","diverse aliens","hovering spacecrafts","futuristic architecture","tense discussions","interstellar politics","neon lights","holographic displays","masterpiece","detailed lighting","cinematic mood"]}}
 
 Q:
-The character's name is Claire, their job is as the Technological Advancement, and they are in their 20s. And the keywords that help in associating with the character are "Science Fiction, Space Station, INFP, Ambitious, Generous".
-Print out no more than 35 words in syntactically valid JSON format.
+The genre is "Romance", the place is "Beach", the mood is "Heartfelt", the title of the novel is "Waves of Passion", the chapter title is "Sunset Confessions", and the chapter plot revolves around "Two lovers reconciling their differences by the shore".
+Print out no more than 40 words in syntactically valid JSON format.
 A:
-{{"main_sentence":"A young ambitious woman tech expert aboard a futuristic space station","words":["1girl","twenty","solo","masterpiece","best quality","Sleek silver jumpsuit","Futuristic heels","Contemplative","Tech visionary","editorial close-up portrait","dynamic angle","cyborg","sci-fi","techno-savvy","sharp focus","bokeh","beautiful lighting","intricate circuitry","robotic grace","rich colors","vivid contrasts","dramatic lighting","Futuristic flair","avant-garde","high-tech allure","Engineer with ingenuity","innovative mind","mechanical sophistication","futuristic femme fatale","extremely detailed","highly detailed","film grain","finely detailed eyes and face"]}}
+{{"main_sentence":"a heartfelt scene on a beach during sunset where two lovers reconcile.","words":["no humans""romance","beach","sunset horizon","golden sands","lapping waves","embrace","teary-eyed confessions","seashells","reflective waters","warm hues","silhouette of lovers","soft breeze","detailed shadows","emotional atmosphere"]}}
+
+Q:
+The genre is "Middle Ages", the place is "Royal Palace", the mood is "Epic Adventure", the title of the novel is "Throne of Fates", the chapter title is "Knight's Quest", and the chapter plot revolves around "A brave knight receiving a quest from the king".
+Print out no more than 40 words in syntactically valid JSON format.
+A:
+{{"main_sentence":"an epic scene in a royal palace where a knight is tasked with a quest by the king.","words":["no humans""middle ages","royal palace","grand throne room","armored knight","majestic king","tapestries","stone walls","torches","glistening armor","banner flags","medieval atmosphere","heroic demeanor","detailed architecture","golden crowns"]}}
 ===
 This is my request.
 Q:
@@ -89,7 +100,7 @@ Q:
 A:
 """
 query = """
-{time} {place} {mood} {title} {chapter_title} {chapter_plot}
+The genre is "{genre}", the place is "{place}", the mood is "{mood}", the title of the novel is "{title}", the chapter title is "{chapter_title}", and the chapter plot revolves around "{chapter_plot}".
 Print out no more than 35 words in syntactically valid JSON format.
 """
 
