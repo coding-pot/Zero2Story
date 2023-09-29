@@ -147,7 +147,8 @@ class ImageMaker:
                               width=width,
                               height=height,
                             )
-        if result.nsfw_content_detected:
+        if result.nsfw_content_detected[0]:
+            print("=== NSFW Content Detected ===")
             raise ValueError("Potential NSFW content was detected in one or more images.")
 
         img = result.images[0]
@@ -222,12 +223,12 @@ class ImageMaker:
         """
 
         positive = "" # add static prompt for background if needed (e.g. "chibi, cute, anime")
-        negative = palm_prompts['image_gen']['neg_prompt']
+        negative = "solo, 1girl, 1boy, 1man, 1woman, human, " + palm_prompts['image_gen']['neg_prompt']
 
         # Generate prompts with PaLM
         t = palm_prompts['image_gen']['background']['gen_prompt']
         q = palm_prompts['image_gen']['background']['query']
-        query_string = t.format(input=q.format(time=time,
+        query_string = t.format(input=q.format(genre=time,
                                                place=place,
                                                mood=mood,
                                                title=title,

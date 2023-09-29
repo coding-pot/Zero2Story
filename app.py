@@ -430,7 +430,7 @@ with gr.Blocks(css=STYLE) as demo:
 	image_gen_btn.click(
 		story_gen_ui.image_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, title, subtitle_display, story_content, cursors, cur_cursor, story_audio
+			time_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor, story_audio
 		],
 		outputs=[
 			story_image, img_audio_combine_btn, cursors, progress_comp,

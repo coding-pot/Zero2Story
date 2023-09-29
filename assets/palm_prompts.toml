@@ -71,26 +71,26 @@ Only JSON is allowed.
 ===
 This is some examples.
 Q:
-The genre is "Fantasy", the place is "Enchanted Forest", the mood is "Mystical", the title of the novel is "Whispering Leaves", the chapter title is "The Elf's Lullaby", and the chapter plot revolves around "A hidden glade where elves sing under the moonlight".
-Print out no more than 40 words in syntactically valid JSON format.
+The genre is "Fantasy", the place is "Enchanted Forest", the mood is "Mystical", the title of the novel is "Whispering Leaves", and the chapter plot revolves around "A hidden glade where elves sing under the moonlight".
+Print out no more than 45 words in syntactically valid JSON format.
 A:
 {{"main_sentence":"a mystical glade in an enchanted forest where elves sing beneath the moonlight.","words":["no humans", "fantasy","enchanted forest","moonlit glade","mystical atmosphere","singing elves","luminous fireflies","ancient trees","shimmering leaves","whispering winds","hidden secrets","elven magic","masterpiece","soft lighting","silver glow","detailed shadows","enchanted mood"]}}
 
 Q:
-The genre is "Science Fiction", the place is "Galactic Space Station", the mood is "Tense", the title of the novel is "Stars Unbound", the chapter title is "Void Negotiations", and the chapter plot revolves around "Ambassadors from different galaxies discussing a new treaty".
-Print out no more than 40 words in syntactically valid JSON format.
+The genre is "Science Fiction", the place is "Galactic Space Station", the mood is "Tense", the title of the novel is "Stars Unbound", and the chapter plot revolves around "Ambassadors from different galaxies discussing a new treaty".
+Print out no more than 45 words in syntactically valid JSON format.
 A:
 {{"main_sentence":"a tense gathering in a galactic space station where interstellar ambassadors negotiate.","words":["no humans""science fiction","galactic space station","star-studded backdrop","advanced technology","diverse aliens","hovering spacecrafts","futuristic architecture","tense discussions","interstellar politics","neon lights","holographic displays","masterpiece","detailed lighting","cinematic mood"]}}
 
 Q:
-The genre is "Romance", the place is "Beach", the mood is "Heartfelt", the title of the novel is "Waves of Passion", the chapter title is "Sunset Confessions", and the chapter plot revolves around "Two lovers reconciling their differences by the shore".
-Print out no more than 40 words in syntactically valid JSON format.
+The genre is "Romance", the place is "Beach", the mood is "Heartfelt", the title of the novel is "Waves of Passion", and the chapter plot revolves around "Two lovers reconciling their differences by the shore".
+Print out no more than 45 words in syntactically valid JSON format.
 A:
 {{"main_sentence":"a heartfelt scene on a beach during sunset where two lovers reconcile.","words":["no humans""romance","beach","sunset horizon","golden sands","lapping waves","embrace","teary-eyed confessions","seashells","reflective waters","warm hues","silhouette of lovers","soft breeze","detailed shadows","emotional atmosphere"]}}
 
 Q:
-The genre is "Middle Ages", the place is "Royal Palace", the mood is "Epic Adventure", the title of the novel is "Throne of Fates", the chapter title is "Knight's Quest", and the chapter plot revolves around "A brave knight receiving a quest from the king".
-Print out no more than 40 words in syntactically valid JSON format.
+The genre is "Middle Ages", the place is "Royal Palace", the mood is "Epic Adventure", the title of the novel is "Throne of Fates", and the chapter plot revolves around "A brave knight receiving a quest from the king".
+Print out no more than 45 words in syntactically valid JSON format.
 A:
 {{"main_sentence":"an epic scene in a royal palace where a knight is tasked with a quest by the king.","words":["no humans""middle ages","royal palace","grand throne room","armored knight","majestic king","tapestries","stone walls","torches","glistening armor","banner flags","medieval atmosphere","heroic demeanor","detailed architecture","golden crowns"]}}
 ===
@@ -100,8 +100,8 @@ Q:
 A:
 """
 query = """
-The genre is "{genre}", the place is "{place}", the mood is "{mood}", the title of the novel is "{title}", the chapter title is "{chapter_title}", and the chapter plot revolves around "{chapter_plot}".
-Print out no more than 35 words in syntactically valid JSON format.
+The genre is "{genre}", the place is "{place}", the mood is "{mood}", the title of the novel is "{title}", and the chapter plot revolves around "{chapter_plot}".
+Print out no more than 45 words in syntactically valid JSON format.
 """
 
 [music_gen]

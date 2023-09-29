@@ -362,6 +362,7 @@ def image_gen(
 			neg_prompt
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
+			break
 		except Exception as e:
 			print(e)
 			
@@ -369,7 +370,11 @@ def image_gen(
 		raise ValueError("Failed to generate prompts for background image.")
 
 	# generate image
-	img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='16:9', cfg=4.5)
+	try:
+		img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='16:9', cfg=4.5)
+	except ValueError as e:
+		print(e)
+		img_filename = str(Path('.') / 'assets' / 'nsfw_warning.png')
 	cursors[cur_cursor]["img"] = img_filename
 
 	video_gen_btn_state = gr.update(interactive=False)
