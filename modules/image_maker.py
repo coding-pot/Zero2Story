@@ -72,8 +72,7 @@ class ImageMaker:
 
         print("Loading the Stable Diffusion model into memory...")
         self.__sd_model = StableDiffusionPipeline.from_single_file(self.model_base,
-                                                              torch_dtype=torch.float16,
-                                                              #custom_pipeline="lpw_stable_diffusion",
+                                                              #torch_dtype=torch.float16,
                                                               use_safetensors=True)
 
         # Clip Skip
@@ -112,8 +111,8 @@ class ImageMaker:
     def text2image(self,
                    prompt: str, neg_prompt: str = None,
                    ratio: Literal['3:2', '4:3', '16:9', '1:1', '9:16', '3:4', '2:3'] = '1:1',
-                   step: int = 25,
-                   cfg: float = 7,
+                   step: int = 28,
+                   cfg: float = 4.5,
                    seed: int = None) -> str:
         """Generate an image from the prompt.
 
@@ -147,7 +146,7 @@ class ImageMaker:
                               width=width,
                               height=height,
                             )
-        if result.nsfw_content_detected[0]:
+        if self.__safety and result.nsfw_content_detected[0]:
             print("=== NSFW Content Detected ===")
             raise ValueError("Potential NSFW content was detected in one or more images.")
 
@@ -222,8 +221,8 @@ class ImageMaker:
             tuple[str, str]: A tuple of positive and negative prompts.
         """
 
-        positive = "" # add static prompt for background if needed (e.g. "chibi, cute, anime")
-        negative = "solo, 1girl, 1boy, 1man, 1woman, human, " + palm_prompts['image_gen']['neg_prompt']
+        positive = "painting+++, anime+, catoon, watercolor, wallpaper, text---" # add static prompt for background if needed (e.g. "chibi, cute, anime")
+        negative = "realistic, human, character, people, photograph, 3d render, blurry, grayscale, oversaturated, " + palm_prompts['image_gen']['neg_prompt']
 
         # Generate prompts with PaLM
         t = palm_prompts['image_gen']['background']['gen_prompt']
@@ -245,7 +244,7 @@ class ImageMaker:
         try: 
             res_json = json.loads(response_txt)
             positive = (res_json['main_sentence'] if not positive else f"{positive}, {res_json['main_sentence']}") + ", "
-            positive += ', '.join(res_json['words'])
+            positive += ', '.join(res_json['descriptors'])
         except:
             print("=== PaLM Response ===")
             print(response.filters)
