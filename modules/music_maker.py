@@ -92,12 +92,12 @@ class MusicMaker:
         return str(output_filename.with_suffix('.mp3' if self.output_format == 'mp3' else '.wav'))
 
 
-    def generate_prompt(self, time:str, place:str, mood:str,
+    def generate_prompt(self, genre:str, place:str, mood:str,
                               title:str, chapter_title:str, chapter_plot:str) -> str:
         """Generate a prompt for a background music based on given attributes.
 
         Args:
-            time (str): Time of the day.
+            genre (str): Genre of the story.
             place (str): Place of the story.
             mood (str): Mood of the story.
             title (str): Title of the story.
@@ -111,7 +111,7 @@ class MusicMaker:
         # Generate prompts with PaLM
         t = palm_prompts['music_gen']['gen_prompt']
         q = palm_prompts['music_gen']['query']
-        query_string = t.format(input=q.format(genre=time,
+        query_string = t.format(input=q.format(genre=genre,
                                                place=place,
                                                mood=mood,
                                                title=title,

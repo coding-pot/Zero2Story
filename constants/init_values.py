@@ -1,4 +1,4 @@
-times = ["Middle Ages", "Cyberpunk", "Science Fiction", "Horror", "Romance", "Mystery", "Thriller", "Survival", "Post-apocalyptic", "Historical Fiction"]
+genres = ["Middle Ages", "Cyberpunk", "Science Fiction", "Horror", "Romance", "Mystery", "Thriller", "Survival", "Post-apocalyptic", "Historical Fiction"]
 
 places = {
   "Middle Ages": ["Royal Palace", "Small Village", "Enchanted Forest", "Church", "City Walls and Beyond", "Wizard's Tower", "Inn", "Battlefield", "Grand Library", "Royal Gardens"],

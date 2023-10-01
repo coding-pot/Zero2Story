@@ -205,12 +205,12 @@ class ImageMaker:
         return (positive.lower(), negative.lower())
 
 
-    def generate_background_prompts(self, time:str, place:str, mood:str,
+    def generate_background_prompts(self, genre:str, place:str, mood:str,
                                           title:str, chapter_title:str, chapter_plot:str) -> tuple[str, str]:
         """Generate positive and negative prompts for a background image based on given attributes.
 
         Args:
-            time (str): Time of the day.
+            genre (str): Genre of the story.
             place (str): Place of the story.
             mood (str): Mood of the story.
             title (str): Title of the story.
@@ -227,7 +227,7 @@ class ImageMaker:
         # Generate prompts with PaLM
         t = palm_prompts['image_gen']['background']['gen_prompt']
         q = palm_prompts['image_gen']['background']['query']
-        query_string = t.format(input=q.format(genre=time,
+        query_string = t.format(input=q.format(genre=genre,
                                                place=place,
                                                mood=mood,
                                                title=title,
