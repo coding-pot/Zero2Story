@@ -405,6 +405,7 @@ def audio_gen(
 		try:
 			prompt = bgm_maker.generate_prompt(time, place, mood, title, "", story_content)
 			print(f"Music Prompt: {prompt}")
+			break
 		except Exception as e:
 			print(e)
 

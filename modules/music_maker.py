@@ -111,7 +111,7 @@ class MusicMaker:
         # Generate prompts with PaLM
         t = palm_prompts['music_gen']['gen_prompt']
         q = palm_prompts['music_gen']['query']
-        query_string = t.format(input=q.format(time=time,
+        query_string = t.format(input=q.format(genre=time,
                                                place=place,
                                                mood=mood,
                                                title=title,
