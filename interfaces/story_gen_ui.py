@@ -3,6 +3,7 @@ import copy
 import random
 import gradio as gr
 from gradio_client import Client
+from pathlib import Path
 
 from modules import (
 	ImageMaker, MusicMaker, palmchat, merge_video
@@ -13,7 +14,9 @@ from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
 # TODO: Replace checkpoint filename to Huggingface URL
-img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', safety=False)
+img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', vae="cute20vae.safetensors")
+#img_maker = ImageMaker('fantasyworldFp16.safetensors', vae="cute20vae.safetensors")
+#img_maker = ImageMaker('forgesagalandscapemi.safetensors', vae="anythingFp16.safetensors")
 bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
@@ -362,6 +365,7 @@ def image_gen(
 			neg_prompt
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
+			break
 		except Exception as e:
 			print(e)
 			
@@ -369,7 +373,16 @@ def image_gen(
 		raise ValueError("Failed to generate prompts for background image.")
 
 	# generate image
-	img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='16:9', cfg=4.5)
+	try:
+		img_filename = img_maker.text2image(prompt, neg_prompt=neg_prompt, ratio='16:9', cfg=6.5)
+	except ValueError as e:
+		print(e)
+		img_filename = str(Path('.') / 'assets' / 'nsfw_warning_wide.png')
+	
+	print(img_filename)
+	print(cursors)
+	print(cursors[cur_cursor])
+
 	cursors[cur_cursor]["img"] = img_filename
 
 	video_gen_btn_state = gr.update(interactive=False)

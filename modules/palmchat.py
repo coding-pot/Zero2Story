@@ -85,6 +85,17 @@ async def gen_text(
         top_p = 0.95
         max_output_tokens = 1024
         
+        # default safety settings
+        safety_settings = [{"category":"HARM_CATEGORY_DEROGATORY","threshold":1},
+                           {"category":"HARM_CATEGORY_TOXICITY","threshold":1},
+                           {"category":"HARM_CATEGORY_VIOLENCE","threshold":2},
+                           {"category":"HARM_CATEGORY_SEXUAL","threshold":2},
+                           {"category":"HARM_CATEGORY_MEDICAL","threshold":2},
+                           {"category":"HARM_CATEGORY_DANGEROUS","threshold":2}]
+        if not use_filter:
+            for idx, _ in enumerate(safety_settings):
+                safety_settings[idx]['threshold'] = 4
+
         if mode == "chat":
             parameters = {
                 'model': 'models/chat-bison-001',
@@ -102,6 +113,7 @@ async def gen_text(
                 'top_k': top_k,
                 'top_p': top_p,
                 'max_output_tokens': max_output_tokens,
+                'safety_settings': safety_settings,
             }
 
     if mode == "chat":
