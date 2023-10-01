@@ -17,7 +17,7 @@ from pingpong.context import CtxLastWindowStrategy
 img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', vae="cute20vae.safetensors")
 #img_maker = ImageMaker('fantasyworldFp16.safetensors', vae="cute20vae.safetensors")
 #img_maker = ImageMaker('forgesagalandscapemi.safetensors', vae="anythingFp16.safetensors")
-bgm_maker = MusicMaker(model_size='small', output_format='mp3')
+bgm_maker = MusicMaker(model_size='large', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
@@ -356,12 +356,12 @@ def video_gen(
 
 
 def image_gen(
-	time, place, mood, title, story_content, cursors, cur_cursor, story_audio
+	genre, place, mood, title, story_content, cursors, cur_cursor, story_audio
 ):
 	# generate prompts for background image with PaLM
 	for _ in range(3):
 		try:
-			prompt, neg_prompt = img_maker.generate_background_prompts(time, place, mood, title, "", story_content)
+			prompt, neg_prompt = img_maker.generate_background_prompts(genre, place, mood, title, "", story_content)
 			neg_prompt
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
@@ -379,10 +379,6 @@ def image_gen(
 		print(e)
 		img_filename = str(Path('.') / 'assets' / 'nsfw_warning_wide.png')
 	
-	print(img_filename)
-	print(cursors)
-	print(cursors[cur_cursor])
-
 	cursors[cur_cursor]["img"] = img_filename
 
 	video_gen_btn_state = gr.update(interactive=False)
@@ -398,12 +394,12 @@ def image_gen(
 
 
 def audio_gen(
-	time, place, mood, title, story_content, cursors, cur_cursor, story_image
+	genre, place, mood, title, story_content, cursors, cur_cursor, story_image
 ):
 	# generate prompt for background music with PaLM
 	for _ in range(3):
 		try:
-			prompt = bgm_maker.generate_prompt(time, place, mood, title, "", story_content)
+			prompt = bgm_maker.generate_prompt(genre, place, mood, title, "", story_content)
 			print(f"Music Prompt: {prompt}")
 			break
 		except Exception as e:

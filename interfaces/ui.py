@@ -35,12 +35,12 @@ def get_random_name(cur_char_name, char_name1, char_name2, char_name3):
 def gen_character_image(
   gallery_images, 
   name, age, mbti, personality, job, 
-  time, place, mood, creative_mode
+  genre, place, mood, creative_mode
 ):
 	# generate prompts for character image with PaLM
 	for _ in range(3):
 		try:
-			prompt, neg_prompt = img_maker.generate_character_prompts(name, age, job, keywords=[mbti, personality, time, place, mood], creative_mode=creative_mode)
+			prompt, neg_prompt = img_maker.generate_character_prompts(name, age, job, keywords=[mbti, personality, genre, place, mood], creative_mode=creative_mode)
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
 			break

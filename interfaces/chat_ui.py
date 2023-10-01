@@ -10,7 +10,7 @@ def rollback_last_ui(history):
 
 async def chat(
     user_input, chat_mode, chat_state,
-    time, place, mood,
+    genre, place, mood,
     name1, age1, mbti1, personality1, job1,
     name2, age2, mbti2, personality2, job2,
     name3, age3, mbti3, personality3, job3,
@@ -42,11 +42,11 @@ chapter4 {{
 }}
 """
 
-    ctx = f"""You are a professional writing advisor, especially specialized in developing ideas on plotting stories and creating characters. I provide when, where, and mood along with the rough description of one main character and three side characters. 
+    ctx = f"""You are a professional writing advisor, especially specialized in developing ideas on plotting stories and creating characters. I provide genre, where, and mood along with the rough description of one main character and three side characters. 
 
 Give creative but not too long responses based on the following information.
 
-when: {time}
+genre: {genre}
 where: {place}
 mood: {mood}
 

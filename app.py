@@ -5,7 +5,7 @@ import gradio as gr
 
 from constants.css import STYLE
 from constants.init_values import (
-	times, places, moods, jobs, ages, mbtis, random_names, personalities, default_character_images, styles
+	genres, places, moods, jobs, ages, mbtis, random_names, personalities, default_character_images, styles
 )
 
 from interfaces import ui, chat_ui, plot_gen_ui, story_gen_ui 
@@ -33,7 +33,7 @@ with gr.Blocks(css=STYLE) as demo:
 	with gr.Accordion("determine when, where, and asmosphere", open=True) as world_setup_section:
 		with gr.Row():
 			with gr.Column():
-				time_dd = gr.Dropdown(label="time", choices=times, value=times[0], interactive=True, elem_classes=["center-label"])
+				genre_dd = gr.Dropdown(label="genre", choices=genres, value=genres[0], interactive=True, elem_classes=["center-label"])
 			with gr.Column():
 				place_dd = gr.Dropdown(label="place", choices=places["Middle Ages"], value=places["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["center-label"])
 			with gr.Column():
@@ -289,7 +289,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.first_story_gen,
 		inputs=[			
 			cursors,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -303,7 +303,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			cursors,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -318,7 +318,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			cursors,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -340,7 +340,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.update_story_gen,
 		inputs=[
 			cursors, cur_cursor,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -353,7 +353,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			cursors,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -366,7 +366,7 @@ with gr.Blocks(css=STYLE) as demo:
  
 	#### Setups
 
-	time_dd.select(
+	genre_dd.select(
 		ui.update_on_age,
 		outputs=[place_dd, mood_dd, job_dd1, job_dd2, job_dd3, job_dd4]
 	)
@@ -374,25 +374,25 @@ with gr.Blocks(css=STYLE) as demo:
 	gen_char_btn1.click(
 		ui.gen_character_image,
 		inputs=[
-			gallery_images1, name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1, time_dd, place_dd, mood_dd, creative_dd1],
+			gallery_images1, name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1, genre_dd, place_dd, mood_dd, creative_dd1],
 		outputs=[char_gallery1, gallery_images1]
 	)
 
 	gen_char_btn2.click(
 		ui.gen_character_image,
-		inputs=[gallery_images2, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2, time_dd, place_dd, mood_dd, creative_dd2],
+		inputs=[gallery_images2, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2, genre_dd, place_dd, mood_dd, creative_dd2],
 		outputs=[char_gallery2, gallery_images2]
 	)
 
 	gen_char_btn3.click(
 		ui.gen_character_image,
-		inputs=[gallery_images3, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3, time_dd, place_dd, mood_dd, creative_dd3],
+		inputs=[gallery_images3, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3, genre_dd, place_dd, mood_dd, creative_dd3],
 		outputs=[char_gallery3, gallery_images3]
 	)
 
 	gen_char_btn4.click(
 		ui.gen_character_image,
-		inputs=[gallery_images4, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4, time_dd, place_dd, mood_dd, creative_dd4],
+		inputs=[gallery_images4, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4, genre_dd, place_dd, mood_dd, creative_dd4],
 		outputs=[char_gallery4, gallery_images4]
 	)
 
@@ -430,7 +430,7 @@ with gr.Blocks(css=STYLE) as demo:
 	image_gen_btn.click(
 		story_gen_ui.image_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor, story_audio
+			genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor, story_audio
 		],
 		outputs=[
 			story_image, img_audio_combine_btn, cursors, progress_comp,
@@ -440,7 +440,7 @@ with gr.Blocks(css=STYLE) as demo:
 	audio_gen_btn.click(
 		story_gen_ui.audio_gen,
 		inputs=[
-			time_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor, story_image
+			genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor, story_image
 		],
 		outputs=[story_audio, img_audio_combine_btn, cursors, progress_comp]
 	)
@@ -480,7 +480,7 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[
 			cursors,
 			action_btn1,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -496,7 +496,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			cursors,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -518,7 +518,7 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[
 			cursors,
 			action_btn2,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -534,7 +534,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			cursors,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -556,7 +556,7 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[
 			cursors,
 			action_btn3,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -572,7 +572,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			cursors,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -594,7 +594,7 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[
 			cursors,
 			custom_action_txt,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -610,7 +610,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			cursors,
-			time_dd, place_dd, mood_dd, 
+			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 			side_char_enable_ckb1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 			side_char_enable_ckb2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
@@ -627,7 +627,7 @@ with gr.Blocks(css=STYLE) as demo:
 	# 	chat_ui.chat,
 	# 	inputs=[
 	# 		chat_input_txt, chat_mode, chat_state,
-	# 		time_dd, place_dd, mood_dd, 
+	# 		genre_dd, place_dd, mood_dd, 
 	# 		name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
 	# 		name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
 	# 		name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,

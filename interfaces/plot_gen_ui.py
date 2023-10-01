@@ -24,7 +24,7 @@ side character #{cur_side_chars}
 
 async def plot_gen(
 	temperature,
-	time, place, mood,
+	genre, place, mood,
 	side_char_enable1, side_char_enable2, side_char_enable3,
 	name1, age1, mbti1, personality1, job1,
 	name2, age2, mbti2, personality2, job2,
@@ -59,7 +59,7 @@ JSON output:
 }}
 
 background information:
-- genre: {time}
+- genre: {genre}
 - where: {place}
 - mood: {mood}
 
@@ -112,7 +112,7 @@ main character
 async def first_story_gen(
 	title, 
 	rising_action, crisis, climax, falling_action, denouement,
-	time, place, mood,
+	genre, place, mood,
 	side_char_enable1, side_char_enable2, side_char_enable3,
 	name1, age1, mbti1, personality1, job1,
 	name2, age2, mbti2, personality2, job2,
@@ -155,7 +155,7 @@ JSON output:
 }}
 
 background information:
-- genre: {time}
+- genre: {genre}
 - where: {place}
 - mood: {mood}
 
