@@ -15,6 +15,13 @@ Zero2Story is a framework built on top of [PaLM API](https://developers.generati
 - If the generated story, options, image, and music in each turn, users could ask to re-generate them.
 
 ## Prerequisites
+
+### PaLM API key
+
+This project heavily depends on [PaLM API](https://developers.generativeai.google). If you want to run it on your own environment, you need to get [PaLM API key](https://developers.generativeai.google/tutorials/setup) and paste it in `.palm_api_key.txt` file within the root directory.
+
+### Packages
+
 Make sure you have installed all of the following prerequisites on your development machine:
 * CUDA Toolkit 11.8 with cuDNN 8 - [Download & Install CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) It is highly recommended to run on a GPU. If you run it in a CPU environment, it will be very slow.
 * Poetry - [Download & Install Poetry](https://python-poetry.org/docs/#installation) It is the python packaging and dependency manager.
@@ -36,7 +43,7 @@ Make sure you have installed all of the following prerequisites on your developm
     ```shell
     $ sudo apt install ffmpeg
 
-## Instruction
+## Run
 
 ```shell
 $ poetry install
