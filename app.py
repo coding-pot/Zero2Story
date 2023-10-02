@@ -277,18 +277,18 @@ with gr.Blocks(css=STYLE) as demo:
 		with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
 			gr.Markdown("hello")
 
-		with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
-			with gr.Column(scale=1):
-				chatbot = gr.Chatbot(
-					[],
-					avatar_images=("assets/user.png", "assets/ai.png"), 
-					elem_id="chatbot", 
-					elem_classes=["no-label-chatbot"])
-				chat_input_txt = gr.Textbox(placeholder="enter...", interactive=True, elem_id="chat-input", elem_classes=["no-label"])
+	with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
+		with gr.Column(scale=1):
+			chatbot = gr.Chatbot(
+				[],
+				avatar_images=("assets/user.png", "assets/ai.png"), 
+				elem_id="chatbot", 
+				elem_classes=["no-label-chatbot"])
+			chat_input_txt = gr.Textbox(placeholder="enter...", interactive=True, elem_id="chat-input", elem_classes=["no-label"])
 
-				with gr.Row(elem_id="chat-buttons"):
-					regen_btn = gr.Button("regen", interactive=False, elem_classes=["control-button"])
-					clear_btn = gr.Button("clear", elem_classes=["control-button"])
+			with gr.Row(elem_id="chat-buttons"):
+				regen_btn = gr.Button("regen", interactive=False, elem_classes=["control-button"])
+				clear_btn = gr.Button("clear", elem_classes=["control-button"])
 
 	pre_to_setup_btn.click(
 		view_change_ui.move_to_next_view,
