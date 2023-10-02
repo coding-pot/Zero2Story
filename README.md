@@ -47,11 +47,13 @@ $ poetry run python app.py
 
 - [ ] Exporting of generated stories as PDF
 
-## Stable diffusion model information
+
+## Stable Diffusion Model Information
+
 ### Checkpoints
-- For characters image generation : [https://civitai.com/models/129896](https://civitai.com/models/129896)
-- For background image generation : [https://civitai.com/models/93931](https://civitai.com/models/93931?modelVersionId=148652)
+- For character image generation: [CIVIT.AI Model 129896](https://civitai.com/models/129896)
+- For background image generation: [CIVIT.AI Model 93931](https://civitai.com/models/93931?modelVersionId=148652)
 
 ### VAEs
-- For characters image generation : [https://civitai.com/models/23906](https://civitai.com/models/23906)
-- For background image generation : [https://civitai.com/models/65728](https://civitai.com/models/65728)
+- For character image generation: [CIVIT.AI Model 23906](https://civitai.com/models/23906)
+- For background image generation: [CIVIT.AI Model 65728](https://civitai.com/models/65728)
