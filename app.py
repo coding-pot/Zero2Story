@@ -225,9 +225,9 @@ with gr.Blocks(css=STYLE) as demo:
 		subtitle_display = gr.Markdown("### Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
 
 		with gr.Row():
-			image_gen_btn = gr.Button("🏞️", interactive=False)
-			audio_gen_btn = gr.Button("🔊", interactive=False)
-			img_audio_combine_btn = gr.Button("📀", interactive=False)
+			image_gen_btn = gr.Button("🏞️ Image", interactive=False, elem_classes=["control-button-green"])
+			audio_gen_btn = gr.Button("🔊 Audio", interactive=False, elem_classes=["control-button-green"])
+			img_audio_combine_btn = gr.Button("📀 Image + Audio", interactive=False, elem_classes=["control-button-green"])
 
 		story_image = gr.Image(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
 		story_audio = gr.Audio(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
@@ -256,15 +256,15 @@ with gr.Blocks(css=STYLE) as demo:
 
 		with gr.Accordion("regeneration controls", open=False):
 			with gr.Row():
-				regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
-				regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button"])
+				regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button-green"])
+				regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button-green"])
 	
 			custom_prompt_txt = gr.Textbox(placeholder="Re-suggest story and actions based on your own custom request", elem_classes=["no-label", "small-big-textarea"])
 
 		with gr.Row():
-			action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button"])
-			action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button"])
-			action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
+			action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button-green"])
+			action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button-green"])
+			action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button-green"])
 
 		custom_action_txt = gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
 
