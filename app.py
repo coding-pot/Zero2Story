@@ -184,6 +184,37 @@ with gr.Blocks(css=STYLE) as demo:
 			back_to_background_setup_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
 			character_setup_confirm_btn = gr.Button("confirm →", elem_classes=["wrap", "control-button"], scale=2)
 
+	gr.Markdown("### 💡 Plot setup", visible=False)
+	with gr.Accordion("generate chapter titles and each plot", open=False, visible=False) as plot_setup_section:
+		title = gr.Textbox("Title Undetermined Yet", elem_classes=["no-label", "font-big"])
+		# plot = gr.Textbox(lines=10, elem_classes=["no-label", "small-big-textarea"])
+
+		gr.Textbox("Rising action", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):
+			chapter1_plot = gr.Textbox(placeholder="The plot of the first chapter will be generated here", lines=3, elem_classes=["no-label"])
+
+		gr.Textbox("Crisis", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
+			chapter2_plot = gr.Textbox(placeholder="The plot of the second chapter will be generated here", lines=3, elem_classes=["no-label"])
+
+		gr.Textbox("Climax", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
+			chapter3_plot = gr.Textbox(placeholder="The plot of the third chapter will be generated here", lines=3, elem_classes=["no-label"])
+
+		gr.Textbox("Falling action", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
+			chapter4_plot = gr.Textbox(placeholder="The plot of the fourth chapter will be generated here", lines=3, elem_classes=["no-label"])
+
+		gr.Textbox("Denouement", elem_classes=["no-label"])
+		with gr.Row(elem_classes=["left-margin"]):  
+			chapter5_plot = gr.Textbox(placeholder="The plot of the fifth chapter will be generated here", lines=3, elem_classes=["no-label"])
+
+		with gr.Row():
+			plot_gen_temp = gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
+			plot_gen_btn = gr.Button("gen plot", elem_classes=["control-button"])
+
+		plot_setup_confirm_btn = gr.Button("confirm", elem_classes=["control-button"])
+
 	with gr.Column(visible=False) as writing_phase:
 		gr.Markdown("# ✍🏼 Story writing")
 		gr.Markdown(desc.story_generation_phase_description, elem_classes=["markdown-justify"])
