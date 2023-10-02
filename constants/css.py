@@ -30,6 +30,10 @@ STYLE = """
   text-align: center;
 }
 
+.markdown-justify {
+  text-align: justify !important;
+}
+
 .markdown-left {
   text-align: left;
 }
@@ -96,6 +100,13 @@ textarea {
   border-color: #69ade2 !important;
   border-width: 2px !important;
   color: #69ade2 !important;
+}
+
+.control-button-green {
+  background: none !important;
+  border-color: #51ad00 !important;
+  border-width: 2px !important;
+  color: #51ad00 !important;
 }
 
 .small-big {

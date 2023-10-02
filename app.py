@@ -7,8 +7,11 @@ from constants.css import STYLE
 from constants.init_values import (
 	genres, places, moods, jobs, ages, mbtis, random_names, personalities, default_character_images, styles
 )
+from constants import desc
 
-from interfaces import ui, chat_ui, plot_gen_ui, story_gen_ui 
+from interfaces import (
+    ui, chat_ui, story_gen_ui, view_change_ui
+)
 from modules.palmchat import GradioPaLMChatPPManager
 
 with gr.Blocks(css=STYLE) as demo:
@@ -29,9 +32,14 @@ with gr.Blocks(css=STYLE) as demo:
 	gallery_images3 = gr.State(default_character_images)
 	gallery_images4 = gr.State(default_character_images)
 
-	gr.Markdown("### 🌐 World setup")
-	world_setup_indicator = gr.Dataset(label ="Selected world condition", components = ["markdown"], samples = [], visible=False)
-	with gr.Accordion("determine when, where, and asmosphere", open=True) as world_setup_section:
+	with gr.Column(visible=True) as pre_phase:
+		gr.Markdown("# 📖 Zero2Story", elem_classes=["markdown-center"])
+		gr.Markdown(desc.pre_phase_description, elem_classes=["markdown-justify"])
+		pre_to_setup_btn = gr.Button("create a custom story", elem_classes=["wrap", "control-button"])
+
+	with gr.Column(visible=False) as background_setup_phase:
+		gr.Markdown("# 🌐 World setup", elem_classes=["markdown-center"])
+		gr.Markdown(desc.background_setup_phase_description, elem_classes=["markdown-justify"])
 		with gr.Row():
 			with gr.Column():
 				genre_dd = gr.Dropdown(label="genre", choices=genres, value=genres[0], interactive=True, elem_classes=["center-label"])
@@ -39,11 +47,14 @@ with gr.Blocks(css=STYLE) as demo:
 				place_dd = gr.Dropdown(label="place", choices=places["Middle Ages"], value=places["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["center-label"])
 			with gr.Column():
 				mood_dd = gr.Dropdown(label="mood", choices=moods["Middle Ages"], value=moods["Middle Ages"][0], allow_custom_value=True, interactive=True, elem_classes=["center-label"])
-	
-		world_setup_confirm_btn = gr.Button("Confirm", elem_classes=["wrap", "control-button"])
+		
+		with gr.Row():
+			back_to_pre_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
+			world_setup_confirm_btn = gr.Button("character setup →", elem_classes=["wrap", "control-button"], scale=2)
 
-	gr.Markdown("### 👥 Character setup")
-	with gr.Accordion("determine four characters' traits", open=False) as character_setup_section:
+	with gr.Column(visible=False) as character_setup_phase:
+		gr.Markdown("# 👥 Character setup")
+		gr.Markdown(desc.character_setup_phase_description, elem_classes=["markdown-justify"])
 		with gr.Row():
 			with gr.Column():
 				gr.Checkbox(label="character include/enable", value=True, interactive=False)
@@ -52,7 +63,7 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt1 = gr.Textbox(random_names[0], elem_classes=["no-label"], scale=3)
-					random_name_btn1 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
+					random_name_btn1 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
@@ -74,7 +85,7 @@ with gr.Blocks(css=STYLE) as demo:
 					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
 					creative_dd1 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-				gen_char_btn1 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
+				gen_char_btn1 = gr.Button("gen character", elem_classes=["wrap", "control-button-green"])
 
 			with gr.Column():
 				side_char_enable_ckb1 = gr.Checkbox(label="character include/enable", value=False)
@@ -83,7 +94,7 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt2 = gr.Textbox(random_names[1], elem_classes=["no-label"], scale=3)
-					random_name_btn2 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
+					random_name_btn2 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
@@ -105,7 +116,7 @@ with gr.Blocks(css=STYLE) as demo:
 					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
 					creative_dd2 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-				gen_char_btn2 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
+				gen_char_btn2 = gr.Button("gen character", elem_classes=["wrap", "control-button-green"])
 
 			with gr.Column():
 				side_char_enable_ckb2 = gr.Checkbox(label="character include/enable", value=False)
@@ -114,7 +125,7 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt3 = gr.Textbox(random_names[2], elem_classes=["no-label"], scale=3)
-					random_name_btn3 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
+					random_name_btn3 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
@@ -136,7 +147,7 @@ with gr.Blocks(css=STYLE) as demo:
 					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
 					creative_dd3 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-				gen_char_btn3 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
+				gen_char_btn3 = gr.Button("gen character", elem_classes=["wrap", "control-button-green"])
 
 			with gr.Column():
 				side_char_enable_ckb3 = gr.Checkbox(label="character include/enable", value=False)
@@ -145,7 +156,7 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt4 = gr.Textbox(random_names[3], elem_classes=["no-label"], scale=3)
-					random_name_btn4 = gr.Button("🗳️", elem_classes=["wrap", "control-button", "left-margin"], scale=1)
+					random_name_btn4 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
@@ -167,126 +178,121 @@ with gr.Blocks(css=STYLE) as demo:
 					gr.Markdown("style", elem_classes=["markdown-left"], scale=3)
 					creative_dd4 = gr.Dropdown(choices=styles, value=styles[0], allow_custom_value=True, interactive=True, elem_classes=["no-label"], scale=4)
 
-				gen_char_btn4 = gr.Button("gen character", elem_classes=["wrap", "control-button"])
-
-		character_setup_confirm_btn = gr.Button("Confirm", elem_classes=["wrap", "control-button"])
-
-	gr.Markdown("### 💡 Plot setup", visible=False)
-	with gr.Accordion("generate chapter titles and each plot", open=False, visible=False) as plot_setup_section:
-		title = gr.Textbox("Title Undetermined Yet", elem_classes=["no-label", "font-big"])
-		# plot = gr.Textbox(lines=10, elem_classes=["no-label", "small-big-textarea"])
-
-		gr.Textbox("Rising action", elem_classes=["no-label"])
-		with gr.Row(elem_classes=["left-margin"]):
-			chapter1_plot = gr.Textbox(placeholder="The plot of the first chapter will be generated here", lines=3, elem_classes=["no-label"])
-
-		gr.Textbox("Crisis", elem_classes=["no-label"])
-		with gr.Row(elem_classes=["left-margin"]):  
-			chapter2_plot = gr.Textbox(placeholder="The plot of the second chapter will be generated here", lines=3, elem_classes=["no-label"])
-
-		gr.Textbox("Climax", elem_classes=["no-label"])
-		with gr.Row(elem_classes=["left-margin"]):  
-			chapter3_plot = gr.Textbox(placeholder="The plot of the third chapter will be generated here", lines=3, elem_classes=["no-label"])
-
-		gr.Textbox("Falling action", elem_classes=["no-label"])
-		with gr.Row(elem_classes=["left-margin"]):  
-			chapter4_plot = gr.Textbox(placeholder="The plot of the fourth chapter will be generated here", lines=3, elem_classes=["no-label"])
-
-		gr.Textbox("Denouement", elem_classes=["no-label"])
-		with gr.Row(elem_classes=["left-margin"]):  
-			chapter5_plot = gr.Textbox(placeholder="The plot of the fifth chapter will be generated here", lines=3, elem_classes=["no-label"])
+				gen_char_btn4 = gr.Button("gen character", elem_classes=["wrap", "control-button-green"])
 
 		with gr.Row():
-			plot_gen_temp = gr.Slider(0.0, 2.0, 1.0, step=0.1, label="temperature")
-			plot_gen_btn = gr.Button("gen plot", elem_classes=["control-button"])
+			back_to_background_setup_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
+			character_setup_confirm_btn = gr.Button("confirm →", elem_classes=["wrap", "control-button"], scale=2)
 
-		plot_setup_confirm_btn = gr.Button("confirm", elem_classes=["control-button"])
+	with gr.Column(visible=False) as writing_phase:
+		gr.Markdown("# ✍🏼 Story writing")
+		gr.Markdown(desc.story_generation_phase_description, elem_classes=["markdown-justify"])
+		with gr.Accordion("generate chapter titles and each plot", open=False) as story_writing_section:
+			progress_comp = gr.Textbox(label=None, elem_classes=["no-label"], interactive=False)
 
-	gr.Markdown("### ✍🏼 Story writing")
-	with gr.Accordion("generate chapter titles and each plot", open=False) as story_writing_section:
-		progress_comp = gr.Textbox(label=None, elem_classes=["no-label"], interactive=False)
+			title_display = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
+			subtitle_display = gr.Markdown("### Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
 
-		title_display = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
-		subtitle_display = gr.Markdown("### Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
-
-		with gr.Row():
-			image_gen_btn = gr.Button("🏞️", interactive=False)
-			audio_gen_btn = gr.Button("🔊", interactive=False)
-			img_audio_combine_btn = gr.Button("📀", interactive=False)
-
-		story_image = gr.Image(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
-		story_audio = gr.Audio(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
-		story_video = gr.Video(visible=False, interactive=False, elem_classes=["no-label-gallery"])
-
-		story_progress = gr.Slider(
-			1, 2, 1, step=1, interactive=True, 
-			label="1/2", visible=False
-		)
-
-		story_content = gr.Textbox(
-				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
-				lines=12,
-				elem_classes=["no-label", "small-big-textarea"]
-		)		
-
-		action_types = gr.Radio(
-			choices=[
-				"continue current phase", "move to the next phase"
-			],
-			value="continue current phase",
-			interactive=True,
-			elem_classes=["no-label-radio"],
-			visible=False,
-		)
-
-		with gr.Accordion("regeneration controls", open=False):
 			with gr.Row():
-				regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
-				regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button"])
-    
-			custom_prompt_txt = gr.Textbox(placeholder="Re-suggest story and actions based on your own custom request", elem_classes=["no-label", "small-big-textarea"])
+				image_gen_btn = gr.Button("🏞️", interactive=False)
+				audio_gen_btn = gr.Button("🔊", interactive=False)
+				img_audio_combine_btn = gr.Button("📀", interactive=False)
 
-		with gr.Row():
-			action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button"])
-			action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button"])
-			action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
+			story_image = gr.Image(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
+			story_audio = gr.Audio(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
+			story_video = gr.Video(visible=False, interactive=False, elem_classes=["no-label-gallery"])
 
-		custom_action_txt = gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
+			story_progress = gr.Slider(
+				1, 2, 1, step=1, interactive=True, 
+				label="1/2", visible=False
+			)
 
-	gr.Markdown("### 📤 Export output")
-	with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
-		gr.Markdown("hello")
+			story_content = gr.Textbox(
+					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
+					lines=12,
+					elem_classes=["no-label", "small-big-textarea"]
+			)		
 
-	with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
-		with gr.Column(scale=1):
-			chatbot = gr.Chatbot(
-				[],
-				avatar_images=("assets/user.png", "assets/ai.png"), 
-				elem_id="chatbot", 
-				elem_classes=["no-label-chatbot"])
-			chat_input_txt = gr.Textbox(placeholder="enter...", interactive=True, elem_id="chat-input", elem_classes=["no-label"])
+			action_types = gr.Radio(
+				choices=[
+					"continue current phase", "move to the next phase"
+				],
+				value="continue current phase",
+				interactive=True,
+				elem_classes=["no-label-radio"],
+				visible=False,
+			)
 
-			with gr.Row(elem_id="chat-buttons"):
-				regen_btn = gr.Button("regen", interactive=False, elem_classes=["control-button"])
-				clear_btn = gr.Button("clear", elem_classes=["control-button"])
+			with gr.Accordion("regeneration controls", open=False):
+				with gr.Row():
+					regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
+					regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button"])
+		
+				custom_prompt_txt = gr.Textbox(placeholder="Re-suggest story and actions based on your own custom request", elem_classes=["no-label", "small-big-textarea"])
+
+			with gr.Row():
+				action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button"])
+				action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button"])
+				action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
+
+			custom_action_txt = gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
+   
+			with gr.Row():
+				restart_from_story_generation_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
+				story_writing_done_btn = gr.Button("confirm →", elem_classes=["wrap", "control-button"], scale=2)
+
+	with gr.Column(visible=False) as export_phase:
+		gr.Markdown("### 📤 Export output")
+		with gr.Accordion("generate chapter titles and each plot", open=False) as export_section:
+			gr.Markdown("hello")
+
+		with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
+			with gr.Column(scale=1):
+				chatbot = gr.Chatbot(
+					[],
+					avatar_images=("assets/user.png", "assets/ai.png"), 
+					elem_id="chatbot", 
+					elem_classes=["no-label-chatbot"])
+				chat_input_txt = gr.Textbox(placeholder="enter...", interactive=True, elem_id="chat-input", elem_classes=["no-label"])
+
+				with gr.Row(elem_id="chat-buttons"):
+					regen_btn = gr.Button("regen", interactive=False, elem_classes=["control-button"])
+					clear_btn = gr.Button("clear", elem_classes=["control-button"])
+
+	pre_to_setup_btn.click(
+		view_change_ui.move_to_next_view,
+		inputs=None,
+		outputs=[pre_phase, background_setup_phase]
+	)
+ 
+	back_to_pre_btn.click(
+		view_change_ui.back_to_previous_view,
+		inputs=None,
+		outputs=[pre_phase, background_setup_phase]
+	)
 
 	world_setup_confirm_btn.click(
-		lambda genre, place, mood: (
-			gr.update(open=False), 
-			gr.update(open=True),
-			gr.update(samples=[[genre], [place], [mood]], visible=True),
-		),
-		inputs=[genre_dd, place_dd, mood_dd],
-		outputs=[world_setup_section, character_setup_section, world_setup_indicator]
+		view_change_ui.move_to_next_view,
+		inputs=None,
+		outputs=[background_setup_phase, character_setup_phase]
+	)
+ 
+	back_to_background_setup_btn.click(
+		view_change_ui.back_to_previous_view,
+		inputs=None,
+		outputs=[background_setup_phase, character_setup_phase]		
+	)
+ 
+	restart_from_story_generation_btn.click(
+		view_change_ui.move_to_next_view,
+		inputs=None,
+		outputs=[pre_phase, writing_phase]		
 	)
 
 	character_setup_confirm_btn.click(
-		lambda: (
-			gr.Accordion.update(open=False), 
-			gr.Accordion.update(open=True),
-		),
+		view_change_ui.move_to_next_view,
 		inputs=None,
-		outputs=[character_setup_section, story_writing_section]
+		outputs=[character_setup_phase, writing_phase]
 	).then(
 		story_gen_ui.first_story_gen,
 		inputs=[			
@@ -332,13 +338,6 @@ with gr.Blocks(css=STYLE) as demo:
 	)
  
 	regen_story_btn.click(
-		lambda: (
-			gr.Accordion.update(open=False), 
-			gr.Accordion.update(open=True),
-		),
-		inputs=None,
-		outputs=[character_setup_section, story_writing_section]
-	).then(     
 		story_gen_ui.update_story_gen,
 		inputs=[
 			cursors, cur_cursor,
