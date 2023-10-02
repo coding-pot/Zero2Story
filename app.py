@@ -30,6 +30,7 @@ with gr.Blocks(css=STYLE) as demo:
 	gallery_images4 = gr.State(default_character_images)
 
 	gr.Markdown("### 🌐 World setup")
+	world_setup_indicator = gr.Dataset(label ="Selected world condition", components = ["markdown"], samples = [], visible=False)
 	with gr.Accordion("determine when, where, and asmosphere", open=True) as world_setup_section:
 		with gr.Row():
 			with gr.Column():
@@ -270,12 +271,13 @@ with gr.Blocks(css=STYLE) as demo:
 				clear_btn = gr.Button("clear", elem_classes=["control-button"])
 
 	world_setup_confirm_btn.click(
-		lambda: (
-			gr.Accordion.update(open=False), 
-			gr.Accordion.update(open=True),
+		lambda genre, place, mood: (
+			gr.update(open=False), 
+			gr.update(open=True),
+			gr.update(samples=[[genre], [place], [mood]], visible=True),
 		),
-		inputs=None,
-		outputs=[world_setup_section, character_setup_section]
+		inputs=[genre_dd, place_dd, mood_dd],
+		outputs=[world_setup_section, character_setup_section, world_setup_indicator]
 	)
 
 	character_setup_confirm_btn.click(
