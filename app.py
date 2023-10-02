@@ -182,7 +182,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 		with gr.Row():
 			back_to_background_setup_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
-			character_setup_confirm_btn = gr.Button("confirm →", elem_classes=["wrap", "control-button"], scale=2)
+			character_setup_confirm_btn = gr.Button("generate first stories →", elem_classes=["wrap", "control-button"], scale=2)
 
 	gr.Markdown("### 💡 Plot setup", visible=False)
 	with gr.Accordion("generate chapter titles and each plot", open=False, visible=False) as plot_setup_section:
@@ -218,59 +218,59 @@ with gr.Blocks(css=STYLE) as demo:
 	with gr.Column(visible=False) as writing_phase:
 		gr.Markdown("# ✍🏼 Story writing")
 		gr.Markdown(desc.story_generation_phase_description, elem_classes=["markdown-justify"])
-		with gr.Accordion("generate chapter titles and each plot", open=False) as story_writing_section:
-			progress_comp = gr.Textbox(label=None, elem_classes=["no-label"], interactive=False)
+  
+		progress_comp = gr.Textbox(label=None, elem_classes=["no-label"], interactive=False)
 
-			title_display = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
-			subtitle_display = gr.Markdown("### Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
+		title_display = gr.Markdown("# Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
+		subtitle_display = gr.Markdown("### Title Undetermined Yet", elem_classes=["markdown-center"], visible=False)
 
+		with gr.Row():
+			image_gen_btn = gr.Button("🏞️", interactive=False)
+			audio_gen_btn = gr.Button("🔊", interactive=False)
+			img_audio_combine_btn = gr.Button("📀", interactive=False)
+
+		story_image = gr.Image(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
+		story_audio = gr.Audio(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
+		story_video = gr.Video(visible=False, interactive=False, elem_classes=["no-label-gallery"])
+
+		story_progress = gr.Slider(
+			1, 2, 1, step=1, interactive=True, 
+			label="1/2", visible=False
+		)
+
+		story_content = gr.Textbox(
+				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
+				lines=12,
+				elem_classes=["no-label", "small-big-textarea"]
+		)		
+
+		action_types = gr.Radio(
+			choices=[
+				"continue current phase", "move to the next phase"
+			],
+			value="continue current phase",
+			interactive=True,
+			elem_classes=["no-label-radio"],
+			visible=False,
+		)
+
+		with gr.Accordion("regeneration controls", open=False):
 			with gr.Row():
-				image_gen_btn = gr.Button("🏞️", interactive=False)
-				audio_gen_btn = gr.Button("🔊", interactive=False)
-				img_audio_combine_btn = gr.Button("📀", interactive=False)
+				regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
+				regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button"])
+	
+			custom_prompt_txt = gr.Textbox(placeholder="Re-suggest story and actions based on your own custom request", elem_classes=["no-label", "small-big-textarea"])
 
-			story_image = gr.Image(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
-			story_audio = gr.Audio(None, visible=False, type="filepath", interactive=False, elem_classes=["no-label-image-audio"])
-			story_video = gr.Video(visible=False, interactive=False, elem_classes=["no-label-gallery"])
+		with gr.Row():
+			action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button"])
+			action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button"])
+			action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
 
-			story_progress = gr.Slider(
-				1, 2, 1, step=1, interactive=True, 
-				label="1/2", visible=False
-			)
+		custom_action_txt = gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
 
-			story_content = gr.Textbox(
-					"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
-					lines=12,
-					elem_classes=["no-label", "small-big-textarea"]
-			)		
-
-			action_types = gr.Radio(
-				choices=[
-					"continue current phase", "move to the next phase"
-				],
-				value="continue current phase",
-				interactive=True,
-				elem_classes=["no-label-radio"],
-				visible=False,
-			)
-
-			with gr.Accordion("regeneration controls", open=False):
-				with gr.Row():
-					regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button"])
-					regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button"])
-		
-				custom_prompt_txt = gr.Textbox(placeholder="Re-suggest story and actions based on your own custom request", elem_classes=["no-label", "small-big-textarea"])
-
-			with gr.Row():
-				action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button"])
-				action_btn2 = gr.Button("Action Choice 2", interactive=False, elem_classes=["control-button"])
-				action_btn3 = gr.Button("Action Choice 3", interactive=False, elem_classes=["control-button"])
-
-			custom_action_txt = gr.Textbox(placeholder="write your own custom action", elem_classes=["no-label", "small-big-textarea"], scale=3)
-   
-			with gr.Row():
-				restart_from_story_generation_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
-				story_writing_done_btn = gr.Button("confirm →", elem_classes=["wrap", "control-button"], scale=2)
+		with gr.Row():
+			restart_from_story_generation_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
+			story_writing_done_btn = gr.Button("export your story →", elem_classes=["wrap", "control-button"], scale=2)
 
 	with gr.Column(visible=False) as export_phase:
 		gr.Markdown("### 📤 Export output")
