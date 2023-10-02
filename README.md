@@ -14,6 +14,28 @@ Zero2Story is a framework built on top of [PaLM API](https://developers.generati
 - In each story generation, users also could generate background images and music that describe each scene using Stable Diffusion and MusicGen.
 - If the generated story, options, image, and music in each turn, users could ask to re-generate them.
 
+## Prerequisites
+Make sure you have installed all of the following prerequisites on your development machine:
+* CUDA Toolkit 11.8 with cuDNN 8 - [Download & Install CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) It is highly recommended to run on a GPU. If you run it in a CPU environment, it will be very slow.
+* Poetry - [Download & Install Poetry](https://python-poetry.org/docs/#installation) It is the python packaging and dependency manager.
+* SQLite3 v3.37.2 or higher - It is required to be installed due to dependencies.
+    - Ubuntu 22.04 and later
+    ```shell
+    $ sudo apt install libc6 sqlite3 libsqlite3
+    ```
+    - Ubuntu 20.04
+    ```shell
+    $ sudo sh -c 'cat <<EOF >> /etc/apt/sources.list
+      deb http://archive.ubuntu.com/ubuntu/ jammy main
+      deb http://security.ubuntu.com/ubuntu/ jammy-security main
+      EOF'
+    $ sudo apt update
+    $ sudo apt install libc6 sqlite3 libsqlite3
+    ```
+* FFmpeg (Optional) - Installing FFmpeg enables local video mixing, which in turn generates results more quickly than [other methods](https://huggingface.co/spaces/fffiloni/animated-audio-visualizer)
+    ```shell
+    $ sudo apt install ffmpeg
+
 ## Instruction
 
 ```shell
