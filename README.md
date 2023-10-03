@@ -25,7 +25,7 @@ This project heavily depends on [PaLM API](https://developers.generativeai.googl
 Make sure you have installed all of the following prerequisites on your development machine:
 * CUDA Toolkit 11.8 with cuDNN 8 - [Download & Install CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) It is highly recommended to run on a GPU. If you run it in a CPU environment, it will be very slow.
 * Poetry - [Download & Install Poetry](https://python-poetry.org/docs/#installation) It is the python packaging and dependency manager.
-* SQLite3 v3.37.2 or higher - It is required to be installed due to dependencies.
+* SQLite3 v3.35.0 or higher - It is required to be installed due to dependencies.
     - Ubuntu 22.04 and later
     ```shell
     $ sudo apt install libc6 sqlite3 libsqlite3
