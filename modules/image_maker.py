@@ -243,7 +243,7 @@ class ImageMaker:
         
         try: 
             res_json = json.loads(response_txt)
-            positive = (res_json['main_sentence'] if not positive else f"{positive}, {res_json['main_sentence']}") + ", "
+            positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
             positive += ', '.join(res_json['descriptors'])
         except:
             print("=== PaLM Response ===")

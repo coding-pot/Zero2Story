@@ -134,7 +134,7 @@ class MusicMaker:
             print("=== PaLM Response ===")            
             raise ValueError("The response from PaLM API is not in the expected format.")
             
-        return res_json['main_sentence']
+        return res_json['primary_sentence']
 
 
     @property
