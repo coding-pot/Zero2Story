@@ -43,10 +43,21 @@ Make sure you have installed all of the following prerequisites on your developm
     ```shell
     $ sudo apt install ffmpeg
 
+## Installation
+
+Before running the application for the first time, install the required dependencies:
+```shell
+$ poetry install
+```
+
+If dependencies change or need updates in the future, you can use:
+```shell
+$ poetry update
+```
+
 ## Run
 
 ```shell
-$ poetry install
 $ poetry run python app.py
 ```
 
