@@ -722,4 +722,11 @@ with gr.Blocks(css=STYLE) as demo:
 		]
 	)
 
+	def test(event: gr.EventData):
+		print(event)
+
+	char_gallery1.select(
+		test
+	)
+
 demo.queue().launch(share=True)
