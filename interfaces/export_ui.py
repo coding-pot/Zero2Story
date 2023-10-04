@@ -14,6 +14,7 @@ def export(
 	side_char_enable2, side_char_img2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_img3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,    
 ):
+    print(main_char_img)
     characters = [
         {
             'img': main_char_img['name'],
