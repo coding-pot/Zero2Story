@@ -7,7 +7,7 @@ def gen_from_file(filename, kwargs):
     #
     # items (stories)
     # - each item has 'video', 'img', 'audio', and 'story'
-    html_template = open(filename, "r")
+    html_template = open(filename, "r").read()
 
     environment = jinja2.Environment()
     template = environment.from_string(html_template)
