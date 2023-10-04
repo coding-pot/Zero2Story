@@ -346,6 +346,12 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=None,
 		outputs=[writing_phase, export_phase]
 	)
+ 
+	export_done_btn.click(
+		view_change_ui.move_to_next_view,
+		inputs=None,
+		outputs=[export_phase, export_view_phase]
+	)
 
 	character_setup_confirm_btn.click(
 		view_change_ui.move_to_next_view,
@@ -726,9 +732,6 @@ with gr.Blocks(css=STYLE) as demo:
 			export_html
 		]
 	)
-
-	def test(event: gr.EventData):
-		print(event)
 
 	char_gallery1.select(
 		ui.update_selected_char_image,
