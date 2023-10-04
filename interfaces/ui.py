@@ -23,6 +23,9 @@ img_maker = ImageMaker('hellonijicute25d_V10b.safetensors') # without_VAE
 ############
 # for plotting
 
+def update_selected_char_image(evt: gr.EventData):
+    return evt.value
+
 def get_random_name(cur_char_name, char_name1, char_name2, char_name3):
 	tmp_random_names = copy.deepcopy(random_names)
 	tmp_random_names.remove(cur_char_name)
@@ -61,7 +64,7 @@ def gen_character_image(
 	# gen_image = numpy.asarray(PIL.Image.open(img_filename))
 	gallery_images.insert(0, img_filename)
 
-	return gr.update(value=gallery_images), gallery_images
+	return gr.update(value=gallery_images), gallery_images, img_filename
 
 
 def update_on_age(evt: gr.SelectData): 
