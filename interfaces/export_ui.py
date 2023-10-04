@@ -22,13 +22,13 @@ def export(
         }
     ]
     utils.add_side_character_to_export(
-        side_char_enable1, side_char_img1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1
+        characters, side_char_enable1, side_char_img1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1
     )
     utils.add_side_character_to_export(
-        side_char_enable2, side_char_img2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2
+        characters, side_char_enable2, side_char_img2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2
     )
     utils.add_side_character_to_export(
-        side_char_enable3, side_char_img3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3
+        characters, side_char_enable3, side_char_img3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3
     )
 
     html_as_string = parser.gen_from_file(
