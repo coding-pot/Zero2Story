@@ -712,10 +712,10 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[
 			title_txt,
 			cursors, 
-			gallery_images1, name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			side_char_enable_ckb1, gallery_images2, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			side_char_enable_ckb2, gallery_images3, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			side_char_enable_ckb3, gallery_images4, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,			
+			char_gallery1, name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, char_gallery2, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, char_gallery3, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, char_gallery4, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,			
 		],
 		outputs=[
 			export_html
