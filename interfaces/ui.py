@@ -58,8 +58,8 @@ def gen_character_image(
 		img_filename = str(Path('.') / 'assets' / 'nsfw_warning.png')
 
 	# update gallery
-	gen_image = numpy.asarray(PIL.Image.open(img_filename))
-	gallery_images.insert(0, gen_image)
+	# gen_image = numpy.asarray(PIL.Image.open(img_filename))
+	gallery_images.insert(0, img_filename)
 
 	return gr.update(value=gallery_images), gallery_images
 
