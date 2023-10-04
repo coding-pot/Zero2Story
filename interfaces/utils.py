@@ -6,6 +6,20 @@ import random
 from modules import palmchat
 from pingpong.context import CtxLastWindowStrategy
 
+def add_side_character_to_export(
+	characters,	enable, img, 
+	name, age, mbti, personality, job
+):
+	if enable:
+		characters.append(
+			{
+				'img': img,
+				'name': name
+			}
+		)
+
+	return characters
+
 def add_side_character(
 	enable, prompt, cur_side_chars,
 	name, age, mbti, personality, job

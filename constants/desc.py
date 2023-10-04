@@ -17,3 +17,6 @@ In this phase, the first few paragraphs are generated solely based on the inform
 
 In each story generation, users also could generate background images and music that describe each scene using Stable Diffusion and MusicGen. If the generated story, options, image, and music in each turn, users could ask to re-generate them.
 """
+export_phase_description = """
+In this phase, you can export the generated whole stuffs including text, image, audio, and video in the form of a static HTML page.
+"""
