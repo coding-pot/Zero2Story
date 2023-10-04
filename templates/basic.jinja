@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+body 
+{
+  background-color: powderblue;
+}
+
+h1 {
+  color: blue;
+  text-align: center;
+}
+
+p {
+  text-align: justify;
+}
+
+video, audio, img {
+  display: block;
+  width: 50%;
+  margin: auto !important;
+}
+
+audio {
+  padding-top: 10px !important;
+}
+
+#story-body {
+  padding-top: 20px;
+}
+
+</style>
+</head>
+<body>
+  <h1>Your Own Story</h1>
+  
+  <div id="story-body">
+  {% for item in items %}
+  <div>
+  {%    if 'video' in item %}
+    <video controls>
+        <source src="file/{{ item['video'] }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+  {%    else %}
+  {%        if 'img' in item %}
+              <img src="file/{{ item['img'] }}" />
+  {%        endif %}
+
+  {%        if 'audio' in item %}
+              <audio controls>
+                  <source src="file/{{ item['audio'] }}" type="audio/wav">
+                  Your browser does not support the audio element.
+              </audio>
+  {%        endif %}
+  {% endif %}
+
+  <p>
+  {{ item['story'] }}
+  </p>
+  </div>
+  {% endfor %}
+
+  </div>
+</body>
+</html>
