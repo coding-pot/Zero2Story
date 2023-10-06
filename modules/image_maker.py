@@ -72,8 +72,9 @@ class ImageMaker:
 
         print("Loading the Stable Diffusion model into memory...")
         self.__sd_model = StableDiffusionPipeline.from_single_file(self.model_base,
-                                                              #torch_dtype=torch.float16,
-                                                              use_safetensors=True)
+                                                              torch_dtype=torch.float16,
+                                                              use_safetensors=True,
+                                                              )
 
         # Clip Skip
         self.__sd_model.text_encoder.text_model.encoder.layers = self.__sd_model.text_encoder.text_model.encoder.layers[:12 - (self.clip_skip - 1)]
@@ -88,7 +89,7 @@ class ImageMaker:
 
         # VAE
         if self.vae:
-            vae_model = AutoencoderKL.from_single_file(self.vae)
+            vae_model = AutoencoderKL.from_pretrained(self.vae, torch_dtype=torch.float16)
             self.__sd_model.vae = vae_model
 
         if not self.safety:

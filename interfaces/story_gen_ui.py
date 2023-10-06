@@ -14,10 +14,11 @@ from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
 # TODO: Replace checkpoint filename to Huggingface URL
-img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', vae="cute20vae.safetensors")
+img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors') # without VAE
+#img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', vae="stabilityai/sd-vae-ft-mse")
 #img_maker = ImageMaker('fantasyworldFp16.safetensors', vae="cute20vae.safetensors")
 #img_maker = ImageMaker('forgesagalandscapemi.safetensors', vae="anythingFp16.safetensors")
-bgm_maker = MusicMaker(model_size='large', output_format='mp3')
+bgm_maker = MusicMaker(model_size='medium', output_format='mp3')
 
 video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
 
