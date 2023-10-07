@@ -357,7 +357,7 @@ def video_gen(
 
 
 def image_gen(
-	genre, place, mood, title, story_content, cursors, cur_cursor, story_audio
+	genre, place, mood, title, story_content, cursors, cur_cursor
 ):
 	# generate prompts for background image with PaLM
 	for _ in range(3):
@@ -382,20 +382,15 @@ def image_gen(
 	
 	cursors[cur_cursor]["img"] = img_filename
 
-	video_gen_btn_state = gr.update(interactive=False)
-	if story_audio is not None:
-		video_gen_btn_state = gr.update(interactive=True)
-
 	return  (
 		gr.update(visible=True, value=img_filename),
-		video_gen_btn_state,
 		cursors,
 		"  "
 	)
 
 
 def audio_gen(
-	genre, place, mood, title, story_content, cursors, cur_cursor, story_image
+	genre, place, mood, title, story_content, cursors, cur_cursor
 ):
 	# generate prompt for background music with PaLM
 	for _ in range(3):
@@ -413,13 +408,8 @@ def audio_gen(
 	bgm_filename = bgm_maker.text2music(prompt, length=60)
 	cursors[cur_cursor]["audio"] = bgm_filename
 
-	video_gen_btn_state = gr.update(interactive=False)
-	if story_image is not None:
-		video_gen_btn_state = gr.update(interactive=True)
-
 	return (
 		gr.update(visible=True, value=bgm_filename),
-		video_gen_btn_state,
 		cursors,
 		" "
 	)
@@ -475,3 +465,49 @@ def move_story_cursor(moved_cursor, cursors):
 def update_story_content(story_content, cursors, cur_cursor):
 	cursors[cur_cursor]["story"] = story_content
 	return cursors
+
+def disable_btns():
+	return (
+		gr.update(interactive=False), # image_gen_btn
+		gr.update(interactive=False), # audio_gen_btn
+		gr.update(interactive=False), # img_audio_combine_btn
+
+		gr.update(interactive=False), # regen_actions_btn
+		gr.update(interactive=False), # regen_story_btn
+		gr.update(interactive=False), # custom_prompt_txt
+
+		gr.update(interactive=False), # action_btn1
+		gr.update(interactive=False), # action_btn2
+		gr.update(interactive=False), # action_btn3
+
+		gr.update(interactive=False), # custom_action_txt
+
+		gr.update(interactive=False), # restart_from_story_generation_btn
+		gr.update(interactive=False), # story_writing_done_btn
+	)
+ 
+def enable_btns(story_image, story_audio):
+	video_gen_btn_state = gr.update(interactive=False)
+    
+	if story_image is not None and \
+		story_audio is not None:
+		video_gen_btn_state = gr.update(interactive=True)
+    
+	return (
+		gr.update(interactive=True), # image_gen_btn
+		gr.update(interactive=True), # audio_gen_btn
+		video_gen_btn_state, # img_audio_combine_btn
+
+		gr.update(interactive=True), # regen_actions_btn
+		gr.update(interactive=True), # regen_story_btn
+		gr.update(interactive=True), # custom_prompt_txt
+
+		gr.update(interactive=True), # action_btn1
+		gr.update(interactive=True), # action_btn2
+		gr.update(interactive=True), # action_btn3
+
+		gr.update(interactive=True), # custom_action_txt
+
+		gr.update(interactive=True), # restart_from_story_generation_btn
+		gr.update(interactive=True), # story_writing_done_btn
+	)

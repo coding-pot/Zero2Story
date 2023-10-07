@@ -552,24 +552,74 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	image_gen_btn.click(
+		story_gen_ui.disable_btns,
+		inputs=None,
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
+		]
+	).then(
 		story_gen_ui.image_gen,
 		inputs=[
-			genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor, story_audio
+			genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
 		],
 		outputs=[
-			story_image, img_audio_combine_btn, cursors, progress_comp,
+			story_image, cursors, progress_comp,
+		]
+	).then(
+		story_gen_ui.enable_btns,
+		inputs=[story_image, story_audio],
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
 		]
 	)
 
 	audio_gen_btn.click(
+		story_gen_ui.disable_btns,
+		inputs=None,
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
+		]
+	).then(
 		story_gen_ui.audio_gen,
 		inputs=[
-			genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor, story_image
+			genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
 		],
-		outputs=[story_audio, img_audio_combine_btn, cursors, progress_comp]
+		outputs=[story_audio, cursors, progress_comp]
+	).then(
+		story_gen_ui.enable_btns,
+		inputs=[story_image, story_audio],
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
+		]
 	)
 
 	img_audio_combine_btn.click(
+		story_gen_ui.disable_btns,
+		inputs=None,
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
+		]
+	).then(
 		story_gen_ui.video_gen,
 		inputs=[
 			story_image, story_audio, story_content, cursors, cur_cursor
@@ -577,7 +627,17 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[
 			story_image, story_audio, story_video, cursors, progress_comp
 		],
-	)	
+	).then(
+		story_gen_ui.enable_btns,
+		inputs=[story_image, story_audio],
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
+		]
+	)
 
 	story_progress.input(
 		story_gen_ui.move_story_cursor,
@@ -594,10 +654,14 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	action_btn1.click(
-		lambda: (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)),
+		story_gen_ui.disable_btns,
 		inputs=None,
 		outputs=[
-			image_gen_btn, audio_gen_btn, img_audio_combine_btn
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
 		]
 	).then(
 		story_gen_ui.next_story_gen,
@@ -629,13 +693,27 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[
 			action_btn1, action_btn2, action_btn3, progress_comp
 		]
+	).then(
+		story_gen_ui.enable_btns,
+		inputs=[story_image, story_audio],
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
+		]
 	)
 
 	action_btn2.click(
-		lambda: (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)),
+		story_gen_ui.disable_btns,
 		inputs=None,
 		outputs=[
-			image_gen_btn, audio_gen_btn, img_audio_combine_btn
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
 		]
 	).then(
 		story_gen_ui.next_story_gen,
@@ -667,13 +745,27 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[
 			action_btn1, action_btn2, action_btn3, progress_comp
 		]
+	).then(
+		story_gen_ui.enable_btns,
+		inputs=[story_image, story_audio],
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
+		]
 	)
 
 	action_btn3.click(
-		lambda: (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)),
+		story_gen_ui.disable_btns,
 		inputs=None,
 		outputs=[
-			image_gen_btn, audio_gen_btn, img_audio_combine_btn
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
 		]
 	).then(
 		story_gen_ui.next_story_gen,
@@ -705,13 +797,27 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[
 			action_btn1, action_btn2, action_btn3, progress_comp
 		]
+	).then(
+		story_gen_ui.enable_btns,
+		inputs=[story_image, story_audio],
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
+		]
 	)
 
 	custom_action_txt.submit(
-		lambda: (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=False)),
+		story_gen_ui.disable_btns,
 		inputs=None,
 		outputs=[
-			image_gen_btn, audio_gen_btn, img_audio_combine_btn
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
 		]
 	).then(
 		story_gen_ui.next_story_gen,
@@ -742,6 +848,16 @@ with gr.Blocks(css=STYLE) as demo:
 		],
 		outputs=[
 			action_btn1, action_btn2, action_btn3, progress_comp
+		]
+	).then(
+		story_gen_ui.enable_btns,
+		inputs=[story_image, story_audio],
+		outputs=[
+			image_gen_btn, audio_gen_btn, img_audio_combine_btn,
+			regen_actions_btn, regen_story_btn, custom_prompt_txt,
+			action_btn1, action_btn2, action_btn3,
+			custom_action_txt,
+			restart_from_story_generation_btn, story_writing_done_btn
 		]
 	)
 
