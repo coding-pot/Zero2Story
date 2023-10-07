@@ -1,7 +1,7 @@
 pre_phase_description = """
 ![](file/assets/overview.png)
 
-Zero2Story is a framework built on top of [PaLM API](https://developers.generativeai.google), [Stable Diffusion](https://en.wikipedia.org/wiki/Stable_Diffusion), [MusicGen](https://audiocraft.metademolab.com/musicgen.html) for ordinary people to create their own stories. This framework consists of the **background setup**, **character setup**, and **interative story generation** phases.
+Zero2Story is a framework built on top of [PaLM API](https://developers.generativeai.google), [Stable Diffusion](https://en.wikipedia.org/wiki/Stable_Diffusion), [MusicGen](https://audiocraft.metademolab.com/musicgen.html) for ordinary people to create their own stories. This framework consists of the **background setup**, **character setup**, and **interative story generation** phases. Here is the short description of the above figure; Once setting the basic information of ① and ②, Zero2Story continuously suggests ③ stories , ④ actions, and ⑤ media in each turn while giving ⑥ regeneration control to refine the works interactively.
 """
 
 background_setup_phase_description = """
