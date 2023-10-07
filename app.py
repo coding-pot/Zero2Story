@@ -272,10 +272,10 @@ with gr.Blocks(css=STYLE) as demo:
 		title_txt = gr.Textbox("Your Own Story", elem_classes=["no-label"])
 		title_gen_btn = gr.Button("gnerate a title", elem_classes=["control-button-green"])
 
-		restart_from_export_btn = gr.Button("start over", elem_classes=["wrap", "control-button"], scale=1)
 		with gr.Row():
 			back_to_story_writing_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
-			export_done_btn = gr.Button("view exported story →", elem_classes=["wrap", "control-button"], scale=2)
+			restart_from_export_btn = gr.Button("start over", elem_classes=["wrap", "control-button"], scale=1)
+			export_done_btn = gr.Button("exported story →", elem_classes=["wrap", "control-button"], scale=1)
 
 	with gr.Column(visible=False) as export_view_phase:
 		export_html = gr.HTML()
@@ -332,7 +332,13 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=None,
 		outputs=[writing_phase, export_phase]
 	)
- 
+
+	title_gen_btn.click(
+		export_ui.title_gen,
+		inputs=[cursors],
+		outputs=[title_txt]
+	)
+
 	export_done_btn.click(
 		view_change_ui.move_to_next_view,
 		inputs=None,
@@ -377,7 +383,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, char_gallery4, job_dd4,
 			story_image, story_audio, story_video,
 			story_content, story_progress,
-			custom_prompt_txt, action_btn1, action_btn2, action_btn3, 
+			custom_prompt_txt, action_btn1, action_btn2, action_btn3, custom_action_txt,
 			title_txt, export_html
 		]
 	)
@@ -401,7 +407,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, char_gallery4, job_dd4,
 			story_image, story_audio, story_video,
 			story_content, story_progress,
-			custom_prompt_txt, action_btn1, action_btn2, action_btn3, 
+			custom_prompt_txt, action_btn1, action_btn2, action_btn3, custom_action_txt,
 			title_txt, export_html
 		]
 	)

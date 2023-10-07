@@ -1,11 +1,31 @@
 import gradio as gr
 from templates import parser
 from interfaces import utils
+from modules import palmchat
 
 template_file = "templates/basic.jinja"
 
-def title_gen():
-    return "hello world"
+async def title_gen(cursors):
+    stories = ""
+    for cursor in cursors:
+        stories = stories + cursor["story"]
+  
+    prompt = f"""what would be the title of the story below? be specific and creative.
+
+{stories}
+
+title: """
+
+    parameters = {
+		'model': 'models/text-bison-001',
+		'candidate_count': 1,
+		'temperature': 0.7,
+		'top_k': 40,
+		'top_p': 1,
+		'max_output_tokens': 4096,
+	}    	
+    _, title = await palmchat.gen_text(prompt, mode="text", parameters=parameters)
+    return title
 
 def export(
     title, cursors,
