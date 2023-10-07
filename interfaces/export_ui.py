@@ -34,6 +34,7 @@ def export(
     html_as_string = parser.gen_from_file(
         template_file,
         kwargs={
+            "title": title,
             "characters": characters,
             "items": cursors
         }

@@ -7,7 +7,7 @@ import PIL
 from pathlib import Path
 
 from constants.init_values import (
-	places, moods, jobs, random_names, default_character_images
+	genres, places, moods, jobs, random_names, default_character_images
 )
 
 from modules import (
@@ -94,3 +94,67 @@ def update_on_main_tabs(chat_state, evt: gr.SelectData):
 
     ppm = chat_state[chat_mode]
     return chat_mode, ppm.build_uis()
+
+def reset():
+	from modules.palmchat import GradioPaLMChatPPManager
+    
+	return (
+		[], # cursors
+		0, # cur_cursor
+  
+		{
+				"setting_chat": GradioPaLMChatPPManager(),
+				"story_chat": GradioPaLMChatPPManager(),
+				"export_chat": GradioPaLMChatPPManager(),
+		}, # chat_state
+		"setting_chat", # chat_mode
+  
+		default_character_images, # gallery_images1
+		default_character_images, # gallery_images2
+		default_character_images, # gallery_images3
+		default_character_images, # gallery_images4
+		default_character_images[0], # selected_main_char_image1 
+		default_character_images[0], # selected_side_char_image1 
+		default_character_images[0], # selected_side_char_image2 
+		default_character_images[0], # selected_side_char_image3 
+
+		genres[0], # genre_dd
+		places[genres[0]][0], # place_dd
+		moods[genres[0]][0], # mood_dd
+
+		default_character_images, # char_gallery1
+		jobs[genres[0]][0], # job_dd1
+
+		False, # side_char_enable_ckb1
+		default_character_images, # char_gallery2
+		jobs[genres[0]][1], # job_dd2
+
+		False, # side_char_enable_ckb2
+		default_character_images, # char_gallery3
+		jobs[genres[0]][2], # job_dd3
+
+		False, # side_char_enable_ckb3
+		default_character_images, # char_gallery4
+		jobs[genres[0]][3], # job_dd4
+
+		None, # story_image
+		None, # story_audio
+		None, # story_video
+
+		'', # story_content
+		gr.Slider(
+			1, 2, 1, step=1, interactive=True, 
+			label="1/2", visible=False
+		), # story_progress
+
+		'', # custom_prompt_txt
+
+		'Action 1', # action_btn1
+		'Action 2', # action_btn2
+		'Action 3', # action_btn3
+		'', # custom_action_txt
+
+		'Your Own Story', # title_txt
+
+		"", # export_html
+	)
