@@ -252,7 +252,7 @@ with gr.Blocks(css=STYLE) as demo:
 				regen_actions_btn = gr.Button("Re-suggest actions", interactive=True, elem_classes=["control-button-green"])
 				regen_story_btn = gr.Button("Re-suggest story and actions", interactive=True, elem_classes=["control-button-green"])
 	
-			custom_prompt_txt = gr.Textbox(placeholder="Re-suggest story and actions based on your own custom request", elem_classes=["no-label", "small-big-textarea"])
+			custom_prompt_txt = gr.Textbox(placeholder="Re-suggest story and actions based on your own custom request", interactive=True, elem_classes=["no-label", "small-big-textarea"])
 
 		with gr.Row():
 			action_btn1 = gr.Button("Action Choice 1", interactive=False, elem_classes=["control-button-green"])
@@ -272,9 +272,6 @@ with gr.Blocks(css=STYLE) as demo:
 		title_txt = gr.Textbox("Your Own Story", elem_classes=["no-label"])
 		title_gen_btn = gr.Button("gnerate a title", elem_classes=["control-button-green"])
 
-		export_progress = gr.Textbox("", elem_classes=["no-label"])
-		export_btn = gr.Button("export as HTML page", elem_classes=["control-button-green"])
-
 		restart_from_export_btn = gr.Button("start over", elem_classes=["wrap", "control-button"], scale=1)
 		with gr.Row():
 			back_to_story_writing_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
@@ -284,7 +281,7 @@ with gr.Blocks(css=STYLE) as demo:
 		export_html = gr.HTML()
 
 		with gr.Row():
-			restart_from_export_view_btn = gr.Button("← back", elem_classes=["wrap", "control-button"])
+			restart_from_export_view_btn = gr.Button("start over", elem_classes=["wrap", "control-button"])
 			export_to_file_btn = gr.Button("Download as ZIP file", elem_classes=["wrap", "control-button"], scale=2)
 
 	with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
@@ -340,6 +337,19 @@ with gr.Blocks(css=STYLE) as demo:
 		view_change_ui.move_to_next_view,
 		inputs=None,
 		outputs=[export_phase, export_view_phase]
+	).then(
+		export_ui.export,
+		inputs=[
+			title_txt,
+			cursors, 
+			selected_main_char_image1, name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, selected_side_char_image1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, selected_side_char_image2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, selected_side_char_image3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,			
+		],
+		outputs=[
+			export_html
+		]
 	)
  
 	back_to_story_writing_btn.click(
@@ -759,21 +769,6 @@ with gr.Blocks(css=STYLE) as demo:
 		chat_ui.chat_reset,
 		inputs=[chat_mode, chat_state],
 		outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
-	)
-
-	export_btn.click(
-		export_ui.export,
-		inputs=[
-			title_txt,
-			cursors, 
-			selected_main_char_image1, name_txt1, age_dd1, mbti_dd1, personality_dd1, job_dd1,
-			side_char_enable_ckb1, selected_side_char_image1, name_txt2, age_dd2, mbti_dd2, personality_dd2, job_dd2,
-			side_char_enable_ckb2, selected_side_char_image2, name_txt3, age_dd3, mbti_dd3, personality_dd3, job_dd3,
-			side_char_enable_ckb3, selected_side_char_image3, name_txt4, age_dd4, mbti_dd4, personality_dd4, job_dd4,			
-		],
-		outputs=[
-			export_html
-		]
 	)
 
 	char_gallery1.select(
