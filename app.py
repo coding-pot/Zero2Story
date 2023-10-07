@@ -383,7 +383,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, char_gallery4, job_dd4,
 			story_image, story_audio, story_video,
 			story_content, story_progress,
-			custom_prompt_txt, action_btn1, action_btn2, action_btn3, 
+			custom_prompt_txt, action_btn1, action_btn2, action_btn3, custom_action_txt,
 			title_txt, export_html
 		]
 	)
@@ -407,7 +407,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, char_gallery4, job_dd4,
 			story_image, story_audio, story_video,
 			story_content, story_progress,
-			custom_prompt_txt, action_btn1, action_btn2, action_btn3, 
+			custom_prompt_txt, action_btn1, action_btn2, action_btn3, custom_action_txt,
 			title_txt, export_html
 		]
 	)
