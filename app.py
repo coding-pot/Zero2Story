@@ -15,11 +15,9 @@ from interfaces import (
 from modules.palmchat import GradioPaLMChatPPManager
 
 with gr.Blocks(css=STYLE) as demo:
-	chat_mode = gr.State("plot_chat")
-
+	chat_mode = gr.State("setting_chat")
 	chat_state = gr.State({
-		"ppmanager_type": GradioPaLMChatPPManager(),
-		"plot_chat": GradioPaLMChatPPManager(),
+		"setting_chat": GradioPaLMChatPPManager(),
 		"story_chat": GradioPaLMChatPPManager(),
 		"export_chat": GradioPaLMChatPPManager(),
 	})
@@ -247,16 +245,6 @@ with gr.Blocks(css=STYLE) as demo:
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum eleifend tincidunt. Vivamus dapibus, massa ut imperdiet condimentum, quam ipsum vehicula eros, a accumsan nisl metus at nisl. Nullam tortor nibh, vehicula sed tellus at, accumsan efficitur enim. Sed mollis purus vitae nisl ornare volutpat. In vitae tortor nec neque sagittis vehicula. In vestibulum velit eu lorem pulvinar dignissim. Donec eu sapien et sapien cursus pretium elementum eu urna. Proin lacinia ipsum maximus, commodo dui tempus, convallis tortor. Nulla sodales mi libero, nec eleifend eros interdum quis. Pellentesque nulla lectus, scelerisque et consequat vitae, blandit at ante. Sed nec …….",
 				lines=12,
 				elem_classes=["no-label", "small-big-textarea"]
-		)		
-
-		action_types = gr.Radio(
-			choices=[
-				"continue current phase", "move to the next phase"
-			],
-			value="continue current phase",
-			interactive=True,
-			elem_classes=["no-label-radio"],
-			visible=False,
 		)
 
 		with gr.Accordion("regeneration controls", open=False):
@@ -289,7 +277,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 		restart_from_export_btn = gr.Button("start over", elem_classes=["wrap", "control-button"], scale=1)
 		with gr.Row():
-			restart_from_export_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
+			back_to_story_writing_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
 			export_done_btn = gr.Button("view exported story →", elem_classes=["wrap", "control-button"], scale=2)
 
 	with gr.Column(visible=False) as export_view_phase:
@@ -297,6 +285,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 		with gr.Row():
 			restart_from_export_view_btn = gr.Button("← back", elem_classes=["wrap", "control-button"])
+			export_to_file_btn = gr.Button("Download as ZIP file", elem_classes=["wrap", "control-button"], scale=2)
 
 	with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
 		with gr.Column(scale=1):
@@ -351,6 +340,60 @@ with gr.Blocks(css=STYLE) as demo:
 		view_change_ui.move_to_next_view,
 		inputs=None,
 		outputs=[export_phase, export_view_phase]
+	)
+ 
+	back_to_story_writing_btn.click(
+		view_change_ui.back_to_previous_view,
+		inputs=None,
+		outputs=[writing_phase, export_phase]
+	)
+
+	restart_from_export_view_btn.click(
+		view_change_ui.back_to_previous_view,
+		inputs=None,
+		outputs=[pre_phase, export_view_phase]		
+	).then(
+		ui.reset,
+		inputs=None,
+		outputs=[
+			cursors, cur_cursor,
+			chat_state, chat_mode,
+			gallery_images1, gallery_images2, gallery_images3, gallery_images4,
+			selected_main_char_image1, selected_side_char_image1, selected_side_char_image2, selected_side_char_image3,
+			genre_dd, place_dd, mood_dd, 
+			char_gallery1, job_dd1,
+			side_char_enable_ckb1, char_gallery2, job_dd2,
+			side_char_enable_ckb2, char_gallery3, job_dd3,
+			side_char_enable_ckb3, char_gallery4, job_dd4,
+			story_image, story_audio, story_video,
+			story_content, story_progress,
+			custom_prompt_txt, action_btn1, action_btn2, action_btn3, 
+			title_txt, export_html
+		]
+	)
+
+	restart_from_export_btn.click(
+		view_change_ui.back_to_previous_view,
+		inputs=None,
+		outputs=[pre_phase, export_phase]
+	).then(
+		ui.reset,
+		inputs=None,
+		outputs=[
+			cursors, cur_cursor,
+			chat_state, chat_mode,
+			gallery_images1, gallery_images2, gallery_images3, gallery_images4,
+			selected_main_char_image1, selected_side_char_image1, selected_side_char_image2, selected_side_char_image3,
+			genre_dd, place_dd, mood_dd, 
+			char_gallery1, job_dd1,
+			side_char_enable_ckb1, char_gallery2, job_dd2,
+			side_char_enable_ckb2, char_gallery3, job_dd3,
+			side_char_enable_ckb3, char_gallery4, job_dd4,
+			story_image, story_audio, story_video,
+			story_content, story_progress,
+			custom_prompt_txt, action_btn1, action_btn2, action_btn3, 
+			title_txt, export_html
+		]
 	)
 
 	character_setup_confirm_btn.click(
