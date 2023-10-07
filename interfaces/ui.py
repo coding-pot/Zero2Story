@@ -74,9 +74,9 @@ def update_on_age(evt: gr.SelectData):
         gr.update(value=places[evt.value][0], choices=places[evt.value]),
         gr.update(value=moods[evt.value][0], choices=moods[evt.value]),
         gr.update(value=job_list[0], choices=job_list),
-        gr.update(value=job_list[0], choices=job_list),
-        gr.update(value=job_list[0], choices=job_list),
-        gr.update(value=job_list[0], choices=job_list)
+        gr.update(value=job_list[1], choices=job_list),
+        gr.update(value=job_list[2], choices=job_list),
+        gr.update(value=job_list[3], choices=job_list)
 	)    
 
 ############
