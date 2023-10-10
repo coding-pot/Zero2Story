@@ -116,10 +116,13 @@ async def gen_text(
                 'safety_settings': safety_settings,
             }
 
-    if mode == "chat":
-        response = await palm_api.chat_async(**parameters, messages=prompt)
-    else:
-        response = palm_api.generate_text(**parameters, prompt=prompt)
+    try:
+        if mode == "chat":
+            response = await palm_api.chat_async(**parameters, messages=prompt)
+        else:
+            response = palm_api.generate_text(**parameters, prompt=prompt)
+    except:
+        raise Exception("PaLM API is not available.")
     
     if use_filter and len(response.filters) > 0 and \
         response.filters[0]['reason'] == 2:

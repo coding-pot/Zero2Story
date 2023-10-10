@@ -199,6 +199,8 @@ class ImageMaker:
                                                 )
         except asyncio.TimeoutError:
             raise TimeoutError("The response time for PaLM API exceeded the limit.")
+        except:
+            raise Exception("PaLM API is not available.")
         
         try: 
             res_json = json.loads(response_txt)
@@ -251,6 +253,8 @@ class ImageMaker:
                                                 )
         except asyncio.TimeoutError:
             raise TimeoutError("The response time for PaLM API exceeded the limit.")
+        except:
+            raise Exception("PaLM API is not available.")
         
         try: 
             res_json = json.loads(response_txt)
