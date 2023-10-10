@@ -13,14 +13,21 @@ from interfaces import utils
 from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
-# TODO: Replace checkpoint filename to Huggingface URL
-img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors') # without VAE
+### e.g.
+#img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors') # without VAE
 #img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', vae="stabilityai/sd-vae-ft-mse")
 #img_maker = ImageMaker('fantasyworldFp16.safetensors', vae="cute20vae.safetensors")
 #img_maker = ImageMaker('forgesagalandscapemi.safetensors', vae="anythingFp16.safetensors")
-bgm_maker = MusicMaker(model_size='medium', output_format='mp3')
 
-video_gen_client_url = "https://0447df3cf5f7c49c46.gradio.live"
+#img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', vae="cute20vae.safetensors")
+#img_maker.push_to_hub('jphan32/Zero2Story', commit_message="test fp16", token="YOUR_HF_TOKEN", variant="scene")
+#img_maker = ImageMaker('jphan32/Zero2Story', variant="scene", from_hf=True)
+img_maker = ImageMaker('https://huggingface.co/jphan32/Zero2Story/landscapeAnimePro_v20Inspiration.safetensors',
+						vae="https://huggingface.co/jphan32/Zero2Story/cute20vae.safetensors")
+
+bgm_maker = MusicMaker(model_size='small', output_format='mp3')
+
+video_gen_client_url = None # e.g. "https://0447df3cf5f7c49c46.gradio.live"
 
 async def update_story_gen(
 	cursors, cur_cursor_idx,
