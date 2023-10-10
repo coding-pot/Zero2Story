@@ -188,8 +188,12 @@ async def actions_gen(
 		'top_k': 40,
 		'top_p': 1,
 		'max_output_tokens': 4096,
-	}    	
-	_, summary = await palmchat.gen_text(summary_prompt, mode="text", parameters=parameters)
+	}
+
+	try:
+		_, summary = await palmchat.gen_text(summary_prompt, mode="text", parameters=parameters)
+	except Exception as e:
+		raise gr.Error(e)
 
 	prompt = f"""Suggest the 30 options to drive the stories to the next based on the information below. 
 
@@ -376,6 +380,7 @@ def image_gen(
 			break
 		except Exception as e:
 			print(e)
+			raise gr.Error(e)
 			
 	if not prompt:
 		raise ValueError("Failed to generate prompts for background image.")
@@ -407,6 +412,7 @@ def audio_gen(
 			break
 		except Exception as e:
 			print(e)
+			raise gr.Error(e)
 
 	if not prompt:
 		raise ValueError("Failed to generate prompt for background music.")

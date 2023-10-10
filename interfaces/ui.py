@@ -54,6 +54,7 @@ def gen_character_image(
 			break
 		except Exception as e:
 			print(e)
+			raise gr.Error(e)
 
 	if not prompt:
 		raise ValueError("Failed to generate prompts for character image.")
