@@ -49,7 +49,8 @@ class ImageMaker:
                        sampling: Literal['sde-dpmsolver++'] = 'sde-dpmsolver++',
                        vae: str = None,
                        safety: bool = True,
-                       neg_prompt: str = None,
+                       variant: str = None,
+                       from_hf: bool = False,
                        device: str = None) -> None:
         """Initialize the ImageMaker class.
 
@@ -59,6 +60,8 @@ class ImageMaker:
             sampling (Literal['sde-dpmsolver++'], optional): Sampling method. Defaults to 'sde-dpmsolver++'.
             vae (str, optional): Filename of the VAE model. Defaults to None.
             safety (bool, optional): Whether to use the safety checker. Defaults to True.
+            variant (str, optional): Variant of the model. Defaults to None.
+            from_hf (bool, optional): Whether to load the model from HuggingFace. Defaults to False.
             device (str, optional): Device to use for the model. Defaults to None.
         """
 
@@ -68,34 +71,41 @@ class ImageMaker:
         self.__sampling = sampling
         self.__vae = vae
         self.__safety = safety
-        self.neg_prompt = neg_prompt
+        self.__variant = variant
+        self.__from_hf = from_hf
 
         print("Loading the Stable Diffusion model into memory...")
-        self.__sd_model = StableDiffusionPipeline.from_single_file(self.model_base,
-                                                              torch_dtype=torch.float16,
-                                                              use_safetensors=True,
-                                                              )
+        if not self.__from_hf:
+            # from file
+            self.__sd_model = StableDiffusionPipeline.from_single_file(self.model_base,
+                                                                torch_dtype=torch.float16,
+                                                                use_safetensors=True,
+                                                                )
 
-        # Clip Skip
-        self.__sd_model.text_encoder.text_model.encoder.layers = self.__sd_model.text_encoder.text_model.encoder.layers[:12 - (self.clip_skip - 1)]
+            # Clip Skip
+            self.__sd_model.text_encoder.text_model.encoder.layers = self.__sd_model.text_encoder.text_model.encoder.layers[:12 - (self.clip_skip - 1)]
 
-        # Sampling method
-        if True: # TODO: Sampling method :: self.sampling == 'sde-dpmsolver++'
-            scheduler = DPMSolverMultistepScheduler.from_config(self.__sd_model.scheduler.config)
-            scheduler.config.algorithm_type = 'sde-dpmsolver++'
-            self.__sd_model.scheduler = scheduler
-        
-        # TODO: Use LoRA
+            # Sampling method
+            if True: # TODO: Sampling method :: self.sampling == 'sde-dpmsolver++'
+                scheduler = DPMSolverMultistepScheduler.from_config(self.__sd_model.scheduler.config)
+                scheduler.config.algorithm_type = 'sde-dpmsolver++'
+                self.__sd_model.scheduler = scheduler
+            
+            # VAE
+            if self.vae:
+                vae_model = AutoencoderKL.from_single_file(self.vae, use_safetensors=True)
+                self.__sd_model.vae = vae_model.to(dtype=torch.float16)
+            
+            # Safety checker
+            if not self.safety:
+                self.__sd_model.safety_checker = None
+                self.__sd_model.requires_safety_checker = False
 
-        # VAE
-        if self.vae:
-            vae_model = AutoencoderKL.from_pretrained(self.vae, torch_dtype=torch.float16)
-            self.__sd_model.vae = vae_model
-
-        if not self.safety:
-            self.__sd_model.safety_checker = None
-            self.__sd_model.requires_safety_checker = False
-
+        else:
+            # from huggingface
+            self.__sd_model = StableDiffusionPipeline.from_pretrained(self.model_base,
+                                                                      variant=self.__variant,
+                                                                      use_safetensors=True)
         print(f"Loaded model to {self.device}")
         self.__sd_model = self.__sd_model.to(self.device)
 
@@ -270,6 +280,10 @@ class ImageMaker:
         conditioning = self.__compel_proc.build_conditioning_tensor(prompt)
         negative_conditioning = self.__compel_proc.build_conditioning_tensor(negative_prompt)
         return self.__compel_proc.pad_conditioning_tensors_to_same_length([conditioning, negative_conditioning])
+
+
+    def push_to_hub(self, repo_id:str, commit_message:str=None, token:str=None, variant:str=None):
+        self.__sd_model.push_to_hub(repo_id, commit_message=commit_message, token=token, variant=variant)
 
 
     @property
