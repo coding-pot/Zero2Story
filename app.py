@@ -351,7 +351,7 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[export_phase, export_view_phase],
 		_js=view_change_ui.export_done_js
 	)        
-        export_done_btn.click(
+	export_done_btn.click(
 		export_ui.export,
 		inputs=[
 			title_txt,
@@ -379,7 +379,7 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[pre_phase, export_view_phase],
 		_js=view_change_ui.restart_from_export_view_js
 	)
-        restart_from_export_view_btn.click(
+	restart_from_export_view_btn.click(
 		ui.reset,
 		inputs=None,
 		outputs=[
@@ -405,7 +405,7 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[pre_phase, export_phase],
 		_js=view_change_ui.restart_from_export_js
 	)
-        restart_from_export_btn.click(
+	restart_from_export_btn.click(
 		ui.reset,
 		inputs=None,
 		outputs=[
@@ -431,7 +431,7 @@ with gr.Blocks(css=STYLE) as demo:
 		outputs=[character_setup_phase, writing_phase],
 		_js=view_change_ui.character_setup_confirm_js
 	)
-        character_setup_confirm_btn.click(
+	character_setup_confirm_btn.click(
 		story_gen_ui.disable_btns,
 		inputs=None,
 		outputs=[
