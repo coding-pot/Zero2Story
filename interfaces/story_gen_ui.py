@@ -89,7 +89,6 @@ main character
 - name: {main_char_name}
 - job: {main_char_job}
 - age: {main_char_age}
-- mbti: {main_char_mbti}
 - personality: {main_char_personality}
 """
 
@@ -206,7 +205,6 @@ main character
 - name: {main_char_name}
 - job: {main_char_job}
 - age: {main_char_age}
-- mbti: {main_char_mbti}
 - personality: {main_char_personality}
 """
 	prompt, cur_side_chars = utils.add_side_character(
@@ -276,7 +274,6 @@ main character
 - name: {main_char_name}
 - job: {main_char_job}
 - age: {main_char_age}
-- mbti: {main_char_mbti}
 - personality: {main_char_personality}
 """
 

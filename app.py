@@ -66,13 +66,13 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt1 = gr.Textbox(random_names[0], elem_classes=["no-label"], scale=3)
-					random_name_btn1 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
+					random_name_btn1 = gr.Button("random", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
 					age_dd1 = gr.Dropdown(label=None, choices=ages, value=ages[0], elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
 					mbti_dd1 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[0], interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -97,13 +97,13 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt2 = gr.Textbox(random_names[1], elem_classes=["no-label"], scale=3)
-					random_name_btn2 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
+					random_name_btn2 = gr.Button("random", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
 					age_dd2 = gr.Dropdown(label=None, choices=ages, value=ages[1], elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
 					mbti_dd2 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[1], interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -128,13 +128,13 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt3 = gr.Textbox(random_names[2], elem_classes=["no-label"], scale=3)
-					random_name_btn3 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
+					random_name_btn3 = gr.Button("random", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
 					age_dd3 = gr.Dropdown(label=None, choices=ages, value=ages[2], elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
 					mbti_dd3 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[2], interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -159,13 +159,13 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt4 = gr.Textbox(random_names[3], elem_classes=["no-label"], scale=3)
-					random_name_btn4 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
+					random_name_btn4 = gr.Button("random", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
 					age_dd4 = gr.Dropdown(label=None, choices=ages, value=ages[3], elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
 					mbti_dd4 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[3], interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -581,21 +581,24 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	random_name_btn1.click(
-		ui.get_random_name,
+		None,
 		inputs=[name_txt1, name_txt2, name_txt3, name_txt4],
 		outputs=[name_txt1],
+		_js=ui.get_random_name
 	)
 
 	random_name_btn2.click(
-		ui.get_random_name,
+		None,
 		inputs=[name_txt2, name_txt1, name_txt3, name_txt4],
 		outputs=[name_txt2],
+		_js=ui.get_random_name
 	)
 
 	random_name_btn3.click(
-		ui.get_random_name,
+		None,
 		inputs=[name_txt3, name_txt1, name_txt2, name_txt4],
 		outputs=[name_txt3],
+		_js=ui.get_random_name
 	)
 
 	random_name_btn4.click(

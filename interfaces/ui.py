@@ -28,16 +28,42 @@ img_maker = ImageMaker('https://huggingface.co/jphan32/Zero2Story/hellonijicute2
 ############
 # for plotting
 
+get_random_name = f"""
+function get_random_name(cur_char_name, char_name1, char_name2, char_name3) {{
+	const names = {random_names};
+	const names_copy = JSON.parse(JSON.stringify(names));
+
+	const cur_name = 'a';
+	const char_name1 = 'b';
+	const char_name2 = 'c';
+	const char_name3 = 'd';
+
+	let index = names_copy.indexOf(cur_char_name);
+	names_copy.splice(index, 1);
+
+	index = names_copy.indexOf(char_name1);
+	names_copy.splice(index, 1)
+
+	index = names_copy.indexOf(char_name2);
+	names_copy.splice(index, 1);
+
+	index = names_copy.indexOf(char_name3);
+	names_copy.splice(index, 1);
+
+	return names_copy[(Math.floor(Math.random() * names_copy.length))];
+}}
+"""
+
 def update_selected_char_image(evt: gr.EventData):
     return evt.value
 
-def get_random_name(cur_char_name, char_name1, char_name2, char_name3):
-	tmp_random_names = copy.deepcopy(random_names)
-	tmp_random_names.remove(cur_char_name)
-	tmp_random_names.remove(char_name1)
-	tmp_random_names.remove(char_name2)
-	tmp_random_names.remove(char_name3)
-	return random.choice(tmp_random_names)
+# def get_random_name(cur_char_name, char_name1, char_name2, char_name3):
+# 	tmp_random_names = copy.deepcopy(random_names)
+# 	tmp_random_names.remove(cur_char_name)
+# 	tmp_random_names.remove(char_name1)
+# 	tmp_random_names.remove(char_name2)
+# 	tmp_random_names.remove(char_name3)
+# 	return random.choice(tmp_random_names)
 
 
 def gen_character_image(

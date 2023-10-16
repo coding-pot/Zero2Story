@@ -30,7 +30,6 @@ side character #{cur_side_chars}
 - name: {name},
 - job: {job},
 - age: {age},
-- mbti: {mbti},
 - personality: {personality}
 
 """
