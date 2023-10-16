@@ -60,14 +60,28 @@ def parse_first_json_code_snippet(code_snippet):
 
 async def retry_until_valid_json(prompt, parameters=None):
 	response_json = None
-	while response_json is None:
-		_, response_txt = await palmchat.gen_text(prompt, mode="text", parameters=parameters)
-		print(response_txt)
 
+	for _ in range(3):
+		try:
+			response, response_txt = await palmchat.gen_text(prompt, mode="text", parameters=parameters)
+			print(response_txt)
+		except Exception as e:
+			print("PaLM API has withheld a response due to content safety concerns. Retrying...")
+			continue
+		
 		try:
 			response_json = parse_first_json_code_snippet(response_txt)
+			break
 		except:
+			print("Parsing JSON failed. Retrying...")
 			pass
+	
+	if len(response.filters) > 0:
+		raise ValueError("PaLM API has withheld a response due to content safety concerns.")
+	elif response_json is None:
+		print("=== Failed to generate valid JSON response. ===")
+		print(response_txt)
+		raise ValueError("Failed to generate valid JSON response.")
 			
 	return response_json
 

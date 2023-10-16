@@ -29,6 +29,14 @@ bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = None # e.g. "https://0447df3cf5f7c49c46.gradio.live"
 
+# default safety settings
+safety_settings = [{"category":"HARM_CATEGORY_DEROGATORY","threshold":1},
+					{"category":"HARM_CATEGORY_TOXICITY","threshold":1},
+					{"category":"HARM_CATEGORY_VIOLENCE","threshold":2},
+					{"category":"HARM_CATEGORY_SEXUAL","threshold":2},
+					{"category":"HARM_CATEGORY_MEDICAL","threshold":2},
+					{"category":"HARM_CATEGORY_DANGEROUS","threshold":2}]
+
 async def update_story_gen(
 	cursors, cur_cursor_idx,
 	genre, place, mood,
@@ -107,16 +115,15 @@ main character
 	)
 
 	prompt = prompt + f"""
+Fill in the following JSON output format:
+{{"paragraphs":"string"}}
+
 stories
 {stories}
 
 option to the next stories: {action}
 
-Fill in the following JSON output format:
-{{
-	"paragraphs": "string"
-}}
-
+Write the JSON output:
 """
 
 	print(f"generated prompt:\n{prompt}")
@@ -127,8 +134,13 @@ Fill in the following JSON output format:
 		'top_k': 40,
 		'top_p': 1,
 		'max_output_tokens': 4096,
-	}    	
-	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+		'safety_settings': safety_settings,
+	}
+	try:
+		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+	except Exception as e:
+		print(e)
+		raise gr.Error(e)
 
 	story = response_json["paragraphs"]
 	if isinstance(story, list):
@@ -188,14 +200,16 @@ async def actions_gen(
 		'top_k': 40,
 		'top_p': 1,
 		'max_output_tokens': 4096,
+		'safety_settings': safety_settings,
 	}
 
 	try:
 		_, summary = await palmchat.gen_text(summary_prompt, mode="text", parameters=parameters)
 	except Exception as e:
+		print(e)
 		raise gr.Error(e)
 
-	prompt = f"""Suggest the 30 options to drive the stories to the next based on the information below. 
+	prompt = f"""Suggest the 20 options to drive the stories to the next based on the information below. 
 
 background information:
 - genre: {genre}
@@ -223,14 +237,13 @@ main character
 	)
 
 	prompt = prompt + f"""
+Fill in the following JSON output format:
+{{"options":["string1", "string2", "string3"]}}
+
 summary of the story
 {summary}
 
-Fill in the following JSON output format:
-{{
-    "options": ["string", "string", "string", ...]
-}}
-
+Write the JSON output:
 """
 
 	print(f"generated prompt:\n{prompt}")
@@ -241,8 +254,13 @@ Fill in the following JSON output format:
 		'top_k': 40,
 		'top_p': 1,
 		'max_output_tokens': 4096,
-	}    	
-	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+		'safety_settings': safety_settings,
+	}
+	try:
+		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+	except Exception as e:
+		print(e)
+		raise gr.Error(e)
 	actions = response_json["options"]
 
 	random_actions = random.sample(actions, 3)
@@ -295,10 +313,9 @@ main character
 
 	prompt = prompt + f"""
 Fill in the following JSON output format:
-{{
-	"paragraphs": "string"
-}}
+{{"paragraphs":"string"}}
 
+Write the JSON output:
 """	
 
 	print(f"generated prompt:\n{prompt}")
@@ -309,8 +326,13 @@ Fill in the following JSON output format:
 		'top_k': 40,
 		'top_p': 1,
 		'max_output_tokens': 4096,
-	}    	
-	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+		'safety_settings': safety_settings,
+	}
+	try:
+		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+	except Exception as e:
+		print(e)
+		raise gr.Error(e)
 
 	story = response_json["paragraphs"]
 	if isinstance(story, list):
@@ -374,7 +396,6 @@ def image_gen(
 	for _ in range(3):
 		try:
 			prompt, neg_prompt = img_maker.generate_background_prompts(genre, place, mood, title, "", story_content)
-			neg_prompt
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
 			break
