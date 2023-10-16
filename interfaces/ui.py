@@ -28,15 +28,14 @@ img_maker = ImageMaker('https://huggingface.co/jphan32/Zero2Story/hellonijicute2
 ############
 # for plotting
 
-get_random_name = f"""
+get_random_name_js = f"""
 function get_random_name(cur_char_name, char_name1, char_name2, char_name3) {{
+        console.log("hello world");
+
 	const names = {random_names};
 	const names_copy = JSON.parse(JSON.stringify(names));
 
-	const cur_name = 'a';
-	const char_name1 = 'b';
-	const char_name2 = 'c';
-	const char_name3 = 'd';
+        console.log(names);
 
 	let index = names_copy.indexOf(cur_char_name);
 	names_copy.splice(index, 1);

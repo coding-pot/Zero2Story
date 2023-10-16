@@ -581,30 +581,31 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	random_name_btn1.click(
-		None,
+		fn=None,
 		inputs=[name_txt1, name_txt2, name_txt3, name_txt4],
 		outputs=[name_txt1],
-		_js=ui.get_random_name
+		_js=ui.get_random_name_js
 	)
 
 	random_name_btn2.click(
-		None,
+		fn=None,
 		inputs=[name_txt2, name_txt1, name_txt3, name_txt4],
 		outputs=[name_txt2],
-		_js=ui.get_random_name
+		_js=ui.get_random_name_js
 	)
 
 	random_name_btn3.click(
-		None,
+		fn=None,
 		inputs=[name_txt3, name_txt1, name_txt2, name_txt4],
 		outputs=[name_txt3],
-		_js=ui.get_random_name
+		_js=ui.get_random_name_js
 	)
 
 	random_name_btn4.click(
-		ui.get_random_name,
+		fn=None,
 		inputs=[name_txt4, name_txt1, name_txt2, name_txt3],
 		outputs=[name_txt4],
+                _js=ui.get_random_name_js
 	)
  
 	### Story generation
