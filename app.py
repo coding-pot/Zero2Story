@@ -40,7 +40,7 @@ with gr.Blocks(css=STYLE) as demo:
 		gr.Markdown(desc.pre_phase_description, elem_classes=["markdown-justify"])
 		pre_to_setup_btn = gr.Button("create a custom story", elem_classes=["wrap", "control-button"])
 
-	with gr.Column(visible=True, elem_id="background_setup_phase") as background_setup_phase:
+	with gr.Column(visible=False, elem_id="background_setup_phase") as background_setup_phase:
 		gr.Markdown("# 🌐 World setup", elem_classes=["markdown-center"])
 		gr.Markdown(desc.background_setup_phase_description, elem_classes=["markdown-justify"])
 		with gr.Row():
