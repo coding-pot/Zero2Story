@@ -35,12 +35,12 @@ with gr.Blocks(css=STYLE) as demo:
 	selected_side_char_image2 = gr.State(default_character_images[0])
 	selected_side_char_image3 = gr.State(default_character_images[0])
 
-	with gr.Column(visible=True) as pre_phase:
+	with gr.Column(visible=True, elem_id="pre_phase") as pre_phase:
 		gr.Markdown("# 📖 Zero2Story", elem_classes=["markdown-center"])
 		gr.Markdown(desc.pre_phase_description, elem_classes=["markdown-justify"])
 		pre_to_setup_btn = gr.Button("create a custom story", elem_classes=["wrap", "control-button"])
 
-	with gr.Column(visible=False) as background_setup_phase:
+	with gr.Column(visible=False, elem_id="background_setup_phase") as background_setup_phase:
 		gr.Markdown("# 🌐 World setup", elem_classes=["markdown-center"])
 		gr.Markdown(desc.background_setup_phase_description, elem_classes=["markdown-justify"])
 		with gr.Row():
@@ -55,7 +55,7 @@ with gr.Blocks(css=STYLE) as demo:
 			back_to_pre_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
 			world_setup_confirm_btn = gr.Button("character setup →", elem_classes=["wrap", "control-button"], scale=2)
 
-	with gr.Column(visible=False) as character_setup_phase:
+	with gr.Column(visible=False, elem_id="character_setup_phase") as character_setup_phase:
 		gr.Markdown("# 👥 Character setup")
 		gr.Markdown(desc.character_setup_phase_description, elem_classes=["markdown-justify"])
 		with gr.Row():
@@ -66,13 +66,13 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt1 = gr.Textbox(random_names[0], elem_classes=["no-label"], scale=3)
-					random_name_btn1 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
+					random_name_btn1 = gr.Button("random", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
 					age_dd1 = gr.Dropdown(label=None, choices=ages, value=ages[0], elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
 					mbti_dd1 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[0], interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -97,13 +97,13 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt2 = gr.Textbox(random_names[1], elem_classes=["no-label"], scale=3)
-					random_name_btn2 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
+					random_name_btn2 = gr.Button("random", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
 					age_dd2 = gr.Dropdown(label=None, choices=ages, value=ages[1], elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
 					mbti_dd2 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[1], interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -128,13 +128,13 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt3 = gr.Textbox(random_names[2], elem_classes=["no-label"], scale=3)
-					random_name_btn3 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
+					random_name_btn3 = gr.Button("random", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
 					age_dd3 = gr.Dropdown(label=None, choices=ages, value=ages[2], elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
 					mbti_dd3 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[2], interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -159,13 +159,13 @@ with gr.Blocks(css=STYLE) as demo:
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("name", elem_classes=["markdown-left"], scale=3)
 					name_txt4 = gr.Textbox(random_names[3], elem_classes=["no-label"], scale=3)
-					random_name_btn4 = gr.Button("🗳️", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
+					random_name_btn4 = gr.Button("random", elem_classes=["wrap", "control-button-green", "left-margin"], scale=1)
 
 				with gr.Row(elem_classes=["no-gap"]):
 					gr.Markdown("age", elem_classes=["markdown-left"], scale=3)
 					age_dd4 = gr.Dropdown(label=None, choices=ages, value=ages[3], elem_classes=["no-label"], scale=4)
 
-				with gr.Row(elem_classes=["no-gap"]):
+				with gr.Row(elem_classes=["no-gap"], visible=False):
 					gr.Markdown("mbti", elem_classes=["markdown-left"], scale=3)
 					mbti_dd4 = gr.Dropdown(label=None, choices=mbtis, value=mbtis[3], interactive=True, elem_classes=["no-label"], scale=4)
 
@@ -218,7 +218,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 		plot_setup_confirm_btn = gr.Button("confirm", elem_classes=["control-button"])
 
-	with gr.Column(visible=False) as writing_phase:
+	with gr.Column(visible=False, elem_id="writing_phase") as writing_phase:
 		gr.Markdown("# ✍🏼 Story writing")
 		gr.Markdown(desc.story_generation_phase_description, elem_classes=["markdown-justify"])
   
@@ -265,7 +265,7 @@ with gr.Blocks(css=STYLE) as demo:
 			restart_from_story_generation_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
 			story_writing_done_btn = gr.Button("export your story →", elem_classes=["wrap", "control-button"], scale=2)
 
-	with gr.Column(visible=False) as export_phase:
+	with gr.Column(visible=False, elem_id="export_phase") as export_phase:
 		gr.Markdown("# 📤 Export your story")
 		gr.Markdown(desc.export_phase_description, elem_classes=["markdown-justify"])
 
@@ -277,7 +277,7 @@ with gr.Blocks(css=STYLE) as demo:
 			restart_from_export_btn = gr.Button("start over", elem_classes=["wrap", "control-button"], scale=1)
 			export_done_btn = gr.Button("exported story →", elem_classes=["wrap", "control-button"], scale=1)
 
-	with gr.Column(visible=False) as export_view_phase:
+	with gr.Column(visible=False, elem_id="export_view_phase") as export_view_phase:
 		export_html = gr.HTML()
 
 		with gr.Row():
@@ -298,39 +298,45 @@ with gr.Blocks(css=STYLE) as demo:
 				clear_btn = gr.Button("clear", elem_classes=["control-button"])
 
 	pre_to_setup_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None, 
 		inputs=None,
-		outputs=[pre_phase, background_setup_phase]
+		outputs=[pre_phase, background_setup_phase],
+		_js=view_change_ui.pre_to_setup_js
 	)
  
 	back_to_pre_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[pre_phase, background_setup_phase]
+		outputs=[pre_phase, background_setup_phase],
+		_js=view_change_ui.back_to_pre_js
 	)
 
 	world_setup_confirm_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[background_setup_phase, character_setup_phase]
+		outputs=[background_setup_phase, character_setup_phase],
+		_js=view_change_ui.world_setup_confirm_js
 	)
  
 	back_to_background_setup_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[background_setup_phase, character_setup_phase]		
+		outputs=[background_setup_phase, character_setup_phase],
+		_js=view_change_ui.back_to_background_setup_js
 	)
  
 	restart_from_story_generation_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[pre_phase, writing_phase]		
+		outputs=[pre_phase, writing_phase],
+		_js=view_change_ui.restart_from_story_generation_js
 	)
 
 	story_writing_done_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[writing_phase, export_phase]
+		outputs=[writing_phase, export_phase],
+		_js=view_change_ui.story_writing_done_js
 	)
 
 	title_gen_btn.click(
@@ -340,10 +346,12 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	export_done_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[export_phase, export_view_phase]
-	).then(
+		outputs=[export_phase, export_view_phase],
+		_js=view_change_ui.export_done_js
+	)        
+	export_done_btn.click(
 		export_ui.export,
 		inputs=[
 			title_txt,
@@ -359,16 +367,19 @@ with gr.Blocks(css=STYLE) as demo:
 	)
  
 	back_to_story_writing_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[writing_phase, export_phase]
+		outputs=[writing_phase, export_phase],
+		_js=view_change_ui.back_to_story_writing_js
 	)
 
 	restart_from_export_view_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[pre_phase, export_view_phase]		
-	).then(
+		outputs=[pre_phase, export_view_phase],
+		_js=view_change_ui.restart_from_export_view_js
+	)
+	restart_from_export_view_btn.click(
 		ui.reset,
 		inputs=None,
 		outputs=[
@@ -389,10 +400,12 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	restart_from_export_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[pre_phase, export_phase]
-	).then(
+		outputs=[pre_phase, export_phase],
+		_js=view_change_ui.restart_from_export_js
+	)
+	restart_from_export_btn.click(
 		ui.reset,
 		inputs=None,
 		outputs=[
@@ -413,10 +426,12 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	character_setup_confirm_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[character_setup_phase, writing_phase]
-	).then(
+		outputs=[character_setup_phase, writing_phase],
+		_js=view_change_ui.character_setup_confirm_js
+	)
+	character_setup_confirm_btn.click(
 		story_gen_ui.disable_btns,
 		inputs=None,
 		outputs=[
@@ -581,27 +596,31 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	random_name_btn1.click(
-		ui.get_random_name,
+		fn=None,
 		inputs=[name_txt1, name_txt2, name_txt3, name_txt4],
 		outputs=[name_txt1],
+		_js=ui.get_random_name_js
 	)
 
 	random_name_btn2.click(
-		ui.get_random_name,
+		fn=None,
 		inputs=[name_txt2, name_txt1, name_txt3, name_txt4],
 		outputs=[name_txt2],
+		_js=ui.get_random_name_js
 	)
 
 	random_name_btn3.click(
-		ui.get_random_name,
+		fn=None,
 		inputs=[name_txt3, name_txt1, name_txt2, name_txt4],
 		outputs=[name_txt3],
+		_js=ui.get_random_name_js
 	)
 
 	random_name_btn4.click(
-		ui.get_random_name,
+		fn=None,
 		inputs=[name_txt4, name_txt1, name_txt2, name_txt3],
 		outputs=[name_txt4],
+                _js=ui.get_random_name_js
 	)
  
 	### Story generation
