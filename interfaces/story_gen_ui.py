@@ -32,19 +32,19 @@ video_gen_client_url = None # e.g. "https://0447df3cf5f7c49c46.gradio.live"
 async def update_story_gen(
 	cursors, cur_cursor_idx,
 	genre, place, mood,
-	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
-	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
-	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
-	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+	main_char_name, main_char_age, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
     if len(cursors) == 1:
         return await first_story_gen(
 			cursors,
 			genre, place, mood,
-			main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
-			side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
-			side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
-			side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+			main_char_name, main_char_age, main_char_personality, main_char_job,
+			side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+			side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+			side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 			cur_cursor_idx=cur_cursor_idx
 		)
     else:
@@ -52,10 +52,10 @@ async def update_story_gen(
 			cursors,
 			None,
 			genre, place, mood,
-			main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
-			side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
-			side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
-			side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+			main_char_name, main_char_age, main_char_personality, main_char_job,
+			side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+			side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+			side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 			cur_cursor_idx=cur_cursor_idx
 		)
 
@@ -63,10 +63,10 @@ async def next_story_gen(
 	cursors,
 	action,
 	genre, place, mood,
-	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
-	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
-	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
-	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,	
+	main_char_name, main_char_age, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,	
 	cur_cursor_idx=None
 ):
 	stories = ""
@@ -94,15 +94,15 @@ main character
 
 	prompt, cur_side_chars = utils.add_side_character(
 		side_char_enable1, prompt, cur_side_chars,
-		side_char_name1, side_char_job1, side_char_age1, side_char_mbti1, side_char_personality1
+		side_char_name1, side_char_job1, side_char_age1, side_char_personality1
 	)
 	prompt, cur_side_chars = utils.add_side_character(
 		side_char_enable2, prompt, cur_side_chars,
-		side_char_name2, side_char_job2, side_char_age2, side_char_mbti2, side_char_personality2
+		side_char_name2, side_char_job2, side_char_age2, side_char_personality2
 	)
 	prompt, cur_side_chars = utils.add_side_character(
 		side_char_enable3, prompt, cur_side_chars,
-		side_char_name3, side_char_job3, side_char_age3, side_char_mbti3, side_char_personality3
+		side_char_name3, side_char_job3, side_char_age3, side_char_personality3
 	)
 
 	prompt = prompt + f"""
@@ -161,10 +161,10 @@ Fill in the following JSON output format:
 async def actions_gen(
 	cursors,
 	genre, place, mood,
-	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
-	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
-	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
-	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+	main_char_name, main_char_age, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	cur_cursor_idx=None
 ):
 	stories = ""
@@ -209,15 +209,15 @@ main character
 """
 	prompt, cur_side_chars = utils.add_side_character(
 		side_char_enable1, prompt, cur_side_chars,
-		side_char_name1, side_char_job1, side_char_age1, side_char_mbti1, side_char_personality1
+		side_char_name1, side_char_job1, side_char_age1, side_char_personality1
 	)
 	prompt, cur_side_chars = utils.add_side_character(
 		side_char_enable2, prompt, cur_side_chars,
-		side_char_name2, side_char_job2, side_char_age2, side_char_mbti2, side_char_personality2
+		side_char_name2, side_char_job2, side_char_age2, side_char_personality2
 	)
 	prompt, cur_side_chars = utils.add_side_character(
 		side_char_enable3, prompt, cur_side_chars,
-		side_char_name3, side_char_job3, side_char_age3, side_char_mbti3, side_char_personality3
+		side_char_name3, side_char_job3, side_char_age3, side_char_personality3
 	)
 
 	prompt = prompt + f"""
@@ -255,10 +255,10 @@ Fill in the following JSON output format:
 async def first_story_gen(
 	cursors,
 	genre, place, mood,
-	main_char_name, main_char_age, main_char_mbti, main_char_personality, main_char_job,
-	side_char_enable1, side_char_name1, side_char_age1, side_char_mbti1, side_char_personality1, side_char_job1,
-	side_char_enable2, side_char_name2, side_char_age2, side_char_mbti2, side_char_personality2, side_char_job2,
-	side_char_enable3, side_char_name3, side_char_age3, side_char_mbti3, side_char_personality3, side_char_job3,
+	main_char_name, main_char_age, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	cur_cursor_idx=None
 ):
 	cur_side_chars = 1
@@ -279,15 +279,15 @@ main character
 
 	prompt, cur_side_chars = utils.add_side_character(
 		side_char_enable1, prompt, cur_side_chars,
-		side_char_name1, side_char_job1, side_char_age1, side_char_mbti1, side_char_personality1
+		side_char_name1, side_char_job1, side_char_age1, side_char_personality1
 	)
 	prompt, cur_side_chars = utils.add_side_character(
 		side_char_enable2, prompt, cur_side_chars,
-		side_char_name2, side_char_job2, side_char_age2, side_char_mbti2, side_char_personality2
+		side_char_name2, side_char_job2, side_char_age2, side_char_personality2
 	)
 	prompt, cur_side_chars = utils.add_side_character(
 		side_char_enable3, prompt, cur_side_chars,
-		side_char_name3, side_char_job3, side_char_age3, side_char_mbti3, side_char_personality3
+		side_char_name3, side_char_job3, side_char_age3, side_char_personality3
 	)
 
 	prompt = prompt + f"""
