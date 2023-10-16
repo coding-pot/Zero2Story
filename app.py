@@ -349,7 +349,7 @@ with gr.Blocks(css=STYLE) as demo:
 		fn=None,
 		inputs=None,
 		outputs=[export_phase, export_view_phase],
-		_js=view_change_ui.export_done_btn
+		_js=view_change_ui.export_done_js
 	).then(
 		export_ui.export,
 		inputs=[
