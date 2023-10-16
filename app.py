@@ -35,12 +35,12 @@ with gr.Blocks(css=STYLE) as demo:
 	selected_side_char_image2 = gr.State(default_character_images[0])
 	selected_side_char_image3 = gr.State(default_character_images[0])
 
-	with gr.Column(visible=True) as pre_phase:
+	with gr.Column(visible=True, elem_id="pre_phase") as pre_phase:
 		gr.Markdown("# 📖 Zero2Story", elem_classes=["markdown-center"])
 		gr.Markdown(desc.pre_phase_description, elem_classes=["markdown-justify"])
 		pre_to_setup_btn = gr.Button("create a custom story", elem_classes=["wrap", "control-button"])
 
-	with gr.Column(visible=False) as background_setup_phase:
+	with gr.Column(visible=True, elem_id="background_setup_phase") as background_setup_phase:
 		gr.Markdown("# 🌐 World setup", elem_classes=["markdown-center"])
 		gr.Markdown(desc.background_setup_phase_description, elem_classes=["markdown-justify"])
 		with gr.Row():
@@ -55,7 +55,7 @@ with gr.Blocks(css=STYLE) as demo:
 			back_to_pre_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
 			world_setup_confirm_btn = gr.Button("character setup →", elem_classes=["wrap", "control-button"], scale=2)
 
-	with gr.Column(visible=False) as character_setup_phase:
+	with gr.Column(visible=False, elem_id="character_setup_phase") as character_setup_phase:
 		gr.Markdown("# 👥 Character setup")
 		gr.Markdown(desc.character_setup_phase_description, elem_classes=["markdown-justify"])
 		with gr.Row():
@@ -218,7 +218,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 		plot_setup_confirm_btn = gr.Button("confirm", elem_classes=["control-button"])
 
-	with gr.Column(visible=False) as writing_phase:
+	with gr.Column(visible=False, elem_id="writing_phase") as writing_phase:
 		gr.Markdown("# ✍🏼 Story writing")
 		gr.Markdown(desc.story_generation_phase_description, elem_classes=["markdown-justify"])
   
@@ -265,7 +265,7 @@ with gr.Blocks(css=STYLE) as demo:
 			restart_from_story_generation_btn = gr.Button("← back", elem_classes=["wrap", "control-button"], scale=1)
 			story_writing_done_btn = gr.Button("export your story →", elem_classes=["wrap", "control-button"], scale=2)
 
-	with gr.Column(visible=False) as export_phase:
+	with gr.Column(visible=False, elem_id="export_phase") as export_phase:
 		gr.Markdown("# 📤 Export your story")
 		gr.Markdown(desc.export_phase_description, elem_classes=["markdown-justify"])
 
@@ -277,7 +277,7 @@ with gr.Blocks(css=STYLE) as demo:
 			restart_from_export_btn = gr.Button("start over", elem_classes=["wrap", "control-button"], scale=1)
 			export_done_btn = gr.Button("exported story →", elem_classes=["wrap", "control-button"], scale=1)
 
-	with gr.Column(visible=False) as export_view_phase:
+	with gr.Column(visible=False, elem_id="export_view_phase") as export_view_phase:
 		export_html = gr.HTML()
 
 		with gr.Row():
