@@ -298,39 +298,45 @@ with gr.Blocks(css=STYLE) as demo:
 				clear_btn = gr.Button("clear", elem_classes=["control-button"])
 
 	pre_to_setup_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None, 
 		inputs=None,
-		outputs=[pre_phase, background_setup_phase]
+		outputs=[pre_phase, background_setup_phase],
+		_js=view_change_ui.pre_to_setup_js
 	)
  
 	back_to_pre_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[pre_phase, background_setup_phase]
+		outputs=[pre_phase, background_setup_phase],
+		_js=view_change_ui.back_to_pre_js
 	)
 
 	world_setup_confirm_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[background_setup_phase, character_setup_phase]
+		outputs=[background_setup_phase, character_setup_phase],
+		_js=view_change_ui.world_setup_confirm_js
 	)
  
 	back_to_background_setup_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[background_setup_phase, character_setup_phase]		
+		outputs=[background_setup_phase, character_setup_phase],
+		_js=view_change_ui.back_to_background_setup_js
 	)
  
 	restart_from_story_generation_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[pre_phase, writing_phase]		
+		outputs=[pre_phase, writing_phase],
+		_js=view_change_ui.restart_from_story_generation_js
 	)
 
 	story_writing_done_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[writing_phase, export_phase]
+		outputs=[writing_phase, export_phase],
+		_js=view_change_ui.story_writing_done_js
 	)
 
 	title_gen_btn.click(
@@ -340,9 +346,10 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	export_done_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[export_phase, export_view_phase]
+		outputs=[export_phase, export_view_phase],
+		_js=view_change_ui.export_done_btn
 	).then(
 		export_ui.export,
 		inputs=[
@@ -359,15 +366,17 @@ with gr.Blocks(css=STYLE) as demo:
 	)
  
 	back_to_story_writing_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[writing_phase, export_phase]
+		outputs=[writing_phase, export_phase],
+		_js=view_change_ui.back_to_story_writing_js
 	)
 
 	restart_from_export_view_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[pre_phase, export_view_phase]		
+		outputs=[pre_phase, export_view_phase],
+		_js=view_change_ui.restart_from_export_view_js
 	).then(
 		ui.reset,
 		inputs=None,
@@ -389,9 +398,10 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	restart_from_export_btn.click(
-		view_change_ui.back_to_previous_view,
+		fn=None,
 		inputs=None,
-		outputs=[pre_phase, export_phase]
+		outputs=[pre_phase, export_phase],
+		_js=view_change_ui.restart_from_export_js
 	).then(
 		ui.reset,
 		inputs=None,
@@ -413,9 +423,10 @@ with gr.Blocks(css=STYLE) as demo:
 	)
 
 	character_setup_confirm_btn.click(
-		view_change_ui.move_to_next_view,
+		fn=None,
 		inputs=None,
-		outputs=[character_setup_phase, writing_phase]
+		outputs=[character_setup_phase, writing_phase],
+		_js=view_change_ui.character_setup_confirm_js
 	).then(
 		story_gen_ui.disable_btns,
 		inputs=None,
