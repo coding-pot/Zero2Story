@@ -11,10 +11,10 @@ def rollback_last_ui(history):
 async def chat(
     user_input, chat_mode, chat_state,
     genre, place, mood,
-    name1, age1, mbti1, personality1, job1,
-    name2, age2, mbti2, personality2, job2,
-    name3, age3, mbti3, personality3, job3,
-    name4, age4, mbti4, personality4, job4,
+    name1, age1, personality1, job1,
+    name2, age2, personality2, job2,
+    name3, age3, personality3, job3,
+    name4, age4, personality4, job4,
     chapter1_title, chapter2_title, chapter3_title, chapter4_title,
     chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
 ):
@@ -54,7 +54,6 @@ main character: {{
 name: {name1},
 job: {job1},
 age: {age1},
-mbti: {mbti1},
 personality: {personality1} 
 }}
 
@@ -62,7 +61,6 @@ side character1: {{
 name: {name2},
 job: {job2},
 age: {age2},
-mbti: {mbti2},
 personality: {personality2} 
 }}
 
@@ -70,7 +68,6 @@ side character2: {{
 name: {name3},
 job: {job3},
 age: {age3},
-mbti: {mbti3},
 personality: {personality3} 
 }}
 
@@ -78,7 +75,6 @@ side character3: {{
 name: {name4},
 job: {job4},
 age: {age4},
-mbti: {mbti4},
 personality: {personality4} 
 }}
 

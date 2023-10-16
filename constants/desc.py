@@ -8,7 +8,7 @@ background_setup_phase_description = """
 In this phase, users can setup the genre, place, and mood of the story. Especially, genre is the key that others are depending on. 
 """
 character_setup_phase_description = """
-In this phase, users can setup characters up to four. For each character, users can decide their characteristics and basic information such as name, age, MBTI, and personality. Also, the image of each character could be generated based on the information using Stable Diffusion. 
+In this phase, users can setup characters up to four. For each character, users can decide their characteristics and basic information such as name, age and personality. Also, the image of each character could be generated based on the information using Stable Diffusion. 
 
 PaLM API translates the given character information into a list of keywords that Stable Diffusion could effectively understands. Then, Stable Diffusion generates images using the keywords as a prompt.
 """
