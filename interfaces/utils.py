@@ -8,7 +8,7 @@ from pingpong.context import CtxLastWindowStrategy
 
 def add_side_character_to_export(
 	characters,	enable, img, 
-	name, age, mbti, personality, job
+	name, age, personality, job
 ):
 	if enable:
 		characters.append(
@@ -22,7 +22,7 @@ def add_side_character_to_export(
 
 def add_side_character(
 	enable, prompt, cur_side_chars,
-	name, age, mbti, personality, job
+	name, age, personality, job
 ):
 	if enable:
 		prompt = prompt + f"""

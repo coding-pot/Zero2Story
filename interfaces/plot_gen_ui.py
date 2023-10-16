@@ -5,7 +5,7 @@ from modules import palmchat
 
 def _add_side_character(
 	enable, prompt, cur_side_chars,
-	name, age, mbti, personality, job
+	name, age, personality, job
 ):
 	if enable:
 		prompt = prompt + f"""
@@ -13,7 +13,6 @@ side character #{cur_side_chars}
 - name: {name},
 - job: {job},
 - age: {age},
-- mbti: {mbti},
 - personality: {personality}
 
 """
@@ -26,10 +25,10 @@ async def plot_gen(
 	temperature,
 	genre, place, mood,
 	side_char_enable1, side_char_enable2, side_char_enable3,
-	name1, age1, mbti1, personality1, job1,
-	name2, age2, mbti2, personality2, job2,
-	name3, age3, mbti3, personality3, job3,
-	name4, age4, mbti4, personality4, job4,
+	name1, age1, personality1, job1,
+	name2, age2, personality2, job2,
+	name3, age3, personality3, job3,
+	name4, age4, personality4, job4,
 ):
 	cur_side_chars = 1
 	prompt = f"""Write a title and an outline of a novel based on the background information below in Ronald Tobias's plot theory. The outline should follow the  "rising action", "crisis", "climax", "falling action", and "denouement" plot types. Each should be filled with a VERY detailed and descriptive at least two paragraphs of string. Randomly choose if the story goes optimistic or tragic.
@@ -43,7 +42,6 @@ main character
 - name: string
 - job: string
 - age: string
-- mbti: string
 - personality: string
 
 JSON output:
@@ -67,22 +65,21 @@ main character
 - name: {name1}
 - job: {job1}
 - age: {age1}
-- mbti: {mbti1}
 - personality: {personality1}
 
 """
 
 	prompt, cur_side_chars = _add_side_character(
 		side_char_enable1, prompt, cur_side_chars,
-		name2, job2, age2, mbti2, personality2
+		name2, job2, age2, personality2
 	)
 	prompt, cur_side_chars = _add_side_character(
 		side_char_enable2, prompt, cur_side_chars,
-		name3, job3, age3, mbti3, personality3
+		name3, job3, age3, personality3
 	)
 	prompt, cur_side_chars = _add_side_character(
 		side_char_enable3, prompt, cur_side_chars,
-		name4, job4, age4, mbti4, personality4
+		name4, job4, age4, personality4
 	)
 
 	prompt = prompt + "JSON output:\n"
@@ -114,10 +111,10 @@ async def first_story_gen(
 	rising_action, crisis, climax, falling_action, denouement,
 	genre, place, mood,
 	side_char_enable1, side_char_enable2, side_char_enable3,
-	name1, age1, mbti1, personality1, job1,
-	name2, age2, mbti2, personality2, job2,
-	name3, age3, mbti3, personality3, job3,
-	name4, age4, mbti4, personality4, job4, 
+	name1, age1, personality1, job1,
+	name2, age2, personality2, job2,
+	name3, age3, personality3, job3,
+	name4, age4, personality4, job4, 
 	cursors, cur_cursor
 ):
 	cur_side_chars = 1
@@ -136,7 +133,6 @@ main character
 - name: string
 - job: string
 - age: string
-- mbti: string
 - personality: string
 
 overall outline
@@ -163,22 +159,21 @@ main character
 - name: {name1}
 - job: {job1},
 - age: {age1},
-- mbti: {mbti1},
 - personality: {personality1}
 
 """
 
 	prompt, cur_side_chars = _add_side_character(
 		side_char_enable1, prompt, cur_side_chars,
-		name2, job2, age2, mbti2, personality2
+		name2, job2, age2, personality2
 	)
 	prompt, cur_side_chars = _add_side_character(
 		side_char_enable2, prompt, cur_side_chars,
-		name3, job3, age3, mbti3, personality3
+		name3, job3, age3, personality3
 	)
 	prompt, cur_side_chars = _add_side_character(
 		side_char_enable3, prompt, cur_side_chars,
-		name4, job4, age4, mbti4, personality4
+		name4, job4, age4, personality4
 	)
 
 	prompt = prompt + f"""

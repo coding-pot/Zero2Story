@@ -67,13 +67,13 @@ def update_selected_char_image(evt: gr.EventData):
 
 def gen_character_image(
   gallery_images, 
-  name, age, mbti, personality, job, 
+  name, age, personality, job, 
   genre, place, mood, creative_mode
 ):
 	# generate prompts for character image with PaLM
 	for _ in range(3):
 		try:
-			prompt, neg_prompt = img_maker.generate_character_prompts(name, age, job, keywords=[mbti, personality, genre, place, mood], creative_mode=creative_mode)
+			prompt, neg_prompt = img_maker.generate_character_prompts(name, age, job, keywords=[personality, genre, place, mood], creative_mode=creative_mode)
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
 			break
