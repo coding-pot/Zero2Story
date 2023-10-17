@@ -268,6 +268,14 @@ with gr.Blocks(css=STYLE) as demo:
 			restart_from_export_view_btn = gr.Button("start over", elem_classes=["wrap", "control-button"])
 			export_to_file_btn = gr.Button("Download as ZIP file", elem_classes=["wrap", "control-button"], scale=2)
 
+	with gr.Accordion("Control Panel") as control_panel:
+		with gr.Column():
+			gr.Markdown("LLM Model Type")
+			llm_type = gr.Radio(value="PaLM API", choices=["PaLM API", "ChatGPT", "LLaMA2"], elem_classes=["no-label-radio"])
+   
+			gr.Markdown("API Key")
+			llm_api_key = gr.Textbox(placeholder="enter key for the chosen llm model", elem_classes=["no-label"])
+
 	with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
 		with gr.Column(scale=1):
 			chatbot = gr.Chatbot(
