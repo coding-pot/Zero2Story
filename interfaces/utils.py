@@ -3,7 +3,10 @@ import json
 import string
 import random
 
-from modules import palmchat
+from modules import (
+	palmchat, palm_prompts,
+)
+
 from pingpong.context import CtxLastWindowStrategy
 
 def add_side_character_to_export(
@@ -20,22 +23,20 @@ def add_side_character_to_export(
 
 	return characters
 
-def add_side_character(
-	enable, prompt, cur_side_chars,
-	name, age, personality, job
-):
-	if enable:
-		prompt = prompt + f"""
-side character #{cur_side_chars}
-- name: {name},
-- job: {job},
-- age: {age},
-- personality: {personality}
-
-"""
-		cur_side_chars = cur_side_chars + 1
-		
-	return prompt, cur_side_chars
+def add_side_character(enable, name, age, personality, job):
+	cur_side_chars = 1
+	prompt = ""
+	for idx in range(len(enable)):
+		if enable[idx]:
+			prompt += palm_prompts['story_gen']['add_side_character'].format(
+										cur_side_chars=cur_side_chars,
+										name=name[idx],
+										job=job[idx],
+										age=age[idx],
+										personality=personality[idx]
+									)
+			cur_side_chars += 1
+	return "\n" + prompt if prompt else ""
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))

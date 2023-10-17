@@ -16,12 +16,6 @@ from modules import (
 
 from interfaces import utils
 
-### e.g.
-#img_maker = ImageMaker('hellonijicute25d_V10b.safetensors') # without_VAE
-
-#img_maker = ImageMaker('hellonijicute25d_V10b.safetensors', vae="klF8Anime2Fp16.safetensors")
-#img_maker.push_to_hub('jphan32/Zero2Story', commit_message="test fp16", token="YOUR_HF_TOKEN", variant="character")
-#img_maker = ImageMaker('jphan32/Zero2Story', variant="character", from_hf=True)
 img_maker = ImageMaker('https://huggingface.co/jphan32/Zero2Story/hellonijicute25d_V10b.safetensors',
 						vae="https://huggingface.co/jphan32/Zero2Story/klF8Anime2Fp16.safetensors")
 

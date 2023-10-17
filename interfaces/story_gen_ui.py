@@ -6,22 +6,13 @@ from gradio_client import Client
 from pathlib import Path
 
 from modules import (
-	ImageMaker, MusicMaker, palmchat, merge_video
+	ImageMaker, MusicMaker, palmchat, palm_prompts, merge_video
 )
 from interfaces import utils
 
 from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
-### e.g.
-#img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors') # without VAE
-#img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', vae="stabilityai/sd-vae-ft-mse")
-#img_maker = ImageMaker('fantasyworldFp16.safetensors', vae="cute20vae.safetensors")
-#img_maker = ImageMaker('forgesagalandscapemi.safetensors', vae="anythingFp16.safetensors")
-
-#img_maker = ImageMaker('landscapeAnimePro_v20Inspiration.safetensors', vae="cute20vae.safetensors")
-#img_maker.push_to_hub('jphan32/Zero2Story', commit_message="test fp16", token="YOUR_HF_TOKEN", variant="scene")
-#img_maker = ImageMaker('jphan32/Zero2Story', variant="scene", from_hf=True)
 img_maker = ImageMaker('https://huggingface.co/jphan32/Zero2Story/landscapeAnimePro_v20Inspiration.safetensors',
 						vae="https://huggingface.co/jphan32/Zero2Story/cute20vae.safetensors")
 
@@ -86,44 +77,23 @@ async def next_story_gen(
 	for cursor in cursors[:end_idx]:
 		stories = stories + cursor["story"]
 
-	prompt = f"""Write the next paragraphs. The next paragraphs should be determined by an option and well connected to the current stories. 
-
-background information:
-- genre: {genre}
-- where: {place}
-- mood: {mood}
-
-main character
-- name: {main_char_name}
-- job: {main_char_job}
-- age: {main_char_age}
-- personality: {main_char_personality}
-"""
-
-	prompt, cur_side_chars = utils.add_side_character(
-		side_char_enable1, prompt, cur_side_chars,
-		side_char_name1, side_char_job1, side_char_age1, side_char_personality1
-	)
-	prompt, cur_side_chars = utils.add_side_character(
-		side_char_enable2, prompt, cur_side_chars,
-		side_char_name2, side_char_job2, side_char_age2, side_char_personality2
-	)
-	prompt, cur_side_chars = utils.add_side_character(
-		side_char_enable3, prompt, cur_side_chars,
-		side_char_name3, side_char_job3, side_char_age3, side_char_personality3
+	side_char_prompt = utils.add_side_character(
+		[side_char_enable1, side_char_enable2, side_char_enable3],
+		[side_char_name1, side_char_name2, side_char_name3],
+		[side_char_job1, side_char_job2, side_char_job3],
+		[side_char_age1, side_char_age2, side_char_age3],
+		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
 
-	prompt = prompt + f"""
-Fill in the following JSON output format:
-{{"paragraphs":"string"}}
-
-stories
-{stories}
-
-option to the next stories: {action}
-
-Write the JSON output:
-"""
+	prompt = palm_prompts['story_gen']['next_story_gen'].format(
+		genre=genre, place=place, mood=mood,
+		main_char_name=main_char_name,
+		main_char_job=main_char_job,
+		main_char_age=main_char_age,
+		main_char_personality=main_char_personality,
+		side_char_placeholder=side_char_prompt,
+		stories=stories, action=action,
+	)
 
 	print(f"generated prompt:\n{prompt}")
 	parameters = {
@@ -186,11 +156,8 @@ async def actions_gen(
 	for cursor in cursors[:end_idx]:
 		stories = stories + cursor["story"]
 
-	summary_prompt = f"""Summarize the text below
+	summary_prompt = palm_prompts['story_gen']['summarize'].format(stories=stories)
 
-{stories}
-
-"""
 	print(f"generated prompt:\n{summary_prompt}")
 	parameters = {
 		'model': 'models/text-bison-001',
@@ -208,41 +175,22 @@ async def actions_gen(
 		print(e)
 		raise gr.Error(e)
 
-	prompt = f"""Suggest the 20 options to drive the stories to the next based on the information below. 
-
-background information:
-- genre: {genre}
-- where: {place}
-- mood: {mood}
-
-main character
-- name: {main_char_name}
-- job: {main_char_job}
-- age: {main_char_age}
-- personality: {main_char_personality}
-"""
-	prompt, cur_side_chars = utils.add_side_character(
-		side_char_enable1, prompt, cur_side_chars,
-		side_char_name1, side_char_job1, side_char_age1, side_char_personality1
+	side_char_prompt = utils.add_side_character(
+		[side_char_enable1, side_char_enable2, side_char_enable3],
+		[side_char_name1, side_char_name2, side_char_name3],
+		[side_char_job1, side_char_job2, side_char_job3],
+		[side_char_age1, side_char_age2, side_char_age3],
+		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
-	prompt, cur_side_chars = utils.add_side_character(
-		side_char_enable2, prompt, cur_side_chars,
-		side_char_name2, side_char_job2, side_char_age2, side_char_personality2
+	prompt = palm_prompts['story_gen']['actions_gen'].format(
+		genre=genre, place=place, mood=mood,
+		main_char_name=main_char_name,
+		main_char_job=main_char_job,
+		main_char_age=main_char_age,
+		main_char_personality=main_char_personality,
+		side_char_placeholder=side_char_prompt,
+		summary=summary,
 	)
-	prompt, cur_side_chars = utils.add_side_character(
-		side_char_enable3, prompt, cur_side_chars,
-		side_char_name3, side_char_job3, side_char_age3, side_char_personality3
-	)
-
-	prompt = prompt + f"""
-Fill in the following JSON output format:
-{{"options":["string1", "string2", "string3"]}}
-
-summary of the story
-{summary}
-
-Write the JSON output:
-"""
 
 	print(f"generated prompt:\n{prompt}")
 	parameters = {
@@ -281,39 +229,21 @@ async def first_story_gen(
 ):
 	cur_side_chars = 1
 
-	prompt = f"""Write the first three paragraphs of a novel as much detailed as possible. They should be based on the background information. Blend 5W1H principle into the stories as a plain text. Don't let the paragraphs end the whole story.
-
-background information:
-- genre: {genre}
-- where: {place}
-- mood: {mood}
-
-main character
-- name: {main_char_name}
-- job: {main_char_job}
-- age: {main_char_age}
-- personality: {main_char_personality}
-"""
-
-	prompt, cur_side_chars = utils.add_side_character(
-		side_char_enable1, prompt, cur_side_chars,
-		side_char_name1, side_char_job1, side_char_age1, side_char_personality1
+	side_char_prompt = utils.add_side_character(
+		[side_char_enable1, side_char_enable2, side_char_enable3],
+		[side_char_name1, side_char_name2, side_char_name3],
+		[side_char_job1, side_char_job2, side_char_job3],
+		[side_char_age1, side_char_age2, side_char_age3],
+		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
-	prompt, cur_side_chars = utils.add_side_character(
-		side_char_enable2, prompt, cur_side_chars,
-		side_char_name2, side_char_job2, side_char_age2, side_char_personality2
+	prompt = palm_prompts['story_gen']['first_story_gen'].format(
+		genre=genre, place=place, mood=mood,
+		main_char_name=main_char_name,
+		main_char_job=main_char_job,
+		main_char_age=main_char_age,
+		main_char_personality=main_char_personality,
+		side_char_placeholder=side_char_prompt,
 	)
-	prompt, cur_side_chars = utils.add_side_character(
-		side_char_enable3, prompt, cur_side_chars,
-		side_char_name3, side_char_job3, side_char_age3, side_char_personality3
-	)
-
-	prompt = prompt + f"""
-Fill in the following JSON output format:
-{{"paragraphs":"string"}}
-
-Write the JSON output:
-"""	
 
 	print(f"generated prompt:\n{prompt}")
 	parameters = {
