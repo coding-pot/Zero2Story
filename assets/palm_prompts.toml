@@ -1,3 +1,204 @@
+[story_gen]
+add_side_character = """side character #{cur_side_chars}
+- name: {name},
+- job: {job},
+- age: {age},
+- personality: {personality}
+
+"""
+first_story_gen = """Write the first three paragraphs of a novel as much detailed as possible. They should be based on the background information. Blend 5W1H principle into the stories as a plain text. Don't let the paragraphs end the whole story.
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+Fill in the following JSON output format:
+{{"paragraphs":"string"}}
+
+Write the JSON output:
+"""
+next_story_gen = """Write the next paragraphs. The next paragraphs should be determined by an option and well connected to the current stories. 
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+Fill in the following JSON output format:
+{{"paragraphs":"string"}}
+
+stories
+{stories}
+
+option to the next stories: {action}
+
+Write the JSON output:
+"""
+actions_gen = """Suggest the 20 options to drive the stories to the next based on the information below. 
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+Fill in the following JSON output format:
+{{"options":["string1", "string2", "string3"]}}
+
+summary of the story
+{summary}
+
+Write the JSON output:
+"""
+summarize = """Summarize the text below
+
+{stories}
+
+"""
+
+[chat_gen]
+chapter_title_ctx = """
+chapter{title_idx} {{
+    title: {chapter_title},
+    plot: {chapter_plot}
+}}
+"""
+add_side_character = """side character{cur_side_chars}: {{
+name: {name},
+job: {job},
+age: {age},
+personality: {personality} 
+}}
+
+"""
+chat_context = """You are a professional writing advisor, especially specialized in developing ideas on plotting stories and creating characters. I provide genre, where, and mood along with the rough description of one main character and three side characters. 
+
+Give creative but not too long responses based on the following information.
+
+genre: {genre}
+where: {place}
+mood: {mood}
+
+main character: {{
+name: {name1},
+job: {job1},
+age: {age1},
+personality: {personality1} 
+}}
+{side_char_placeholder}
+{chapter_title_placeholder}
+"""
+
+[plot_gen]
+main_plot_gen="""Write a title and an outline of a novel based on the background information below in Ronald Tobias's plot theory. The outline should follow the  "rising action", "crisis", "climax", "falling action", and "denouement" plot types. Each should be filled with a VERY detailed and descriptive at least two paragraphs of string. Randomly choose if the story goes optimistic or tragic.
+
+background information:
+- genre: string
+- where: string
+- mood: string
+
+main character
+- name: string
+- job: string
+- age: string
+- personality: string
+
+JSON output:
+{{
+	"title": "string", 
+	"outline": {{
+		"rising action": "paragraphs of string", 
+		"crisis": "paragraphs of string", 
+		"climax": "paragraphs of string", 
+		"falling action": "paragraphs of string", 
+		"denouement": "paragraphs of string"
+	}}
+}}
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+JSON output:
+"""
+first_story_gen="""Write the chapter title and the first few paragraphs of the "rising action" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. 
+	
+REMEMBER the first few paragraphs should not end the whole story and allow leaway for the next paragraphs to come. 
+The whole story SHOULD stick to the "rising action -> crisis -> climax -> falling action -> denouement" flow, so REMEMBER not to write anything mentioned from the next plots of crisis, climax, falling action, and denouement yet.
+
+background information:
+- genre: string
+- where: string
+- mood: string
+
+main character
+- name: string
+- job: string
+- age: string
+- personality: string
+
+overall outline
+- title: string
+- rising action: string
+- crisis: string
+- climax: string
+- falling action: string
+- denouement: string
+
+JSON output:
+{{
+	"chapter_title": "string",
+	"paragraphs": ["string", "string", ...],
+	"actions": ["string", "string", "string"]
+}}
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+overall outline
+- title: {title}
+- rising action: {rising_action}
+- crisis: {crisis}
+- climax: {climax}
+- falling action: {falling_action}
+- denouement: {denouement}
+
+JSON output:
+"""
+
 [image_gen]
 neg_prompt="nsfw, worst quality, low quality, lowres, bad anatomy, bad hands, text, watermark, signature, error, missing fingers, extra digit, fewer digits, cropped, worst quality, normal quality, blurry, username, extra limbs, twins, boring, jpeg artifacts"
 

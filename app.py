@@ -936,7 +936,8 @@ with gr.Blocks(css=STYLE) as demo:
 	# 		name_txt3, age_dd3, personality_dd3, job_dd3,
 	# 		name_txt4, age_dd4, personality_dd4, job_dd4,
 	# 		chapter1_title, chapter2_title, chapter3_title, chapter4_title,
-	# 		chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot
+	# 		chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot,
+	#		side_char_enable_ckb1, side_char_enable_ckb2, side_char_enable_ckb3,
 	# 	],
 	# 	outputs=[chat_input_txt, chat_state, chatbot, regen_btn]
 	# )

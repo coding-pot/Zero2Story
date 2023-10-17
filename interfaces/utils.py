@@ -3,7 +3,10 @@ import json
 import string
 import random
 
-from modules import palmchat
+from modules import (
+	palmchat, palm_prompts,
+)
+
 from pingpong.context import CtxLastWindowStrategy
 
 def add_side_character_to_export(
@@ -20,22 +23,20 @@ def add_side_character_to_export(
 
 	return characters
 
-def add_side_character(
-	enable, prompt, cur_side_chars,
-	name, age, personality, job
-):
-	if enable:
-		prompt = prompt + f"""
-side character #{cur_side_chars}
-- name: {name},
-- job: {job},
-- age: {age},
-- personality: {personality}
-
-"""
-		cur_side_chars = cur_side_chars + 1
-		
-	return prompt, cur_side_chars
+def add_side_character(enable, name, age, personality, job):
+	cur_side_chars = 1
+	prompt = ""
+	for idx in range(len(enable)):
+		if enable[idx]:
+			prompt += palm_prompts['story_gen']['add_side_character'].format(
+										cur_side_chars=cur_side_chars,
+										name=name[idx],
+										job=job[idx],
+										age=age[idx],
+										personality=personality[idx]
+									)
+			cur_side_chars += 1
+	return "\n" + prompt if prompt else ""
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
@@ -59,14 +60,28 @@ def parse_first_json_code_snippet(code_snippet):
 
 async def retry_until_valid_json(prompt, parameters=None):
 	response_json = None
-	while response_json is None:
-		_, response_txt = await palmchat.gen_text(prompt, mode="text", parameters=parameters)
-		print(response_txt)
 
+	for _ in range(3):
+		try:
+			response, response_txt = await palmchat.gen_text(prompt, mode="text", parameters=parameters)
+			print(response_txt)
+		except Exception as e:
+			print("PaLM API has withheld a response due to content safety concerns. Retrying...")
+			continue
+		
 		try:
 			response_json = parse_first_json_code_snippet(response_txt)
+			break
 		except:
+			print("Parsing JSON failed. Retrying...")
 			pass
+	
+	if len(response.filters) > 0:
+		raise ValueError("PaLM API has withheld a response due to content safety concerns.")
+	elif response_json is None:
+		print("=== Failed to generate valid JSON response. ===")
+		print(response_txt)
+		raise ValueError("Failed to generate valid JSON response.")
 			
 	return response_json
 

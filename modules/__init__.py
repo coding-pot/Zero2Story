@@ -4,6 +4,7 @@ from .palmchat import (
     PaLMChatPromptFmt,
     PaLMChatPPManager,
     GradioPaLMChatPPManager,
+    palm_prompts,
 )
 from .utils import (
     merge_video,

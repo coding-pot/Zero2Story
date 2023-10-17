@@ -1,88 +1,37 @@
 import re
 import gradio as gr
 from interfaces import utils
-from modules import palmchat
+from modules import(
+	palmchat,
+	palm_prompts,
+)
 
-def _add_side_character(
-	enable, prompt, cur_side_chars,
-	name, age, personality, job
-):
-	if enable:
-		prompt = prompt + f"""
-side character #{cur_side_chars}
-- name: {name},
-- job: {job},
-- age: {age},
-- personality: {personality}
-
-"""
-		cur_side_chars = cur_side_chars + 1
-		
-	return prompt, cur_side_chars
-	
+print(palm_prompts)
 
 async def plot_gen(
 	temperature,
 	genre, place, mood,
 	side_char_enable1, side_char_enable2, side_char_enable3,
-	name1, age1, personality1, job1,
-	name2, age2, personality2, job2,
-	name3, age3, personality3, job3,
-	name4, age4, personality4, job4,
+	main_char_name, main_char_age, main_char_personality, main_char_job,
+	side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+	side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+	side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
-	cur_side_chars = 1
-	prompt = f"""Write a title and an outline of a novel based on the background information below in Ronald Tobias's plot theory. The outline should follow the  "rising action", "crisis", "climax", "falling action", and "denouement" plot types. Each should be filled with a VERY detailed and descriptive at least two paragraphs of string. Randomly choose if the story goes optimistic or tragic.
-
-background information:
-- genre: string
-- where: string
-- mood: string
-
-main character
-- name: string
-- job: string
-- age: string
-- personality: string
-
-JSON output:
-{{
-	"title": "string", 
-	"outline": {{
-		"rising action": "paragraphs of string", 
-		"crisis": "paragraphs of string", 
-		"climax": "paragraphs of string", 
-		"falling action": "paragraphs of string", 
-		"denouement": "paragraphs of string"
-	}}
-}}
-
-background information:
-- genre: {genre}
-- where: {place}
-- mood: {mood}
-
-main character
-- name: {name1}
-- job: {job1}
-- age: {age1}
-- personality: {personality1}
-
-"""
-
-	prompt, cur_side_chars = _add_side_character(
-		side_char_enable1, prompt, cur_side_chars,
-		name2, job2, age2, personality2
+	side_char_prompt = utils.add_side_character(
+		[side_char_enable1, side_char_enable2, side_char_enable3],
+		[side_char_name1, side_char_name2, side_char_name3],
+		[side_char_job1, side_char_job2, side_char_job3],
+		[side_char_age1, side_char_age2, side_char_age3],
+		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
-	prompt, cur_side_chars = _add_side_character(
-		side_char_enable2, prompt, cur_side_chars,
-		name3, job3, age3, personality3
+	prompt = palm_prompts['plot_gen']['main_plot_gen'].format(
+		genre=genre, place=place, mood=mood,
+		main_char_name=main_char_name,
+		main_char_job=main_char_job,
+		main_char_age=main_char_age,
+		main_char_personality=main_char_personality,
+		side_char_placeholder=side_char_prompt,
 	)
-	prompt, cur_side_chars = _add_side_character(
-		side_char_enable3, prompt, cur_side_chars,
-		name4, job4, age4, personality4
-	)
-
-	prompt = prompt + "JSON output:\n"
 	
 	print(f"generated prompt:\n{prompt}")
 	parameters = {
@@ -92,7 +41,7 @@ main character
 		'top_k': 40,
 		'top_p': 1,
 		'max_output_tokens': 4096,
-	}    	
+	}
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
 	return (
@@ -111,82 +60,33 @@ async def first_story_gen(
 	rising_action, crisis, climax, falling_action, denouement,
 	genre, place, mood,
 	side_char_enable1, side_char_enable2, side_char_enable3,
-	name1, age1, personality1, job1,
-	name2, age2, personality2, job2,
-	name3, age3, personality3, job3,
-	name4, age4, personality4, job4, 
+	main_char_name, main_char_age, main_char_personality, main_char_job,
+	side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+	side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+	side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	cursors, cur_cursor
 ):
-	cur_side_chars = 1
-	
-	prompt = f"""Write the chapter title and the first few paragraphs of the "rising action" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. 
-	
-REMEMBER the first few paragraphs should not end the whole story and allow leaway for the next paragraphs to come. 
-The whole story SHOULD stick to the "rising action -> crisis -> climax -> falling action -> denouement" flow, so REMEMBER not to write anything mentioned from the next plots of crisis, climax, falling action, and denouement yet.
-
-background information:
-- genre: string
-- where: string
-- mood: string
-
-main character
-- name: string
-- job: string
-- age: string
-- personality: string
-
-overall outline
-- title: string
-- rising action: string
-- crisis: string
-- climax: string
-- falling action: string
-- denouement: string
-
-JSON output:
-{{
-	"chapter_title": "string",
-	"paragraphs": ["string", "string", ...],
-	"actions": ["string", "string", "string"]
-}}
-
-background information:
-- genre: {genre}
-- where: {place}
-- mood: {mood}
-
-main character
-- name: {name1}
-- job: {job1},
-- age: {age1},
-- personality: {personality1}
-
-"""
-
-	prompt, cur_side_chars = _add_side_character(
-		side_char_enable1, prompt, cur_side_chars,
-		name2, job2, age2, personality2
+	side_char_prompt = utils.add_side_character(
+		[side_char_enable1, side_char_enable2, side_char_enable3],
+		[side_char_name1, side_char_name2, side_char_name3],
+		[side_char_job1, side_char_job2, side_char_job3],
+		[side_char_age1, side_char_age2, side_char_age3],
+		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
-	prompt, cur_side_chars = _add_side_character(
-		side_char_enable2, prompt, cur_side_chars,
-		name3, job3, age3, personality3
+	prompt = palm_prompts['plot_gen']['first_story_gen'].format(
+		genre=genre, place=place, mood=mood,
+		main_char_name=main_char_name,
+		main_char_job=main_char_job,
+		main_char_age=main_char_age,
+		main_char_personality=main_char_personality,
+		side_char_placeholder=side_char_prompt,
+		title=title,
+		rising_action=rising_action,
+		crisis=crisis,
+		climax=climax,
+		falling_action=falling_action,
+		denouement=denouement,
 	)
-	prompt, cur_side_chars = _add_side_character(
-		side_char_enable3, prompt, cur_side_chars,
-		name4, job4, age4, personality4
-	)
-
-	prompt = prompt + f"""
-overall outline
-- title: {title}
-- rising action: {rising_action}
-- crisis: {crisis}
-- climax: {climax}
-- falling action: {falling_action}
-- denouement: {denouement}
-
-JSON output:
-"""
 
 	print(f"generated prompt:\n{prompt}")
 	parameters = {
@@ -196,7 +96,7 @@ JSON output:
 		'top_k': 40,
 		'top_p': 1,
 		'max_output_tokens': 4096,
-	}    
+	}
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
 	chapter_title = response_json["chapter_title"]

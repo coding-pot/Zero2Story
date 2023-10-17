@@ -104,6 +104,7 @@ async def gen_text(
                 'temperature': temperature,
                 'top_k': top_k,
                 'top_p': top_p,
+                'safety_settings': safety_settings,
             }
         else:
             parameters = {
@@ -122,11 +123,10 @@ async def gen_text(
         else:
             response = palm_api.generate_text(**parameters, prompt=prompt)
     except:
-        raise Exception("PaLM API is not available.")
-    
-    if use_filter and len(response.filters) > 0 and \
-        response.filters[0]['reason'] == 2:
-        response_txt = "your request is blocked for some reasons"
+        raise EnvironmentError("PaLM API is not available.")
+
+    if use_filter and len(response.filters) > 0:
+        raise Exception("PaLM API has withheld a response due to content safety concerns.")
     else:
         if mode == "chat":
             response_txt = response.last
