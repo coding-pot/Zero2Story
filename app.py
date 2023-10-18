@@ -270,8 +270,8 @@ with gr.Blocks(css=STYLE) as demo:
 
 	with gr.Accordion("Control Panel") as control_panel:
 		with gr.Column(elem_classes=["group-border"]):
-			llm_type = gr.Radio(value="PaLM API", choices=["PaLM API", "ChatGPT", "LLaMA2"], label="LLM Model Type", elem_classes=["no-label-radio"])
-			llm_api_key = gr.Textbox(placeholder="enter key for the chosen llm model", type="password", label="API Key", elem_classes=["no-label"])
+			llm_type = gr.Radio(value="PaLM API", choices=["PaLM API", "ChatGPT", "LLaMA2"], label="LLM Model Type")
+			llm_api_key = gr.Textbox(placeholder="enter key for the chosen llm model", type="password", label="API Key")
 
 	with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
 		with gr.Column(scale=1):
