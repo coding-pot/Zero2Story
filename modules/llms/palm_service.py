@@ -164,6 +164,60 @@ class GradioPaLMChatPPManager(UIPPManager, PaLMChatPPManager):
         return results 
 
 class PaLMService(LLMService):
+    def __init__(self):
+        self._default_parameters_text = {
+                        'model': 'models/text-bison-001',
+                        'temperature': 0.7,
+                        'candidate_count': 1,
+                        'top_k': 40,
+                        'top_p': 0.95,
+                        'max_output_tokens': 1024,
+                        'stop_sequences': [],
+                        'safety_settings': [{"category":"HARM_CATEGORY_DEROGATORY","threshold":1},
+                                            {"category":"HARM_CATEGORY_TOXICITY","threshold":1},
+                                            {"category":"HARM_CATEGORY_VIOLENCE","threshold":2},
+                                            {"category":"HARM_CATEGORY_SEXUAL","threshold":2},
+                                            {"category":"HARM_CATEGORY_MEDICAL","threshold":2},
+                                            {"category":"HARM_CATEGORY_DANGEROUS","threshold":2}],
+                    }
+        self._default_parameters_chat = {
+                        'model': 'models/chat-bison-001',
+                        'temperature': 0.25,
+                        'candidate_count': 1,
+                        'top_k': 40,
+                        'top_p': 0.95,
+                    }
+
+
+    def make_params(self, mode="chat",
+                    temperature=None,
+                    candidate_count=None,
+                    top_k=None,
+                    top_p=None,
+                    max_output_tokens=None,
+                    use_filter=True):
+        parameters = None
+
+        if mode == "chat":
+            parameters = self._default_parameters_chat.copy()
+        elif mode == "text":
+            parameters = self._default_parameters_text.copy()
+        
+        if temperature is not None:
+            parameters['temperature'] = temperature
+        if candidate_count is not None:
+            parameters['candidate_count'] = candidate_count
+        if top_k is not None:
+            parameters['top_k'] = top_k
+        if max_output_tokens is not None and mode == "text":
+            parameters['max_output_tokens'] = max_output_tokens
+        if not use_filter and mode == "text":
+            for idx, _ in enumerate(parameters['safety_settings']):
+                parameters['safety_settings'][idx]['threshold'] = 4
+
+        return parameters
+
+
     async def gen_text(
         self,
         prompt,

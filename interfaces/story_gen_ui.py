@@ -21,13 +21,6 @@ bgm_maker = MusicMaker(model_size='small', output_format='mp3')
 
 video_gen_client_url = None # e.g. "https://0447df3cf5f7c49c46.gradio.live"
 
-# default safety settings
-safety_settings = [{"category":"HARM_CATEGORY_DEROGATORY","threshold":1},
-					{"category":"HARM_CATEGORY_TOXICITY","threshold":1},
-					{"category":"HARM_CATEGORY_VIOLENCE","threshold":2},
-					{"category":"HARM_CATEGORY_SEXUAL","threshold":2},
-					{"category":"HARM_CATEGORY_MEDICAL","threshold":2},
-					{"category":"HARM_CATEGORY_DANGEROUS","threshold":2}]
 
 async def update_story_gen(
 	cursors, cur_cursor_idx,
@@ -70,7 +63,9 @@ async def next_story_gen(
 	cur_cursor_idx=None,
 	llm_type="PaLM"
 ):
-	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+	factory = get_llm_factory(llm_type)
+	prompts = factory.create_prompt_manager().prompts
+	llm_service = factory.create_llm_service()
 
 	stories = ""
 	cur_side_chars = 1
@@ -100,15 +95,7 @@ async def next_story_gen(
 	)
 
 	print(f"generated prompt:\n{prompt}")
-	parameters = {
-		'model': 'models/text-bison-001',
-		'candidate_count': 1,
-		'temperature': 1.0,
-		'top_k': 40,
-		'top_p': 1,
-		'max_output_tokens': 4096,
-		'safety_settings': safety_settings,
-	}
+	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=0.9, max_output_tokens=4096)
 	try:
 		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 	except Exception as e:
@@ -168,15 +155,7 @@ async def actions_gen(
 	summary_prompt = prompts['story_gen']['summarize'].format(stories=stories)
 
 	print(f"generated prompt:\n{summary_prompt}")
-	parameters = {
-		'model': 'models/text-bison-001',
-		'candidate_count': 1,
-		'temperature': 1.0,
-		'top_k': 40,
-		'top_p': 1,
-		'max_output_tokens': 4096,
-		'safety_settings': safety_settings,
-	}
+	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
 
 	try:
 		_, summary = await llm_service.gen_text(summary_prompt, mode="text", parameters=parameters)
@@ -202,15 +181,7 @@ async def actions_gen(
 	)
 
 	print(f"generated prompt:\n{prompt}")
-	parameters = {
-		'model': 'models/text-bison-001',
-		'candidate_count': 1,
-		'temperature': 1.0,
-		'top_k': 40,
-		'top_p': 1,
-		'max_output_tokens': 4096,
-		'safety_settings': safety_settings,
-	}
+	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
 	try:
 		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 	except Exception as e:
@@ -237,7 +208,9 @@ async def first_story_gen(
 	cur_cursor_idx=None,
 	llm_type="PaLM"
 ):
-	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+	factory = get_llm_factory(llm_type)
+	prompts = factory.create_prompt_manager().prompts
+	llm_service = factory.create_llm_service()
 
 	cur_side_chars = 1
 
@@ -258,15 +231,7 @@ async def first_story_gen(
 	)
 
 	print(f"generated prompt:\n{prompt}")
-	parameters = {
-		'model': 'models/text-bison-001',
-		'candidate_count': 1,
-		'temperature': 1.0,
-		'top_k': 40,
-		'top_p': 1,
-		'max_output_tokens': 4096,
-		'safety_settings': safety_settings,
-	}
+	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
 	try:
 		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 	except Exception as e:

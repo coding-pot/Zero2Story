@@ -16,14 +16,7 @@ async def title_gen(cursors, llm_type="PaLM"):
 
     prompt = prompts['story_gen']['title'].format(stories=stories)
 
-    parameters = {
-		'model': 'models/text-bison-001',
-		'candidate_count': 1,
-		'temperature': 0.7,
-		'top_k': 40,
-		'top_p': 1,
-		'max_output_tokens': 4096,
-	}    	
+    parameters = llm_service.make_params(mode="text", temperature=0.7, top_k=40, top_p=1.0, max_output_tokens=4096)
     _, title = await llm_service.gen_text(prompt, mode="text", parameters=parameters)
     return title
 

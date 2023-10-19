@@ -91,6 +91,15 @@ class GradioChatGPTChatPPManager(UIPPManager, ChatGPTChatPPManager):
         pass
 
 class ChatGPTService(LLMService):
+    def make_params(self, mode="chat",
+                          temperature=None,
+                          candidate_count=None,
+                          top_k=None,
+                          top_p=None,
+                          max_output_tokens=None,
+                          use_filter=True):
+        pass
+    
     async def gen_text(
         self,
         prompt,
