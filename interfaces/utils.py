@@ -2,6 +2,7 @@ import copy
 import json
 import string
 import random
+import asyncio
 
 from modules.llms import get_llm_factory
 
@@ -65,15 +66,21 @@ async def retry_until_valid_json(prompt, parameters=None, llm_type="PaLM"):
 
 	for _ in range(3):
 		try:
-			response, response_txt = await llm_service.gen_text(prompt, mode="text", parameters=parameters)
+			response, response_txt = await asyncio.wait_for(llm_service.gen_text(prompt, mode="text", parameters=parameters),
+													  		timeout=10)
+
 			print(response_txt)
+		except asyncio.TimeoutError:
+			raise TimeoutError(f"The response time for {llm_type} API exceeded the limit.")
 		except Exception as e:
-			print(f"{llm_type} API has withheld a response due to content safety concerns. Retrying...")
+			print(f"{llm_type} API has encountered an error. Retrying...")
 			continue
 		
 		try:
 			response_json = parse_first_json_code_snippet(response_txt)
-			break
+			if not response_json:
+				print("Parsing JSON failed. Retrying...")
+				continue
 		except:
 			print("Parsing JSON failed. Retrying...")
 			pass
