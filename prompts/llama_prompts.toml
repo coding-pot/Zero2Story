@@ -1,0 +1,360 @@
+[story_gen]
+add_side_character = """side character #{cur_side_chars}
+- name: {name},
+- job: {job},
+- age: {age},
+- personality: {personality}
+
+"""
+first_story_gen = """Write the first three paragraphs of a novel as much detailed as possible. They should be based on the background information. Blend 5W1H principle into the stories as a plain text. Don't let the paragraphs end the whole story.
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+Fill in the following JSON output format:
+{{"paragraphs":"string"}}
+
+Write the JSON output:
+"""
+next_story_gen = """Write the next paragraphs. The next paragraphs should be determined by an option and well connected to the current stories. 
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+Fill in the following JSON output format:
+{{"paragraphs":"string"}}
+
+stories
+{stories}
+
+option to the next stories: {action}
+
+Write the JSON output:
+"""
+actions_gen = """Suggest the 20 options to drive the stories to the next based on the information below. 
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+Fill in the following JSON output format:
+{{"options":["string1", "string2", "string3"]}}
+
+summary of the story
+{summary}
+
+Write the JSON output:
+"""
+summarize = """Summarize the text below
+
+{stories}
+
+"""
+title="""what would be the title of the story below? be specific and creative.
+
+{stories}
+
+title: """
+
+[chat_gen]
+chapter_title_ctx = """
+chapter{title_idx} {{
+    title: {chapter_title},
+    plot: {chapter_plot}
+}}
+"""
+add_side_character = """side character{cur_side_chars}: {{
+name: {name},
+job: {job},
+age: {age},
+personality: {personality} 
+}}
+
+"""
+chat_context = """You are a professional writing advisor, especially specialized in developing ideas on plotting stories and creating characters. I provide genre, where, and mood along with the rough description of one main character and three side characters. 
+
+Give creative but not too long responses based on the following information.
+
+genre: {genre}
+where: {place}
+mood: {mood}
+
+main character: {{
+name: {name1},
+job: {job1},
+age: {age1},
+personality: {personality1} 
+}}
+{side_char_placeholder}
+{chapter_title_placeholder}
+"""
+
+[plot_gen]
+main_plot_gen="""Write a title and an outline of a novel based on the background information below in Ronald Tobias's plot theory. The outline should follow the  "rising action", "crisis", "climax", "falling action", and "denouement" plot types. Each should be filled with a VERY detailed and descriptive at least two paragraphs of string. Randomly choose if the story goes optimistic or tragic.
+
+background information:
+- genre: string
+- where: string
+- mood: string
+
+main character
+- name: string
+- job: string
+- age: string
+- personality: string
+
+JSON output:
+{{
+	"title": "string", 
+	"outline": {{
+		"rising action": "paragraphs of string", 
+		"crisis": "paragraphs of string", 
+		"climax": "paragraphs of string", 
+		"falling action": "paragraphs of string", 
+		"denouement": "paragraphs of string"
+	}}
+}}
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+JSON output:
+"""
+first_story_gen="""Write the chapter title and the first few paragraphs of the "rising action" plot based on the background information below in Ronald Tobias's plot theory. Also, suggest three choosable actions to drive current story in different directions. The first few paragraphs should be filled with a VERY MUCH detailed and descriptive at least two paragraphs of string. 
+	
+REMEMBER the first few paragraphs should not end the whole story and allow leaway for the next paragraphs to come. 
+The whole story SHOULD stick to the "rising action -> crisis -> climax -> falling action -> denouement" flow, so REMEMBER not to write anything mentioned from the next plots of crisis, climax, falling action, and denouement yet.
+
+background information:
+- genre: string
+- where: string
+- mood: string
+
+main character
+- name: string
+- job: string
+- age: string
+- personality: string
+
+overall outline
+- title: string
+- rising action: string
+- crisis: string
+- climax: string
+- falling action: string
+- denouement: string
+
+JSON output:
+{{
+	"chapter_title": "string",
+	"paragraphs": ["string", "string", ...],
+	"actions": ["string", "string", "string"]
+}}
+
+background information:
+- genre: {genre}
+- where: {place}
+- mood: {mood}
+
+main character
+- name: {main_char_name}
+- job: {main_char_job}
+- age: {main_char_age}
+- personality: {main_char_personality}
+{side_char_placeholder}
+overall outline
+- title: {title}
+- rising action: {rising_action}
+- crisis: {crisis}
+- climax: {climax}
+- falling action: {falling_action}
+- denouement: {denouement}
+
+JSON output:
+"""
+
+[image_gen]
+neg_prompt="nsfw, worst quality, low quality, lowres, bad anatomy, bad hands, text, watermark, signature, error, missing fingers, extra digit, fewer digits, cropped, worst quality, normal quality, blurry, username, extra limbs, twins, boring, jpeg artifacts"
+
+[image_gen.character]
+gen_prompt = """Based on my brief descriptions of the character, suggest a "primary descriptive sentence" and "concise descriptors" to visualize them. Ensure you consider elements like the character's gender, age, appearance, occupation, clothing, posture, facial expression, mood, among others.
+Once complete, please output only a single "primary descriptive sentence" and the "concise descriptors" in a syntactically valid JSON format.
+The output template is as follows: {{"primary_sentence":"primary descriptive sentence","descriptors":["concise descriptor 1","concise descriptor 2","concise descriptor 3"]}}.
+To enhance the quality of your character's description or expression, you might consider drawing from the following categories:
+- Emotions and Expressions: "ecstatic", "melancholic", "furious", "startled", "bewildered", "pensive", "overjoyed", "crushed", "elated", "panicked", "satisfied", "cynical", "apathetic", "delighted", "terrified", "desperate", "triumphant", "mortified", "envious", "appreciative", "blissful", "heartbroken", "livid", "astounded", "baffled", "smiling", "frowning", "grinning", "crying", "pouting", "glaring", "blinking", "winking", "smirking", "whistling".
+- Physical Features: "upper body", "very long hair", "looking at viewer", "looking to the side", "looking at another", "thick lips", "skin spots", "acnes", "skin blemishes", "age spot", "perfect eyes", "detailed eyes", "realistic eyes", "dynamic standing", "beautiful face", "necklace", "high detailed skin", "hair ornament", "blush", "shiny skin", "long sleeves", "cleavage", "rubber suit", "slim", "plump", "muscular", "pale skin", "tan skin", "dark skin", "blonde hair", "brunette hair", "black hair", "blue eyes", "green eyes", "brown eyes", "curly hair", "short hair", "wavy hair".
+- Visual Enhancements: "masterpiece", "cinematic lighting", "detailed lighting", "tyndall effect", "soft lighting", "volumetric lighting", "close up", "wide shot", "glossy", "beautiful lighting", "warm lighting", "extreme", "ultimate", "best", "supreme", "ultra", "intense", "powerful", "exceptional", "remarkable", "strong", "vigorous", "dynamic angle", "front view person", "bangs", "waist up", "bokeh".
+- Age and Gender: "1boy", "1man", "1male", "1girl", "1woman", "1female", "teen", "teenage", "twenties", "thirties", "forties", "fifties", "middle-age".
+Do note that this list isn't exhaustive, and you're encouraged to suggest similar terms not included here.
+Exclude words from the suggestion that are redundant or have conflicting meanings.
+Especially, Exclude words that conflict with the meaning of "primary_sentence".
+Do not output anything other than JSON values.
+Do not provide any additional explanation of the following.
+Only JSON is allowed.
+===
+This is some examples.
+Q:
+The character's name is Liam, their job is as the Secret Agent, and they are in their 50s. And the keywords that help in associating with the character are "Thriller, Underground Warehouse, Darkness, ESTP, Ambitious, Generous".
+Print out no more than 45 words in syntactically valid JSON format.
+A:
+{{"primary_sentence":"Middle-aged man pointing a gun in an underground warehouse","descriptors":["1man","solo","masterpiece","best quality","upper body","black suit","pistol in hand","dramatic lighting","muscular physique","intense brown eyes","raven-black hair","stylish cut","determined gaze","looking at viewer","stealthy demeanor","cunning strategist","advanced techwear","sleek","night operative","shadowy figure","night atmosphere","mysterious aura","highly detailed","film grain","detailed eyes and face"]}}
+
+Q:
+The character's name is Catherine, their job is as the Traveler, and they are in their 10s. And the keywords that help in associating with the character are "Romance, Starlit Bridge, Dreamy, ENTJ, Ambitious".
+Print out no more than 45 words in syntactically valid JSON format.
+A:
+{{"primary_sentence":"A dreamy teenage girl standing on a starlit bridge with romantic ambitions","descriptors":["1girl","solo","masterpiece","best quality","upper body","flowing skirt","sun hat","bright-eyed","map in hand","ethereal beauty","wanderlust","scarf","whimsical","graceful poise","celestial allure","close-up","warm soft lighting","luminescent glow","gentle aura","mystic charm","smirk","dreamy landscape","poetic demeanor","cinematic lighting","extremely detailed","film grain","detailed eyes and face"]}}
+
+Q:
+The character's name is Claire, their job is as the Technological Advancement, and they are in their 20s. And the keywords that help in associating with the character are "Science Fiction, Space Station, INFP, Ambitious, Generous".
+Print out no more than 45 words in syntactically valid JSON format.
+A:
+{{"primary_sentence":"A young ambitious woman tech expert aboard a futuristic space station","descriptors":["1girl","solo","masterpiece","best quality","upper body","sleek silver jumpsuit","futuristic heels","contemplative","editorial portrait","dynamic angle","sci-fi","techno-savvy","sharp focus","bokeh","beautiful lighting","intricate circuitry","robotic grace","rich colors","vivid contrasts","dramatic lighting","futuristic flair","avant-garde","high-tech allure","innovative mind","mechanical sophistication","film grain","detailed eyes and face"]}}
+
+Q:
+The character's name is Sophie, their job is as a Ballet Dancer, and they are in their 10s. And the keywords that help in associating with the character are "Grace, Dance Studio, Elegance, ISFJ, Gentle, Passionate"
+Print out no more than 45 words in syntactically valid JSON format.
+A:
+{{"primary_sentence":"An elegant dancer poses gracefully in a mirrored studio","descriptors":["1girl","teen","solo","masterpiece","best quality","upper body","beautiful face","shiny skin","wavy hair","ballet attire","tiptoe stance","flowing skirt","focused gaze","soft ambiance","soft lighting","film grain","detailed eyes and face"]}}
+===
+This is my request.
+Q:
+{input}
+A:
+"""
+query = """
+The character's name is {character_name}, their job is as the {job}, and they are in their {age}. And the keywords that help in associating with the character are "{keywords}".
+Print out no more than 45 words in syntactically valid JSON format.
+"""
+
+[image_gen.background]
+gen_prompt = """Based on my brief descriptions of the scene, suggest a "primary descriptive sentence" and "concise descriptors" to visualize it. Ensure you consider elements like the setting's time of day, atmosphere, prominent objects, mood, location, natural phenomena, architecture, among others.
+Once complete, please output only a single "primary descriptive sentence" and the "concise descriptors" in a syntactically valid JSON format.
+The output template is as follows: {{"primary_sentence":"primary descriptive sentence","descriptors":["concise descriptor 1","concise descriptor 2","concise descriptor 3"]}}.
+To enhance the quality of your scene's description or expression, you might consider drawing from the following categories:
+- Atmosphere and Time: "dawn", "dusk", "midday", "midnight", "sunset", "sunrise", "foggy", "misty", "stormy", "calm", "clear night", "starlit", "moonlit", "golden hour".
+- Natural Phenomena: "rainbow", "thunderstorm", "snowfall", "aurora borealis", "shooting star", "rain shower", "windy", "sunny".
+- Location and Architecture: "urban", "rural", "mountainous", "oceanfront", "forest", "desert", "island", "modern city", "ancient ruins", "castle", "village", "meadow", "cave", "bridge".
+- Prominent Objects: "giant tree", "waterfall", "stream", "rock formation", "ancient artifact", "bonfire", "tent", "vehicle", "statue", "fountain".
+- Visual Enhancements: "masterpiece", "cinematic lighting", "detailed lighting", "soft lighting", "volumetric lighting", "tyndall effect", "warm lighting", "close up", "wide shot", "beautiful perspective", "bokeh".
+Do note that this list isn't exhaustive, and you're encouraged to suggest similar terms not included here.
+Exclude words from the suggestion that are redundant or have conflicting meanings.
+Especially, Exclude words that conflict with the meaning of "primary_sentence".
+Do not output anything other than JSON values.
+Do not provide any additional explanation of the following.
+Only JSON is allowed.
+===
+This is some examples.
+Q:
+The genre is "Fantasy", the place is "Enchanted Forest", the mood is "Mystical", the title of the novel is "Whispering Leaves", and the chapter plot revolves around "A hidden glade where elves sing under the moonlight".
+Print out no more than 45 words in syntactically valid JSON format.
+A:
+{{"primary_sentence":"a mystical glade in an enchanted forest where elves sing beneath the moonlight","descriptors":["no humans","masterpiece","fantasy","enchanted forest","moonlit glade","mystical atmosphere","singing elves","luminous fireflies","ancient trees","shimmering leaves","whispering winds","hidden secrets","elven magic","masterpiece","soft lighting","silver glow","detailed shadows","enchanted mood","highly detailed","film grain"]}}
+
+Q:
+The genre is "Science Fiction", the place is "Galactic Space Station", the mood is "Tense", the title of the novel is "Stars Unbound", and the chapter plot revolves around "Ambassadors from different galaxies discussing a new treaty".
+Print out no more than 45 words in syntactically valid JSON format.
+A:
+{{"primary_sentence":"a tense gathering in a galactic space station where interstellar ambassadors negotiate","descriptors":["no humans","masterpiece","science fiction","galactic space station","star-studded backdrop","advanced technology","diverse aliens","hovering spacecrafts","futuristic architecture","tense discussions","interstellar politics","neon lights","holographic displays","masterpiece","detailed lighting","cinematic mood","highly detailed","film grain"]}}
+
+Q:
+The genre is "Romance", the place is "Beach", the mood is "Heartfelt", the title of the novel is "Waves of Passion", and the chapter plot revolves around "Two lovers reconciling their differences by the shore".
+Print out no more than 45 words in syntactically valid JSON format.
+A:
+{{"primary_sentence":"a heartfelt scene on a beach during sunset where two lovers reconcile","descriptors":["no humans","masterpiece","romance","beach","sunset horizon","golden sands","lapping waves","embrace","teary-eyed confessions","seashells","reflective waters","warm hues","silhouette of lovers","soft breeze","beautiful perspective","detailed shadows","emotional atmosphere","highly detailed","film grain"]}}
+
+Q:
+The genre is "Middle Ages", the place is "Royal Palace", the mood is "Epic Adventure", the title of the novel is "Throne of Fates", and the chapter plot revolves around "A brave knight receiving a quest from the king".
+Print out no more than 45 words in syntactically valid JSON format.
+A:
+{{"primary_sentence":"an epic scene in a royal palace where a knight is tasked with a quest by the king","descriptors":["no humans","masterpiece","middle ages","royal palace","castle","grand throne room","golden hour","armored knight","majestic king","tapestries","stone walls","torches","glistening armor","banner flags","medieval atmosphere","heroic demeanor","detailed architecture","golden crowns","highly detailed","film grain"]}}
+===
+This is my request.
+Q:
+{input}
+A:
+"""
+query = """
+The genre is "{genre}", the place is "{place}", the mood is "{mood}", the title of the novel is "{title}", and the chapter plot revolves around "{chapter_plot}".
+Print out no more than 45 words in syntactically valid JSON format.
+"""
+
+[music_gen]
+gen_prompt = """Based on my brief descriptions of the novel's mood, theme, or setting, suggest a "primary descriptive sentence" to conceptualize the musical piece. Ensure you consider elements like the music's genre, BPM, primary instruments, emotions evoked, era (if applicable), and other relevant musical characteristics.
+Once complete, please output only a single "primary descriptive sentence" in a syntactically valid JSON format.
+The output template is as follows:
+{{"primary_sentence":"primary descriptive sentence"}}.
+To enhance the quality of your music's description or expression, you might consider drawing from the following categories:
+- Musical Genre and Era: "80s", "90s", "classical", "jazz", "EDM", "rock", "folk", "baroque", "bebop", "grunge", "funk", "hip-hop", "blues", "country".
+- BPM and Rhythm: "slow-paced", "mid-tempo", "upbeat", "rhythmic", "syncopated", "steady beat", "dynamic tempo".
+- Primary Instruments and Sound: "guitar", "synth", "piano", "saxophone", "drums", "violin", "flute", "bassy", "treble-heavy", "distorted", "acoustic", "electric", "ambient sounds".
+- Emotions and Atmosphere: "nostalgic", "energetic", "melancholic", "uplifting", "dark", "light-hearted", "intense", "relaxing", "haunting", "joyful", "sombre", "celebratory", "mystical".
+- Musical Techniques and Enhancements: "harmonious", "dissonant", "layered", "minimalistic", "rich textures", "simple melody", "complex rhythms", "vocal harmonies", "instrumental solo".
+Do note that this list isn't exhaustive, and you're encouraged to suggest similar terms not included here.
+Exclude words from the suggestion that are redundant or have conflicting meanings.
+Especially, Exclude words that conflict with the meaning of "primary_sentence".
+Do not output anything other than JSON values.
+Do not provide any additional explanation of the following.
+Only JSON is allowed.
+===
+This is some examples.
+Q:
+The genre is "Fantasy", the place is "Enchanted Forest", the mood is "Mystical", the title of the novel is "Whispering Leaves", and the chapter plot revolves around "A hidden glade where elves sing under the moonlight".
+A:
+{{"primary_sentence":"a gentle folk melody filled with whimsical flutes, echoing harps, and distant ethereal vocals, capturing the enchantment of a moonlit forest and the mystique of singing elves"}}
+
+Q:
+The genre is "Science Fiction", the place is "Galactic Space Station", the mood is "Tense", the title of the novel is "Stars Unbound", and the chapter plot revolves around "Ambassadors from different galaxies discussing a new treaty".
+A:
+{{"primary_sentence":"an ambient electronic track, with pulsating synths, spacey reverberations, and occasional digital glitches, reflecting the vastness of space and the tension of intergalactic diplomacy"}}
+
+Q:
+The genre is "Romance", the place is "Beach", the mood is "Heartfelt", the title of the novel is "Waves of Passion", and the chapter plot revolves around "Two lovers reconciling their differences by the shore".
+A:
+{{"primary_sentence":"a soft acoustic ballad featuring soulful guitars, delicate percussion, and heartfelt vocals, evoking feelings of love, reconciliation, and the gentle ebb and flow of the ocean waves"}}
+
+Q:
+The genre is "Middle Ages", the place is "Royal Palace", the mood is "Epic Adventure", the title of the novel is "Throne of Fates", and the chapter plot revolves around "A brave knight receiving a quest from the king".
+A:
+{{"primary_sentence":"a grand orchestral piece, dominated by powerful brass, rhythmic drums, and soaring strings, portraying the valor of knights, the majesty of royalty, and the anticipation of an epic quest"}}
+===
+This is my request.
+Q:
+{input}
+A:
+"""
+query = """
+The genre is "{genre}", the place is "{place}", the mood is "{mood}", the title of the novel is "{title}", and the chapter plot revolves around "{chapter_plot}".
+Print out only one primary_sentence in syntactically valid JSON format.
+"""
