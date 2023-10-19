@@ -6,7 +6,7 @@ from gradio_client import Client
 from pathlib import Path
 
 from modules import (
-	ImageMaker, MusicMaker, palmchat, palm_prompts, merge_video
+	ImageMaker, MusicMaker, merge_video, get_llm_factory
 )
 from interfaces import utils
 
@@ -66,8 +66,11 @@ async def next_story_gen(
 	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,	
-	cur_cursor_idx=None
+	cur_cursor_idx=None,
+	llm_type="PaLM"
 ):
+	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+
 	stories = ""
 	cur_side_chars = 1
 
@@ -85,7 +88,7 @@ async def next_story_gen(
 		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
 
-	prompt = palm_prompts['story_gen']['next_story_gen'].format(
+	prompt = prompts['story_gen']['next_story_gen'].format(
 		genre=genre, place=place, mood=mood,
 		main_char_name=main_char_name,
 		main_char_job=main_char_job,
@@ -147,8 +150,13 @@ async def actions_gen(
 	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
-	cur_cursor_idx=None
+	cur_cursor_idx=None,
+	llm_type="PaLM"
 ):
+	factory = get_llm_factory(llm_type)
+	prompts = factory.create_prompt_manager().prompts
+	llm_service = factory.create_llm_service()
+
 	stories = ""
 	cur_side_chars = 1
 	end_idx = len(cursors) if cur_cursor_idx is None else len(cursors)-1
@@ -156,7 +164,7 @@ async def actions_gen(
 	for cursor in cursors[:end_idx]:
 		stories = stories + cursor["story"]
 
-	summary_prompt = palm_prompts['story_gen']['summarize'].format(stories=stories)
+	summary_prompt = prompts['story_gen']['summarize'].format(stories=stories)
 
 	print(f"generated prompt:\n{summary_prompt}")
 	parameters = {
@@ -170,7 +178,7 @@ async def actions_gen(
 	}
 
 	try:
-		_, summary = await palmchat.gen_text(summary_prompt, mode="text", parameters=parameters)
+		_, summary = await llm_service.gen_text(summary_prompt, mode="text", parameters=parameters)
 	except Exception as e:
 		print(e)
 		raise gr.Error(e)
@@ -182,7 +190,7 @@ async def actions_gen(
 		[side_char_age1, side_char_age2, side_char_age3],
 		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
-	prompt = palm_prompts['story_gen']['actions_gen'].format(
+	prompt = prompts['story_gen']['actions_gen'].format(
 		genre=genre, place=place, mood=mood,
 		main_char_name=main_char_name,
 		main_char_job=main_char_job,
@@ -225,8 +233,11 @@ async def first_story_gen(
 	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
-	cur_cursor_idx=None
+	cur_cursor_idx=None,
+	llm_type="PaLM"
 ):
+	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+
 	cur_side_chars = 1
 
 	side_char_prompt = utils.add_side_character(
@@ -236,7 +247,7 @@ async def first_story_gen(
 		[side_char_age1, side_char_age2, side_char_age3],
 		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
-	prompt = palm_prompts['story_gen']['first_story_gen'].format(
+	prompt = prompts['story_gen']['first_story_gen'].format(
 		genre=genre, place=place, mood=mood,
 		main_char_name=main_char_name,
 		main_char_job=main_char_job,
@@ -317,12 +328,12 @@ def video_gen(
 
 
 def image_gen(
-	genre, place, mood, title, story_content, cursors, cur_cursor
+	genre, place, mood, title, story_content, cursors, cur_cursor, llm_type="PaLM"
 ):
-	# generate prompts for background image with PaLM
+	# generate prompts for background image with LLM
 	for _ in range(3):
 		try:
-			prompt, neg_prompt = img_maker.generate_background_prompts(genre, place, mood, title, "", story_content)
+			prompt, neg_prompt = img_maker.generate_background_prompts(genre, place, mood, title, "", story_content, llm_type)
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
 			break
@@ -350,12 +361,12 @@ def image_gen(
 
 
 def audio_gen(
-	genre, place, mood, title, story_content, cursors, cur_cursor
+	genre, place, mood, title, story_content, cursors, cur_cursor, llm_type="PaLM"
 ):
-	# generate prompt for background music with PaLM
+	# generate prompt for background music with LLM
 	for _ in range(3):
 		try:
-			prompt = bgm_maker.generate_prompt(genre, place, mood, title, "", story_content)
+			prompt = bgm_maker.generate_prompt(genre, place, mood, title, "", story_content, llm_type)
 			print(f"Music Prompt: {prompt}")
 			break
 		except Exception as e:

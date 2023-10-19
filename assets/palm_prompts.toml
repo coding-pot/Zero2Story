@@ -73,6 +73,11 @@ summarize = """Summarize the text below
 {stories}
 
 """
+title="""what would be the title of the story below? be specific and creative.
+
+{stories}
+
+title: """
 
 [chat_gen]
 chapter_title_ctx = """

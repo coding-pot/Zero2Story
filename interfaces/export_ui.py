@@ -1,20 +1,20 @@
 import gradio as gr
 from templates import parser
 from interfaces import utils
-from modules import palmchat
+from modules import get_llm_factory
 
 template_file = "templates/basic.jinja"
 
-async def title_gen(cursors):
+async def title_gen(cursors, llm_type="PaLM"):
     stories = ""
     for cursor in cursors:
         stories = stories + cursor["story"]
-  
-    prompt = f"""what would be the title of the story below? be specific and creative.
+    
+    factory = get_llm_factory(llm_type)
+    prompts = factory.create_prompt_manager().prompts
+    llm_service = factory.create_llm_service()
 
-{stories}
-
-title: """
+    prompt = prompts['story_gen']['title'].format(stories=stories)
 
     parameters = {
 		'model': 'models/text-bison-001',
@@ -24,7 +24,7 @@ title: """
 		'top_p': 1,
 		'max_output_tokens': 4096,
 	}    	
-    _, title = await palmchat.gen_text(prompt, mode="text", parameters=parameters)
+    _, title = await llm_service.gen_text(prompt, mode="text", parameters=parameters)
     return title
 
 def export(

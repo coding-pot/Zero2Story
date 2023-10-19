@@ -1,12 +1,7 @@
 import re
 import gradio as gr
 from interfaces import utils
-from modules import(
-	palmchat,
-	palm_prompts,
-)
-
-print(palm_prompts)
+from modules import get_llm_factory
 
 async def plot_gen(
 	temperature,
@@ -16,7 +11,10 @@ async def plot_gen(
 	side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
 	side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
+	llm_type="PaLM"
 ):
+	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+
 	side_char_prompt = utils.add_side_character(
 		[side_char_enable1, side_char_enable2, side_char_enable3],
 		[side_char_name1, side_char_name2, side_char_name3],
@@ -24,7 +22,7 @@ async def plot_gen(
 		[side_char_age1, side_char_age2, side_char_age3],
 		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
-	prompt = palm_prompts['plot_gen']['main_plot_gen'].format(
+	prompt = prompts['plot_gen']['main_plot_gen'].format(
 		genre=genre, place=place, mood=mood,
 		main_char_name=main_char_name,
 		main_char_job=main_char_job,
@@ -64,8 +62,11 @@ async def first_story_gen(
 	side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
 	side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
-	cursors, cur_cursor
+	cursors, cur_cursor,
+	llm_type="PaLM"
 ):
+	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+
 	side_char_prompt = utils.add_side_character(
 		[side_char_enable1, side_char_enable2, side_char_enable3],
 		[side_char_name1, side_char_name2, side_char_name3],
@@ -73,7 +74,7 @@ async def first_story_gen(
 		[side_char_age1, side_char_age2, side_char_age3],
 		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
-	prompt = palm_prompts['plot_gen']['first_story_gen'].format(
+	prompt = prompts['plot_gen']['first_story_gen'].format(
 		genre=genre, place=place, mood=mood,
 		main_char_name=main_char_name,
 		main_char_job=main_char_job,

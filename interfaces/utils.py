@@ -3,9 +3,7 @@ import json
 import string
 import random
 
-from modules import (
-	palmchat, palm_prompts,
-)
+from modules.llms import get_llm_factory
 
 from pingpong.context import CtxLastWindowStrategy
 
@@ -23,12 +21,14 @@ def add_side_character_to_export(
 
 	return characters
 
-def add_side_character(enable, name, age, personality, job):
+def add_side_character(enable, name, age, personality, job, llm_type="PaLM"):
+	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+
 	cur_side_chars = 1
 	prompt = ""
 	for idx in range(len(enable)):
 		if enable[idx]:
-			prompt += palm_prompts['story_gen']['add_side_character'].format(
+			prompt += prompts['story_gen']['add_side_character'].format(
 										cur_side_chars=cur_side_chars,
 										name=name[idx],
 										job=job[idx],
@@ -58,15 +58,17 @@ def parse_first_json_code_snippet(code_snippet):
 	finally:
 		return json_parsed_string
 
-async def retry_until_valid_json(prompt, parameters=None):
+async def retry_until_valid_json(prompt, parameters=None, llm_type="PaLM"):
 	response_json = None
+	factory = get_llm_factory(llm_type)
+	llm_service = factory.create_llm_service()
 
 	for _ in range(3):
 		try:
-			response, response_txt = await palmchat.gen_text(prompt, mode="text", parameters=parameters)
+			response, response_txt = await llm_service.gen_text(prompt, mode="text", parameters=parameters)
 			print(response_txt)
 		except Exception as e:
-			print("PaLM API has withheld a response due to content safety concerns. Retrying...")
+			print(f"{llm_type} API has withheld a response due to content safety concerns. Retrying...")
 			continue
 		
 		try:
@@ -77,7 +79,7 @@ async def retry_until_valid_json(prompt, parameters=None):
 			pass
 	
 	if len(response.filters) > 0:
-		raise ValueError("PaLM API has withheld a response due to content safety concerns.")
+		raise ValueError(f"{llm_type} API has withheld a response due to content safety concerns.")
 	elif response_json is None:
 		print("=== Failed to generate valid JSON response. ===")
 		print(response_txt)
@@ -90,7 +92,10 @@ def build_prompts(ppm, win_size=3):
 	lws = CtxLastWindowStrategy(win_size)
 	return lws(dummy_ppm)
 
-async def get_chat_response(prompt, ctx=None):
+async def get_chat_response(prompt, ctx=None, llm_type="PaLM"):
+	factory = get_llm_factory(llm_type)
+	llm_service = factory.create_llm_service()
+
 	parameters = {
 		'model': 'models/chat-bison-001',
 		'candidate_count': 1,
@@ -100,7 +105,7 @@ async def get_chat_response(prompt, ctx=None):
 		'top_p': 0.9,
 	}
 	
-	_, response_txt = await palmchat.gen_text(
+	_, response_txt = await llm_service.gen_text(
 		prompt, 
 		parameters=parameters
 	)

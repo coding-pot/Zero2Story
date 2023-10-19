@@ -14,13 +14,8 @@ from audiocraft.models import MusicGen
 from audiocraft.data.audio import audio_write
 from pydub import AudioSegment
 
-from .utils import (
-    set_all_seeds,
-)
-from .palmchat import (
-    palm_prompts,
-    gen_text,
-)
+from .utils import set_all_seeds
+from modules.llms import get_llm_factory
 
 class MusicMaker:
     # TODO: DocString...
@@ -93,7 +88,9 @@ class MusicMaker:
 
 
     def generate_prompt(self, genre:str, place:str, mood:str,
-                              title:str, chapter_title:str, chapter_plot:str) -> str:
+                              title:str, chapter_title:str, chapter_plot:str,
+                              llm_type:str="PaLM",
+                        ) -> str:
         """Generate a prompt for a background music based on given attributes.
 
         Args:
@@ -107,10 +104,13 @@ class MusicMaker:
         Returns:
             str: Generated prompt.
         """
+        factory = get_llm_factory(llm_type)
+        prompt_manager = factory.create_prompt_manager()
+        llm_service = factory.create_llm_service()
 
         # Generate prompts with PaLM
-        t = palm_prompts['music_gen']['gen_prompt']
-        q = palm_prompts['music_gen']['query']
+        t = prompt_manager.prompts['music_gen']['gen_prompt']
+        q = prompt_manager.prompts['music_gen']['query']
         query_string = t.format(input=q.format(genre=genre,
                                                place=place,
                                                mood=mood,
@@ -119,7 +119,7 @@ class MusicMaker:
                                                chapter_plot=chapter_plot))
         try:
             response, response_txt = asyncio.run(asyncio.wait_for(
-                                                    gen_text(query_string, mode="text", use_filter=False),
+                                                    llm_service.gen_text(query_string, mode="text", use_filter=False),
                                                     timeout=10)
                                                 )
         except asyncio.TimeoutError:
