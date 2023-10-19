@@ -1,22 +1,22 @@
 import gradio as gr
 
-from interfaces import utils
-from modules import (
-    palmchat, palm_prompts,
-)
-
 from pingpong import PingPong
+
+from interfaces import utils
+from modules.llms import get_llm_factory
 
 def rollback_last_ui(history):
     return history[:-1]
 
 
-def add_side_character(enable, name, age, personality, job):
+def add_side_character(enable, name, age, personality, job, llm_type='PaLM'):
+    prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+
     cur_side_chars = 1
     prompt = ""
     for idx in range(len(enable)):
         if enable[idx]:
-            prompt += palm_prompts['chat_gen']['add_side_character'].format(
+            prompt += prompts['chat_gen']['add_side_character'].format(
                                         cur_side_chars=cur_side_chars,
                                         name=name[idx],
                                         job=job[idx],
@@ -27,12 +27,14 @@ def add_side_character(enable, name, age, personality, job):
     return "\n" + prompt if prompt else ""
 
 
-def add_chapter_title_ctx(chapter_title, chapter_plot):
+def add_chapter_title_ctx(chapter_title, chapter_plot, llm_type='PaLM'):
+    prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+
     title_idx = 1
     prompt = ""
     for idx in range(len(chapter_title)):
         if chapter_title[idx] :
-            prompt += palm_prompts['chat_gen']['chapter_title_ctx'].format(
+            prompt += prompts['chat_gen']['chapter_title_ctx'].format(
                                         title_idx=title_idx,
                                         chapter_title=chapter_title[idx],
                                         chapter_plot=chapter_plot[idx],
@@ -51,7 +53,10 @@ async def chat(
     chapter1_title, chapter2_title, chapter3_title, chapter4_title,
     chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot,
     side_char_enable1, side_char_enable2, side_char_enable3,
+    llm_type='PaLM',
 ):
+    prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+
     chapter_title_ctx = add_chapter_title_ctx(
         [chapter1_title, chapter2_title, chapter3_title, chapter4_title],
         [chapter1_plot, chapter2_plot, chapter3_plot, chapter4_plot],
@@ -63,7 +68,7 @@ async def chat(
         [side_char_age1, side_char_age2, side_char_age3],
         [side_char_personality1, side_char_personality2, side_char_personality3],
     )
-    prompt = palm_prompts['chat_gen']['chat_context'].format(
+    prompt = prompts['chat_gen']['chat_context'].format(
         genre=genre, place=place, mood=mood,
         main_char_name=main_char_name,
         main_char_job=main_char_job,
@@ -112,8 +117,10 @@ async def chat_regen(chat_mode, chat_state):
         ppm.build_uis()
     )
 
-def chat_reset(chat_mode, chat_state):
-    chat_state[chat_mode] = palmchat.GradioPaLMChatPPManager()
+def chat_reset(chat_mode, chat_state, llm_type='PaLM'):
+    factory = get_llm_factory(llm_type)
+
+    chat_state[chat_mode] = factory.create_ui_pp_manager()
 
     return (
         "", 

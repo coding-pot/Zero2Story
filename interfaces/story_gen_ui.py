@@ -6,8 +6,9 @@ from gradio_client import Client
 from pathlib import Path
 
 from modules import (
-	ImageMaker, MusicMaker, merge_video, get_llm_factory
+	ImageMaker, MusicMaker, merge_video
 )
+from modules.llms import get_llm_factory
 from interfaces import utils
 
 from pingpong import PingPong

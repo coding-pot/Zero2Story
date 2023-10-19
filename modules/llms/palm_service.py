@@ -10,9 +10,9 @@ from pingpong.pingpong import PromptFmt
 from pingpong.pingpong import UIFmt
 from pingpong.gradio import GradioChatUIFmt
 
-from llms import (
+from modules.llms import (
     LLMFactory,
-    PromptFmt, PromptManager, PPManager, UIPPManager,
+    PromptFmt, PromptManager, PPManager, UIPPManager, LLMService
 )
 
 class PaLMFactory(LLMFactory):
@@ -58,7 +58,7 @@ class PaLMFactory(LLMFactory):
     def palm_api_key(self):
         return PaLMFactory._palm_api_key
     
-    @palm_api_key.setter:
+    @palm_api_key.setter
     def palm_api_key(self, palm_api_key: str):
         assert palm_api_key, "PaLM API Key is missing."
         PaLMFactory._palm_api_key = palm_api_key
@@ -102,18 +102,17 @@ class PaLMPromptManager(PromptManager):
     _lock = threading.Lock()
     _prompts = None
 
-    def __new__(cls, prompts_path, prompts_formatter):
+    def __new__(cls, prompts_path):
         if cls._instance is None:
             with cls._lock:
                 if not cls._instance:
                     cls._instance = super(PaLMPromptManager, cls).__new__(cls)
                     cls._instance.load_prompts(prompts_path)
-                    assert prompts_formatter, "Prompt formatter is missing."
         return cls._instance
 
     def load_prompts(self, prompts_path):
         self._prompts_path = prompts_path
-        reload_prompts()
+        self.reload_prompts()
 
     def reload_prompts(self):
         assert self.prompts_path, "Prompt path is missing."
@@ -152,7 +151,7 @@ class PaLMChatPPManager(PPManager):
         return results
 
 
-class GradioPaLMChatPPManager(UIPPManager):
+class GradioPaLMChatPPManager(UIPPManager, PaLMChatPPManager):
     def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
         if to_idx == -1 or to_idx >= len(self.pingpongs):
             to_idx = len(self.pingpongs)

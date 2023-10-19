@@ -1,7 +1,7 @@
 import gradio as gr
 from templates import parser
 from interfaces import utils
-from modules import get_llm_factory
+from modules.llms import get_llm_factory
 
 template_file = "templates/basic.jinja"
 

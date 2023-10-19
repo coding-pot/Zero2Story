@@ -10,9 +10,8 @@ from constants.init_values import (
 	genres, places, moods, jobs, random_names, default_character_images
 )
 
-from modules import (
-	ImageMaker, palmchat
-)
+from modules import ImageMaker
+from modules.llms import get_llm_factory
 
 from interfaces import utils
 
@@ -64,7 +63,7 @@ def gen_character_image(
   name, age, personality, job, 
   genre, place, mood, creative_mode
 ):
-	# generate prompts for character image with PaLM
+	# generate prompts for character image with LLM
 	for _ in range(3):
 		try:
 			prompt, neg_prompt = img_maker.generate_character_prompts(name, age, job, keywords=[personality, genre, place, mood], creative_mode=creative_mode)
@@ -120,17 +119,18 @@ def update_on_main_tabs(chat_state, evt: gr.SelectData):
     ppm = chat_state[chat_mode]
     return chat_mode, ppm.build_uis()
 
-def reset():
-	from modules.palmchat import GradioPaLMChatPPManager
-    
+def reset(llm_type="PaLM"):
+	factory = get_llm_factory(llm_type)
+	ui_pp_manager = factory.create_ui_pp_manager()
+
 	return (
 		[], # cursors
 		0, # cur_cursor
   
 		{
-				"setting_chat": GradioPaLMChatPPManager(),
-				"story_chat": GradioPaLMChatPPManager(),
-				"export_chat": GradioPaLMChatPPManager(),
+				"setting_chat": ui_pp_manager,
+				"story_chat": ui_pp_manager,
+				"export_chat": ui_pp_manager,
 		}, # chat_state
 		"setting_chat", # chat_mode
   
