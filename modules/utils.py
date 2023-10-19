@@ -12,7 +12,6 @@ from PIL import ImageFont
 
 import torch
 
-import google.generativeai as palm_api
 
 def set_all_seeds(random_seed: int) -> None:
     # TODO: DocString...
@@ -24,22 +23,6 @@ def set_all_seeds(random_seed: int) -> None:
     np.random.seed(random_seed)
     random.seed(random_seed)
     print(f"Using seed {random_seed}")
-
-
-def get_palm_api_key() -> str:
-    palm_api_key = os.getenv("PALM_API_KEY")
-
-    if palm_api_key is None:
-        with open('.palm_api_key.txt', 'r') as file:
-            palm_api_key = file.read().strip()
-
-    if not palm_api_key:
-        raise ValueError("PaLM API Key is missing.")
-    return palm_api_key
-
-
-def set_palm_api_key(palm_api_key:str = None) -> None:
-    palm_api.configure(api_key=(palm_api_key or get_palm_api_key()))
 
 
 def merge_video(image_path: str, audio_path: str, story_title:str = None) -> str:

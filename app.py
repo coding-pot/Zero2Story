@@ -12,14 +12,17 @@ from constants import desc
 from interfaces import (
     ui, chat_ui, story_gen_ui, view_change_ui, export_ui
 )
-from modules.palmchat import GradioPaLMChatPPManager
+from modules.llms import get_llm_factory
 
 with gr.Blocks(css=STYLE) as demo:
+	factory = get_llm_factory("PaLM") #TODO: Replace with selected LLM factory
+	ui_pp_manager = factory.create_ui_pp_manager()
+	
 	chat_mode = gr.State("setting_chat")
 	chat_state = gr.State({
-		"setting_chat": GradioPaLMChatPPManager(),
-		"story_chat": GradioPaLMChatPPManager(),
-		"export_chat": GradioPaLMChatPPManager(),
+		"setting_chat": ui_pp_manager,
+		"story_chat": ui_pp_manager,
+		"export_chat": ui_pp_manager,
 	})
  
 	cur_cursor = gr.State(0)

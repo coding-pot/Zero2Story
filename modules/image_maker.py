@@ -21,13 +21,8 @@ from diffusers import (
     DEISMultistepScheduler,
 )
 
-from .utils import (
-    set_all_seeds,
-)
-from .palmchat import (
-    palm_prompts,
-    gen_text,
-)
+from .utils import set_all_seeds
+from modules.llms import get_llm_factory
 
 _gpus = 0
 
@@ -62,6 +57,7 @@ class ImageMaker:
             safety (bool, optional): Whether to use the safety checker. Defaults to True.
             variant (str, optional): Variant of the model. Defaults to None.
             from_hf (bool, optional): Whether to load the model from HuggingFace. Defaults to False.
+            llm_type (str, optional): Type of the LLM. Defaults to 'PaLM'.
             device (str, optional): Device to use for the model. Defaults to None.
         """
 
@@ -169,7 +165,9 @@ class ImageMaker:
 
     def generate_character_prompts(self, character_name: str, age: str, job: str,
                                          keywords: list[str] = None, 
-                                         creative_mode: Literal['sd character', 'cartoon', 'realistic'] = 'cartoon') -> tuple[str, str]:
+                                         creative_mode: Literal['sd character', 'cartoon', 'realistic'] = 'cartoon',
+                                         llm_type: str = 'PaLM',
+                                  ) -> tuple[str, str]:
         """Generate positive and negative prompts for a character based on given attributes.
 
         Args:
@@ -177,24 +175,29 @@ class ImageMaker:
             age (str): Age of the character.
             job (str): The profession or job of the character.
             keywords (list[str]): List of descriptive words for the character.
+            creative_mode (Literal['sd character', 'cartoon', 'realistic']): Creative mode for the character.
+            llm_type (str, optional): Type of the LLM. Defaults to 'PaLM'.
 
         Returns:
             tuple[str, str]: A tuple of positive and negative prompts.
         """
+        factory = get_llm_factory(llm_type)
+        prompt_manager = factory.create_prompt_manager()
+        llm_service = factory.create_llm_service()
 
         positive = "" # add static prompt for character if needed (e.g. "chibi, cute, anime")
-        negative = palm_prompts['image_gen']['neg_prompt']
+        negative = prompt_manager.prompts['image_gen']['neg_prompt']
 
-        # Generate prompts with PaLM
-        t = palm_prompts['image_gen']['character']['gen_prompt']
-        q = palm_prompts['image_gen']['character']['query']
+        # Generate prompts with LLM
+        t = prompt_manager.prompts['image_gen']['character']['gen_prompt']
+        q = prompt_manager.prompts['image_gen']['character']['query']
         query_string = t.format(input=q.format(character_name=character_name,
                                                job=job,
                                                age=age,
                                                keywords=', '.join(keywords) if keywords else 'Nothing'))
         try:
             response, response_txt = asyncio.run(asyncio.wait_for(
-                                                    gen_text(query_string, mode="text", use_filter=False),
+                                                    llm_service.gen_text(query_string, mode="text", use_filter=False),
                                                     timeout=10)
                                                 )
         except asyncio.TimeoutError:
@@ -219,7 +222,9 @@ class ImageMaker:
 
 
     def generate_background_prompts(self, genre:str, place:str, mood:str,
-                                          title:str, chapter_title:str, chapter_plot:str) -> tuple[str, str]:
+                                          title:str, chapter_title:str, chapter_plot:str,
+                                          llm_type: str = 'PaLM',
+                                    ) -> tuple[str, str]:
         """Generate positive and negative prompts for a background image based on given attributes.
 
         Args:
@@ -229,17 +234,21 @@ class ImageMaker:
             title (str): Title of the story.
             chapter_title (str): Title of the chapter.
             chapter_plot (str): Plot of the chapter.
+            llm_type (str, optional): Type of the LLM. Defaults to 'PaLM'.
 
         Returns:
             tuple[str, str]: A tuple of positive and negative prompts.
         """
+        factory = get_llm_factory(llm_type)
+        prompt_manager = factory.create_prompt_manager()
+        llm_service = factory.create_llm_service()
 
         positive = "painting+++, anime+, catoon, watercolor, wallpaper, text---" # add static prompt for background if needed (e.g. "chibi, cute, anime")
-        negative = "realistic, human, character, people, photograph, 3d render, blurry, grayscale, oversaturated, " + palm_prompts['image_gen']['neg_prompt']
+        negative = "realistic, human, character, people, photograph, 3d render, blurry, grayscale, oversaturated, " + prompt_manager.prompts['image_gen']['neg_prompt']
 
         # Generate prompts with PaLM
-        t = palm_prompts['image_gen']['background']['gen_prompt']
-        q = palm_prompts['image_gen']['background']['query']
+        t = prompt_manager.prompts['image_gen']['background']['gen_prompt']
+        q = prompt_manager.prompts['image_gen']['background']['query']
         query_string = t.format(input=q.format(genre=genre,
                                                place=place,
                                                mood=mood,
@@ -248,7 +257,7 @@ class ImageMaker:
                                                chapter_plot=chapter_plot))
         try:
             response, response_txt = asyncio.run(asyncio.wait_for(
-                                                    gen_text(query_string, mode="text", use_filter=False),
+                                                    llm_service.gen_text(query_string, mode="text", use_filter=False),
                                                     timeout=10)
                                                 )
         except asyncio.TimeoutError:
