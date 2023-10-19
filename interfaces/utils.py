@@ -57,6 +57,8 @@ def parse_first_json_code_snippet(code_snippet):
 		json_code_snippet = code_snippet[json_start_index + 7:json_end_index]
 		json_parsed_string = json.loads(json_code_snippet, strict=False)
 	finally:
+		if json_parsed_string is None:
+			raise ValueError('No JSON code snippet found in string.')
 		return json_parsed_string
 
 async def retry_until_valid_json(prompt, parameters=None, llm_type="PaLM"):
@@ -102,15 +104,7 @@ def build_prompts(ppm, win_size=3):
 async def get_chat_response(prompt, ctx=None, llm_type="PaLM"):
 	factory = get_llm_factory(llm_type)
 	llm_service = factory.create_llm_service()
-
-	parameters = {
-		'model': 'models/chat-bison-001',
-		'candidate_count': 1,
-		'context': "" if ctx is None else ctx,
-		'temperature': 1.0,
-		'top_k': 50,
-		'top_p': 0.9,
-	}
+	parameters = llm_service.make_params(mode="chat", temperature=1.0, top_k=50, top_p=0.9)
 	
 	_, response_txt = await llm_service.gen_text(
 		prompt, 

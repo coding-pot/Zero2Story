@@ -21,10 +21,11 @@ palm_prompts = toml.load(Path('.') / 'assets' / 'palm_prompts.toml')
 class PaLMChatPromptFmt(PromptFmt):
     @classmethod
     def ctx(cls, context):
-        pass
+        warnings.warn("The 'palmchat' is deprecated and will not be supported in future versions.", DeprecationWarning, stacklevel=2)
 
     @classmethod
     def prompt(cls, pingpong, truncate_size):
+        warnings.warn("The 'palmchat' is deprecated and will not be supported in future versions.", DeprecationWarning, stacklevel=2)
         ping = pingpong.ping[:truncate_size]
         pong = pingpong.pong
         
@@ -51,6 +52,7 @@ class PaLMChatPromptFmt(PromptFmt):
 
 class PaLMChatPPManager(PPManager):
     def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=PaLMChatPromptFmt, truncate_size: int=None):
+        warnings.warn("The 'palmchat' is deprecated and will not be supported in future versions.", DeprecationWarning, stacklevel=2)
         results = []
         
         if to_idx == -1 or to_idx >= len(self.pingpongs):
@@ -63,6 +65,7 @@ class PaLMChatPPManager(PPManager):
 
 class GradioPaLMChatPPManager(PaLMChatPPManager):
     def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
+        warnings.warn("The 'palmchat' is deprecated and will not be supported in future versions.", DeprecationWarning, stacklevel=2)
         if to_idx == -1 or to_idx >= len(self.pingpongs):
             to_idx = len(self.pingpongs)
 
@@ -79,6 +82,7 @@ async def gen_text(
     parameters=None,
     use_filter=True
 ):
+    warnings.warn("The 'palmchat' is deprecated and will not be supported in future versions.", DeprecationWarning, stacklevel=2)
     if parameters is None:
         temperature = 1.0
         top_k = 40

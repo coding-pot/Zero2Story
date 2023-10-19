@@ -13,7 +13,9 @@ async def plot_gen(
 	side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	llm_type="PaLM"
 ):
-	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+	factory = get_llm_factory(llm_type)
+	prompts = factory.create_prompt_manager().prompts
+	llm_service = factory.create_llm_service()
 
 	side_char_prompt = utils.add_side_character(
 		[side_char_enable1, side_char_enable2, side_char_enable3],
@@ -32,14 +34,7 @@ async def plot_gen(
 	)
 	
 	print(f"generated prompt:\n{prompt}")
-	parameters = {
-		'model': 'models/text-bison-001',
-		'candidate_count': 1,
-		'temperature': temperature,
-		'top_k': 40,
-		'top_p': 1,
-		'max_output_tokens': 4096,
-	}
+	parameters = llm_service.make_params(mode="text", temperature=temperature, top_k=40, top_p=1.0, max_output_tokens=4096)
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
 	return (
@@ -65,7 +60,9 @@ async def first_story_gen(
 	cursors, cur_cursor,
 	llm_type="PaLM"
 ):
-	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
+	factory = get_llm_factory(llm_type)
+	prompts = factory.create_prompt_manager().prompts
+	llm_service = factory.create_llm_service()
 
 	side_char_prompt = utils.add_side_character(
 		[side_char_enable1, side_char_enable2, side_char_enable3],
@@ -90,14 +87,7 @@ async def first_story_gen(
 	)
 
 	print(f"generated prompt:\n{prompt}")
-	parameters = {
-		'model': 'models/text-bison-001',
-		'candidate_count': 1,
-		'temperature': 1,
-		'top_k': 40,
-		'top_p': 1,
-		'max_output_tokens': 4096,
-	}
+	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
 	chapter_title = response_json["chapter_title"]
