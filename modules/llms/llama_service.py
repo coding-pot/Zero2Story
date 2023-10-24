@@ -136,7 +136,6 @@ class LLaMAService(LLMService):
         self._hf_llama_api_key = None
         self._default_parameters_text = None
         self._default_parameters_chat = {
-                        'model': 'meta-llama/Llama-2-70b-chat-hf',
                         'temperature': 0.25,
                         'top_k': 50,
                         # 'top_p': 0.95,
@@ -195,7 +194,8 @@ class LLaMAService(LLMService):
                 'repetition_penalty': 1.2
             }
 
-        url = f'https://api-inference.huggingface.co/models/{hf_model}'
+        model = 'meta-llama/Llama-2-70b-chat-hf'
+        url = f'https://api-inference.huggingface.co/models/{model}'
         headers={
             'Authorization': f'Bearer {self._hf_llama_api_key}',
             'Content-type': 'application/json'
