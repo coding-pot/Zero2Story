@@ -79,7 +79,8 @@ class LLMService(metaclass=ABCMeta):
                           top_k=None,
                           top_p=None,
                           max_output_tokens=None,
-                          use_filter=True):
+                          use_filter=True,
+                          **kwargs):
         pass
     
     @abstractmethod

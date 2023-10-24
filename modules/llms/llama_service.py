@@ -1,5 +1,8 @@
 import os
 import threading
+import requests
+import sseclient
+import json
 import toml
 from pathlib import Path
 
@@ -37,12 +40,19 @@ class LLaMAFactory(LLMFactory):
 class LLaMAChatPromptFmt(PromptFmt):
     @classmethod
     def ctx(cls, context):
-        pass
+        if context is None or context == "":
+            return ""
+        else:
+            return f"""<<SYS>>
+{context}
+<</SYS>>
+"""
 
     @classmethod
     def prompt(cls, pingpong, truncate_size):
-        pass
-
+        ping = pingpong.ping[:truncate_size]
+        pong = "" if pingpong.pong is None else pingpong.pong[:truncate_size]
+        return f"""[INST] {ping} [/INST] {pong}"""
 
 class LLaMAPromptManager(PromptManager):
     _instance = None
@@ -82,29 +92,121 @@ class LLaMAPromptManager(PromptManager):
 
 
 class LLaMAChatPPManager(PPManager):
-    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=None, truncate_size: int=None):
-        pass
+    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=LLaMAChatPromptFmt, truncate_size: int=None):
+        if to_idx == -1 or to_idx >= len(self.pingpongs):
+            to_idx = len(self.pingpongs)
 
+        results = fmt.ctx(self.ctx)
+
+        for idx, pingpong in enumerate(self.pingpongs[from_idx:to_idx]):
+            results += fmt.prompt(pingpong, truncate_size=truncate_size)
+
+        return results
 
 class GradioLLaMAChatPPManager(UIPPManager, LLaMAChatPPManager):
     def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
-        pass
+        if to_idx == -1 or to_idx >= len(self.pingpongs):
+            to_idx = len(self.pingpongs)
+
+        results = []
+
+        for pingpong in self.pingpongs[from_idx:to_idx]:
+            results.append(fmt.ui(pingpong))
+
+        return results
 
 class LLaMAService(LLMService):
+    def __init__(self):
+        self._default_parameters_text = None
+        self._default_parameters_chat = {
+                        'model': 'meta-llama/Llama-2-70b-chat-hf',
+                        'temperature': 0.25,
+                        'top_k': 50,
+                        # 'top_p': 0.95,
+                        'repetition_penalty': 1.2,
+                        'do_sample': True,
+                        'return_full_text': False
+                    }
+            
     def make_params(self, mode="chat",
-                          temperature=None,
-                          candidate_count=None,
-                          top_k=None,
-                          top_p=None,
-                          max_output_tokens=None,
-                          use_filter=True):
-        pass
+                    temperature=None,
+                    candidate_count=None,
+                    top_k=None,
+                    top_p=None,
+                    max_output_tokens=None,
+                    use_filter=False):
+        parameters = None
+
+        if mode == "chat":
+            parameters = self._default_parameters_chat.copy()
+        elif mode == "text":
+            parameters = self._default_parameters_text.copy()
+        
+        if temperature is not None:
+            parameters['temperature'] = temperature
+        if candidate_count is not None:
+            parameters['candidate_count'] = candidate_count
+        if top_k is not None:
+            parameters['top_k'] = top_k
+        if max_output_tokens is not None and mode == "text":
+            parameters['max_new_tokens'] = max_output_tokens
+        if not use_filter and mode == "text":
+            for idx, _ in enumerate(parameters['safety_settings']):
+                parameters['safety_settings'][idx]['threshold'] = 4
+
+        return parameters
     
     async def gen_text(
         self,
         prompt,
         mode="chat", #chat or text
         parameters=None,
-        use_filter=True
+        use_filter=True,
+        **kwargs
     ):
-        pass
+        if "hf_token" not in kwargs:
+            raise EnvironmentError("Hugging Face Token is not set")
+        
+        hf_token = kwargs["hf_token"]
+        
+        stream_mode = False
+        if "stream" in kwargs:
+            stream_mode = kwargs['stream']
+        
+        if parameters is None:
+            parameters = {
+                'max_new_tokens': 512,
+                'do_sample': True,
+                'return_full_text': False,
+                'temperature': 1.0,
+                'top_k': 50,
+                'repetition_penalty': 1.2
+            }
+
+        url = f'https://api-inference.huggingface.co/models/{hf_model}'
+        headers={
+            'Authorization': f'Bearer {hf_token}',
+            'Content-type': 'application/json'
+        }
+        data = {
+            'inputs': prompt,
+            'stream': stream_mode,
+            'options': {
+                'use_cache': False,
+            },
+            'parameters': parameters
+        }
+
+        r = requests.post(
+            url,
+            headers=headers,
+            data=json.dumps(data),
+            stream=True
+        )
+
+        if stream_mode:
+            client = sseclient.SSEClient(r)
+            for event in client.events():
+                yield json.loads(event.data)['token']['text']
+        else:
+            yield json.loads(r.text)[0]["generated_text"]
