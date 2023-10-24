@@ -8,4 +8,9 @@ from .palm_service import (
     PaLMChatPromptFmt, PaLMPromptManager, PaLMChatPPManager, GradioPaLMChatPPManager, PaLMService,
 )
 
+from .llama_service import (
+    LLaMAFactory,
+    LLaMAChatPromptFmt, LLaMAPromptManager, LLaMAChatPPManager, GradioLLaMAChatPPManager, LLaMAService
+)
+
 from .utils import get_llm_factory

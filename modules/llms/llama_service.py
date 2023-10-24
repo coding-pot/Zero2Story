@@ -18,8 +18,10 @@ from modules.llms import (
 )
 
 class LLaMAFactory(LLMFactory):
-    def __init__(self):
-        pass
+    def __init__(self, hf_llama_api_key=None):
+        if not LLaMAFactory._hf_llama_api_key:
+            LLaMAFactory.load_hf_llama_api_key()
+            assert LLaMAFactory._hf_llama_api_key, "Hugging Face LLaMA API Key is missing."
 
     def create_prompt_format(self):
         return LLaMAChatPromptFmt()
@@ -34,8 +36,22 @@ class LLaMAFactory(LLMFactory):
         return GradioLLaMAChatPPManager()
     
     def create_llm_service(self):
-        return LLaMAService()
+        return LLaMAService(hf_llama_api_key=LLaMAFactory._hf_llama_api_key)
     
+    @classmethod
+    def load_hf_llama_api_key(cls, hf_llama_api_key: str=None):
+        if hf_llama_api_key:
+            cls._hf_llama_api_key = hf_llama_api_key
+        else:
+            hf_llama_api_key = os.getenv("HF_LLAMA_API_KEY")
+
+            if hf_llama_api_key is None:
+                with open('.hf_llama_api_key.txt', 'r') as file:
+                    hf_llama_api_key = file.read().strip()
+
+            if not hf_llama_api_key:
+                raise ValueError("Hugging Face LlaMA API Key is missing.")
+            cls._hf_llama_api_key = hf_llama_api_key
 
 class LLaMAChatPromptFmt(PromptFmt):
     @classmethod
@@ -116,7 +132,8 @@ class GradioLLaMAChatPPManager(UIPPManager, LLaMAChatPPManager):
         return results
 
 class LLaMAService(LLMService):
-    def __init__(self):
+    def __init__(self, hf_llama_api_key: str=None):
+        self._hf_llama_api_key = None
         self._default_parameters_text = None
         self._default_parameters_chat = {
                         'model': 'meta-llama/Llama-2-70b-chat-hf',
@@ -164,11 +181,6 @@ class LLaMAService(LLMService):
         use_filter=True,
         **kwargs
     ):
-        if "hf_token" not in kwargs:
-            raise EnvironmentError("Hugging Face Token is not set")
-        
-        hf_token = kwargs["hf_token"]
-        
         stream_mode = False
         if "stream" in kwargs:
             stream_mode = kwargs['stream']
@@ -185,7 +197,7 @@ class LLaMAService(LLMService):
 
         url = f'https://api-inference.huggingface.co/models/{hf_model}'
         headers={
-            'Authorization': f'Bearer {hf_token}',
+            'Authorization': f'Bearer {self._hf_llama_api_key}',
             'Content-type': 'application/json'
         }
         data = {
