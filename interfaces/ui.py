@@ -49,15 +49,6 @@ function get_random_name(cur_char_name, char_name1, char_name2, char_name3) {{
 def update_selected_char_image(evt: gr.EventData):
     return evt.value
 
-# def get_random_name(cur_char_name, char_name1, char_name2, char_name3):
-# 	tmp_random_names = copy.deepcopy(random_names)
-# 	tmp_random_names.remove(cur_char_name)
-# 	tmp_random_names.remove(char_name1)
-# 	tmp_random_names.remove(char_name2)
-# 	tmp_random_names.remove(char_name3)
-# 	return random.choice(tmp_random_names)
-
-
 def gen_character_image(
   gallery_images, 
   name, age, personality, job, 
