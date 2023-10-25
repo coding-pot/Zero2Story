@@ -46,10 +46,11 @@ function get_random_name(cur_char_name, char_name1, char_name2, char_name3) {{
 }}
 """
 
-def update_selected_char_image(evt: gr.EventData):
-    return evt.value
+def update_selected_char_image(evt: gr.SelectData):
+	return evt.value[0]
 
 def gen_character_image(
+  llm_factory,	
   gallery_images, 
   name, age, personality, job, 
   genre, place, mood, creative_mode
@@ -57,7 +58,9 @@ def gen_character_image(
 	# generate prompts for character image with LLM
 	for _ in range(3):
 		try:
-			prompt, neg_prompt = img_maker.generate_character_prompts(name, age, job, keywords=[personality, genre, place, mood], creative_mode=creative_mode)
+			prompt, neg_prompt = img_maker.generate_character_prompts(
+				name, age, job, keywords=[personality, genre, place, mood], creative_mode=creative_mode, llm_factory=llm_factory
+			)
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
 			break
