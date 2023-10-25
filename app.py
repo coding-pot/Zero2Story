@@ -18,6 +18,7 @@ with gr.Blocks(css=STYLE) as demo:
 	factory = get_llm_factory("PaLM") #TODO: Replace with selected LLM factory
 	ui_pp_manager = factory.create_ui_pp_manager()
 	
+	llm = gr.State(get_llm_factory("PaLM"))
 	chat_mode = gr.State("setting_chat")
 	chat_state = gr.State({
 		"setting_chat": ui_pp_manager,
@@ -273,8 +274,9 @@ with gr.Blocks(css=STYLE) as demo:
 
 	with gr.Accordion("Control Panel") as control_panel:
 		with gr.Column(elem_classes=["group-border"]):
-			llm_type = gr.Radio(value="PaLM", choices=["PaLM", "ChatGPT", "LLaMA2"], label="LLM Model Type")
+			llm_type = gr.Radio(value="PaLM", choices=["PaLM", "ChatGPT", "LLaMA2"], interactive=True, label="LLM Model Type")
 			llm_api_key = gr.Textbox(placeholder="enter authorized key for the chosen llm model", type="password", label="API Key")
+			llm_type_confirm_btn = gr.Button("update llm type", elem_classes=["control-button-green"])
 
 	with gr.Accordion("💬", open=False, elem_id="chat-section") as chat_section:
 		with gr.Column(scale=1):
@@ -288,6 +290,12 @@ with gr.Blocks(css=STYLE) as demo:
 			with gr.Row(elem_id="chat-buttons"):
 				regen_btn = gr.Button("regen", interactive=False, elem_classes=["control-button"])
 				clear_btn = gr.Button("clear", elem_classes=["control-button"])
+
+	llm_type_confirm_btn.click(
+		lambda llm_type, api_key: get_llm_factory(llm_type, api_key),
+		inputs=[llm_type, llm_api_key],
+		outputs=[llm]
+	)
 
 	pre_to_setup_btn.click(
 		fn=None, 
@@ -565,25 +573,25 @@ with gr.Blocks(css=STYLE) as demo:
 	gen_char_btn1.click(
 		ui.gen_character_image,
 		inputs=[
-			gallery_images1, name_txt1, age_dd1, personality_dd1, job_dd1, genre_dd, place_dd, mood_dd, creative_dd1],
+			llm, gallery_images1, name_txt1, age_dd1, personality_dd1, job_dd1, genre_dd, place_dd, mood_dd, creative_dd1],
 		outputs=[char_gallery1, gallery_images1, selected_main_char_image1]
 	)
 
 	gen_char_btn2.click(
 		ui.gen_character_image,
-		inputs=[gallery_images2, name_txt2, age_dd2, personality_dd2, job_dd2, genre_dd, place_dd, mood_dd, creative_dd2],
+		inputs=[llm, gallery_images2, name_txt2, age_dd2, personality_dd2, job_dd2, genre_dd, place_dd, mood_dd, creative_dd2],
 		outputs=[char_gallery2, gallery_images2, selected_side_char_image1]
 	)
 
 	gen_char_btn3.click(
 		ui.gen_character_image,
-		inputs=[gallery_images3, name_txt3, age_dd3, personality_dd3, job_dd3, genre_dd, place_dd, mood_dd, creative_dd3],
+		inputs=[llm, gallery_images3, name_txt3, age_dd3, personality_dd3, job_dd3, genre_dd, place_dd, mood_dd, creative_dd3],
 		outputs=[char_gallery3, gallery_images3, selected_side_char_image2]
 	)
 
 	gen_char_btn4.click(
 		ui.gen_character_image,
-		inputs=[gallery_images4, name_txt4, age_dd4, personality_dd4, job_dd4, genre_dd, place_dd, mood_dd, creative_dd4],
+		inputs=[llm, gallery_images4, name_txt4, age_dd4, personality_dd4, job_dd4, genre_dd, place_dd, mood_dd, creative_dd4],
 		outputs=[char_gallery4, gallery_images4, selected_side_char_image3]
 	)
 
