@@ -65,7 +65,7 @@ def generate_zip(
 	side_char_enable3, side_char_img3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
     base_name = utils.id_generator(size=10)
-    output_filename = f"{base_name}.tar.gz"
+    output_filename = base_name
     base_foldername = base_name
     asset_foldername = f"{base_foldername}/assets"
     html_filename = f"{base_foldername}/output.html"
@@ -148,6 +148,6 @@ def generate_zip(
     shutil.rmtree(base_foldername)
     
     return gr.update(
-        value=output_filename,
+        value=f"{output_filename}.tar",
         visible=True
     )
