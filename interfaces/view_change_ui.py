@@ -1,17 +1,5 @@
 import gradio as gr
     
-def move_to_next_view():
-    return (
-        gr.update(visible=False),
-        gr.update(visible=True),
-    )
-    
-def back_to_previous_view():
-    return (
-        gr.update(visible=True),
-        gr.update(visible=False),
-    )
-
 # pre_phase: False, background_setup_phase: True
 pre_to_setup_js = """
 function pre_to_setup() {

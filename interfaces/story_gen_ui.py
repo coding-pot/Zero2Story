@@ -23,6 +23,7 @@ video_gen_client_url = None # e.g. "https://0447df3cf5f7c49c46.gradio.live"
 
 
 async def update_story_gen(
+	llm_factory,
 	cursors, cur_cursor_idx,
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -32,6 +33,7 @@ async def update_story_gen(
 ):
     if len(cursors) == 1:
         return await first_story_gen(
+			llm_factory,
 			cursors,
 			genre, place, mood,
 			main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -42,6 +44,7 @@ async def update_story_gen(
 		)
     else:
         return await next_story_gen(
+			llm_factory,
 			cursors,
 			None,
 			genre, place, mood,
@@ -53,6 +56,7 @@ async def update_story_gen(
 		)
 
 async def next_story_gen(
+	llm_factory,
 	cursors,
 	action,
 	genre, place, mood,
@@ -61,11 +65,9 @@ async def next_story_gen(
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,	
 	cur_cursor_idx=None,
-	llm_type="PaLM"
 ):
-	factory = get_llm_factory(llm_type)
-	prompts = factory.create_prompt_manager().prompts
-	llm_service = factory.create_llm_service()
+	prompts = llm_factory.create_prompt_manager().prompts
+	llm_service = llm_factory.create_llm_service()
 
 	stories = ""
 	cur_side_chars = 1
@@ -132,6 +134,7 @@ async def next_story_gen(
 	)
 
 async def actions_gen(
+	llm_factory,
 	cursors,
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -139,11 +142,9 @@ async def actions_gen(
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	cur_cursor_idx=None,
-	llm_type="PaLM"
 ):
-	factory = get_llm_factory(llm_type)
-	prompts = factory.create_prompt_manager().prompts
-	llm_service = factory.create_llm_service()
+	prompts = llm_factory.create_prompt_manager().prompts
+	llm_service = llm_factory.create_llm_service()
 
 	stories = ""
 	cur_side_chars = 1
@@ -199,6 +200,7 @@ async def actions_gen(
 	)
 
 async def first_story_gen(
+	llm_factory,
 	cursors,
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -206,11 +208,9 @@ async def first_story_gen(
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	cur_cursor_idx=None,
-	llm_type="PaLM"
 ):
-	factory = get_llm_factory(llm_type)
-	prompts = factory.create_prompt_manager().prompts
-	llm_service = factory.create_llm_service()
+	prompts = llm_factory.create_prompt_manager().prompts
+	llm_service = llm_factory.create_llm_service()
 
 	cur_side_chars = 1
 
@@ -294,12 +294,15 @@ def video_gen(
 
 
 def image_gen(
-	genre, place, mood, title, story_content, cursors, cur_cursor, llm_type="PaLM"
+	llm_factory,
+	genre, place, mood, title, story_content, cursors, cur_cursor
 ):
 	# generate prompts for background image with LLM
 	for _ in range(3):
 		try:
-			prompt, neg_prompt = img_maker.generate_background_prompts(genre, place, mood, title, "", story_content, llm_type)
+			prompt, neg_prompt = img_maker.generate_background_prompts(
+				genre, place, mood, title, "", story_content, llm_factory=llm_factory
+			)
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
 			break
@@ -327,12 +330,15 @@ def image_gen(
 
 
 def audio_gen(
-	genre, place, mood, title, story_content, cursors, cur_cursor, llm_type="PaLM"
+	llm_factory,
+	genre, place, mood, title, story_content, cursors, cur_cursor
 ):
 	# generate prompt for background music with LLM
 	for _ in range(3):
 		try:
-			prompt = bgm_maker.generate_prompt(genre, place, mood, title, "", story_content, llm_type)
+			prompt = bgm_maker.generate_prompt(
+				genre, place, mood, title, "", story_content, llm_factory=llm_factory
+			)
 			print(f"Music Prompt: {prompt}")
 			break
 		except Exception as e:

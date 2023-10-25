@@ -22,8 +22,7 @@ from diffusers import (
 )
 
 from .utils import set_all_seeds
-from modules.llms import get_llm_factory
-
+from modules.llms import LLMFactory
 _gpus = 0
 
 class ImageMaker:
@@ -166,7 +165,7 @@ class ImageMaker:
     def generate_character_prompts(self, character_name: str, age: str, job: str,
                                          keywords: list[str] = None, 
                                          creative_mode: Literal['sd character', 'cartoon', 'realistic'] = 'cartoon',
-                                         llm_type: str = 'PaLM',
+                                         llm_factory: LLMFactory=None,
                                   ) -> tuple[str, str]:
         """Generate positive and negative prompts for a character based on given attributes.
 
@@ -181,9 +180,8 @@ class ImageMaker:
         Returns:
             tuple[str, str]: A tuple of positive and negative prompts.
         """
-        factory = get_llm_factory(llm_type)
-        prompt_manager = factory.create_prompt_manager()
-        llm_service = factory.create_llm_service()
+        prompt_manager = llm_factory.create_prompt_manager()
+        llm_service = llm_factory.create_llm_service()
 
         positive = "" # add static prompt for character if needed (e.g. "chibi, cute, anime")
         negative = prompt_manager.prompts['image_gen']['neg_prompt']
@@ -223,7 +221,7 @@ class ImageMaker:
 
     def generate_background_prompts(self, genre:str, place:str, mood:str,
                                           title:str, chapter_title:str, chapter_plot:str,
-                                          llm_type: str = 'PaLM',
+                                          llm_factory: LLMFactory=None,
                                     ) -> tuple[str, str]:
         """Generate positive and negative prompts for a background image based on given attributes.
 
@@ -239,9 +237,8 @@ class ImageMaker:
         Returns:
             tuple[str, str]: A tuple of positive and negative prompts.
         """
-        factory = get_llm_factory(llm_type)
-        prompt_manager = factory.create_prompt_manager()
-        llm_service = factory.create_llm_service()
+        prompt_manager = llm_factory.create_prompt_manager()
+        llm_service = llm_factory.create_llm_service()
 
         positive = "painting+++, anime+, catoon, watercolor, wallpaper, text---" # add static prompt for background if needed (e.g. "chibi, cute, anime")
         negative = "realistic, human, character, people, photograph, 3d render, blurry, grayscale, oversaturated, " + prompt_manager.prompts['image_gen']['neg_prompt']

@@ -5,14 +5,13 @@ from modules.llms import get_llm_factory
 
 template_file = "templates/basic.jinja"
 
-async def title_gen(cursors, llm_type="PaLM"):
+async def title_gen(llm_factory, cursors):
     stories = ""
     for cursor in cursors:
         stories = stories + cursor["story"]
     
-    factory = get_llm_factory(llm_type)
-    prompts = factory.create_prompt_manager().prompts
-    llm_service = factory.create_llm_service()
+    prompts = llm_factory.create_prompt_manager().prompts
+    llm_service = llm_factory.create_llm_service()
 
     prompt = prompts['story_gen']['title'].format(stories=stories)
 
