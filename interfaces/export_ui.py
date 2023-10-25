@@ -7,6 +7,7 @@ from interfaces import utils
 from modules.llms import get_llm_factory
 
 template_file = "templates/basic.jinja"
+export_template_file = "templates/basic_export.jinja"
 
 async def title_gen(llm_factory, cursors):
     stories = ""
@@ -92,18 +93,24 @@ def generate_zip(
     # - create character info based on copies
     characters_copy = [
         {
-            'img': main_char_img_copy,
+            'img': os.path.join(*(main_char_img_copy.split(os.path.sep)[1:])),
             'name': main_char_name,
         }
     ]
     utils.add_side_character_to_export(
-        characters_copy, side_char_enable1, side_char_img1_copy, side_char_name1, side_char_age1, side_char_personality1, side_char_job1
+        characters_copy, side_char_enable1, 
+        os.path.join(*(side_char_img1_copy.split(os.path.sep)[1:])), 
+        side_char_name1, side_char_age1, side_char_personality1, side_char_job1
     )
     utils.add_side_character_to_export(
-        characters_copy, side_char_enable2, side_char_img2_copy, side_char_name2, side_char_age2, side_char_personality2, side_char_job2
+        characters_copy, side_char_enable2, 
+        os.path.join(*(side_char_img2_copy.split(os.path.sep)[1:])),
+        side_char_name2, side_char_age2, side_char_personality2, side_char_job2
     )
     utils.add_side_character_to_export(
-        characters_copy, side_char_enable3, side_char_img3_copy, side_char_name3, side_char_age3, side_char_personality3, side_char_job3
+        characters_copy, side_char_enable3, 
+        os.path.join(*(side_char_img3_copy.split(os.path.sep)[1:])),
+        side_char_name3, side_char_age3, side_char_personality3, side_char_job3
     )
     
     # - copy any medias in the cursors(video, audio, img)
@@ -113,23 +120,23 @@ def generate_zip(
             video_filename = cursor["video"]
             video_filename_copy = f"{asset_foldername}/{os.path.basename(video_filename)}"
             shutil.copyfile(video_filename, video_filename_copy)
-            cursor["video"] = video_filename_copy
+            cursor["video"] = os.path.join(*(video_filename_copy.split(os.path.sep)[1:]))
         
         if "audio" in cursor:
             audio_filename = cursor["audio"]
             audio_filename_copy = f"{asset_foldername}/{os.path.basename(audio_filename)}"
             shutil.copyfile(audio_filename, audio_filename_copy)
-            cursor["audio"] = audio_filename_copy
+            cursor["audio"] = os.path.join(*(audio_filename_copy.split(os.path.sep)[1:]))
         
         if "img" in cursor:
             img_filename = cursor["img"]
             img_filename_copy = f"{asset_foldername}/{os.path.basename(img_filename)}"
             shutil.copyfile(img_filename, img_filename_copy)
-            cursor["img"] = img_filename_copy
+            cursor["img"] = os.path.join(*(img_filename_copy.split(os.path.sep)[1:]))
 
     # save constructed HTML as file
     html_as_string = parser.gen_from_file(
-        template_file,
+        export_template_file,
         kwargs={
             "title": title,
             "characters": characters_copy,
