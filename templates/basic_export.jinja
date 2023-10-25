@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+#title {
+	color: blue;
+	text-align: center;
+	margin-bottom: 50px;
+}
+
+video, audio {
+	display: block;
+	width: 70%;
+	margin: auto !important;
+}
+
+audio {
+	padding-top: 10px !important;
+}
+
+#story-body {
+	padding-top: 20px;
+	width: 50%;
+	margin: auto;
+}
+
+#story-body > div > img {
+	width: 100%;
+}
+
+#characters {
+	text-align: center;
+	display: flex;
+	width: 40%;
+	margin: auto;
+}
+
+.character {
+	float: left;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.character p {
+	text-align: center;
+}
+
+.paragraphs {
+	text-align: justify;
+	padding-top: 50px;
+}
+
+</style>
+</head>
+<body>
+	<h1 id="title">
+		{{ title }}
+	</h1>
+
+	<div id="characters">
+	{% for character in characters %}
+		<div class="character">
+			<img src="./{{ character['img'] }}" />
+			<p>{{ character['name'] }}</p>
+		</div>
+	{% endfor %}
+	</div>
+
+	<div></div>
+
+	<div id="story-body">
+	{% for item in items %}
+	<div>
+	{%    if 'video' in item %}
+		<video controls>
+			<source src="./{{ item['video'] }}" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	{%    else %}
+	{%        if 'img' in item %}
+		<img class="story-img" src="./{{ item['img'] }}" />
+	{%        endif %}
+	{%        if 'audio' in item %}
+		<audio controls>
+			<source src="./{{ item['audio'] }}" type="audio/wav">
+			Your browser does not support the audio element.
+		</audio>
+	{%        endif %}
+	{% endif %}
+
+	<p class="paragraphs">
+	{{ item['story'] }}
+	</p>
+	</div>
+	{% endfor %}
+
+	</div>
+</body>
+</html>
