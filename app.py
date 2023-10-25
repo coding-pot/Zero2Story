@@ -271,6 +271,8 @@ with gr.Blocks(css=STYLE) as demo:
 		with gr.Row():
 			restart_from_export_view_btn = gr.Button("start over", elem_classes=["wrap", "control-button"])
 			export_to_file_btn = gr.Button("Download as ZIP file", elem_classes=["wrap", "control-button"], scale=2)
+   
+		export_download_file = gr.File(label="export downloader", visible=True)
 
 	with gr.Accordion("Control Panel") as control_panel:
 		with gr.Column(elem_classes=["group-border"]):
@@ -363,6 +365,20 @@ with gr.Blocks(css=STYLE) as demo:
 		],
 		outputs=[
 			export_html
+		]
+	)
+	export_to_file_btn.click(
+		export_ui.generate_zip,
+		inputs=[
+			title_txt,
+			cursors, 
+			selected_main_char_image1, name_txt1, age_dd1, personality_dd1, job_dd1,
+			side_char_enable_ckb1, selected_side_char_image1, name_txt2, age_dd2, personality_dd2, job_dd2,
+			side_char_enable_ckb2, selected_side_char_image2, name_txt3, age_dd3, personality_dd3, job_dd3,
+			side_char_enable_ckb3, selected_side_char_image3, name_txt4, age_dd4, personality_dd4, job_dd4,			
+		],
+		outputs=[
+			export_download_file
 		]
 	)
  
