@@ -183,4 +183,12 @@ textarea {
 .no-label-radio > span {
   display: none;
 }
+
+.group-border {
+  padding: 10px;
+  border-width: 1px;
+  border-radius: 10px;
+  border-color: gray;
+  border-style: dashed;
+}
 """
