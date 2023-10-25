@@ -341,7 +341,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 	title_gen_btn.click(
 		export_ui.title_gen,
-		inputs=[cursors],
+		inputs=[llm, cursors],
 		outputs=[title_txt]
 	)
 
@@ -443,7 +443,8 @@ with gr.Blocks(css=STYLE) as demo:
 		]
 	).then(
 		story_gen_ui.first_story_gen,
-		inputs=[			
+		inputs=[
+			llm,	
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -458,6 +459,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.actions_gen,
 		inputs=[
+			llm,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -493,6 +495,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.actions_gen,
 		inputs=[
+			llm,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -528,6 +531,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.update_story_gen,
 		inputs=[
+			llm,
 			cursors, cur_cursor,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -541,6 +545,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.actions_gen,
 		inputs=[
+			llm,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -745,6 +750,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.next_story_gen,
 		inputs=[
+			llm,
 			cursors,
 			action_btn1,
 			genre_dd, place_dd, mood_dd, 
@@ -762,6 +768,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.actions_gen,
 		inputs=[
+			llm,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -797,6 +804,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.next_story_gen,
 		inputs=[
+			llm,
 			cursors,
 			action_btn2,
 			genre_dd, place_dd, mood_dd, 
@@ -814,6 +822,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.actions_gen,
 		inputs=[
+			llm,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -849,6 +858,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.next_story_gen,
 		inputs=[
+			llm,
 			cursors,
 			action_btn3,
 			genre_dd, place_dd, mood_dd, 
@@ -866,6 +876,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.actions_gen,
 		inputs=[
+			llm,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -901,6 +912,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.next_story_gen,
 		inputs=[
+			llm,
 			cursors,
 			custom_action_txt,
 			genre_dd, place_dd, mood_dd, 
@@ -918,6 +930,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.actions_gen,
 		inputs=[
+			llm,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
