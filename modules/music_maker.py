@@ -15,7 +15,7 @@ from audiocraft.data.audio import audio_write
 from pydub import AudioSegment
 
 from .utils import set_all_seeds
-from modules.llms import get_llm_factory
+from modules.llms import LLMFactory
 
 class MusicMaker:
     # TODO: DocString...
@@ -89,7 +89,7 @@ class MusicMaker:
 
     def generate_prompt(self, genre:str, place:str, mood:str,
                               title:str, chapter_title:str, chapter_plot:str,
-                              llm_type:str="PaLM",
+                              llm_factory: LLMFactory=None,
                         ) -> str:
         """Generate a prompt for a background music based on given attributes.
 
@@ -104,9 +104,8 @@ class MusicMaker:
         Returns:
             str: Generated prompt.
         """
-        factory = get_llm_factory(llm_type)
-        prompt_manager = factory.create_prompt_manager()
-        llm_service = factory.create_llm_service()
+        prompt_manager = llm_factory.create_prompt_manager()
+        llm_service = llm_factory.create_llm_service()
 
         # Generate prompts with PaLM
         t = prompt_manager.prompts['music_gen']['gen_prompt']

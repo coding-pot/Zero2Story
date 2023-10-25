@@ -221,7 +221,7 @@ class ImageMaker:
 
     def generate_background_prompts(self, genre:str, place:str, mood:str,
                                           title:str, chapter_title:str, chapter_plot:str,
-                                          llm_type: str = 'PaLM',
+                                          llm_factory: LLMFactory=None,
                                     ) -> tuple[str, str]:
         """Generate positive and negative prompts for a background image based on given attributes.
 
@@ -237,9 +237,8 @@ class ImageMaker:
         Returns:
             tuple[str, str]: A tuple of positive and negative prompts.
         """
-        factory = get_llm_factory(llm_type)
-        prompt_manager = factory.create_prompt_manager()
-        llm_service = factory.create_llm_service()
+        prompt_manager = llm_factory.create_prompt_manager()
+        llm_service = llm_factory.create_llm_service()
 
         positive = "painting+++, anime+, catoon, watercolor, wallpaper, text---" # add static prompt for background if needed (e.g. "chibi, cute, anime")
         negative = "realistic, human, character, people, photograph, 3d render, blurry, grayscale, oversaturated, " + prompt_manager.prompts['image_gen']['neg_prompt']

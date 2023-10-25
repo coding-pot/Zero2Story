@@ -294,12 +294,15 @@ def video_gen(
 
 
 def image_gen(
-	genre, place, mood, title, story_content, cursors, cur_cursor, llm_type="PaLM"
+	llm_factory,
+	genre, place, mood, title, story_content, cursors, cur_cursor
 ):
 	# generate prompts for background image with LLM
 	for _ in range(3):
 		try:
-			prompt, neg_prompt = img_maker.generate_background_prompts(genre, place, mood, title, "", story_content, llm_type)
+			prompt, neg_prompt = img_maker.generate_background_prompts(
+				genre, place, mood, title, "", story_content, llm_factory=llm_factory
+			)
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
 			break
@@ -327,12 +330,15 @@ def image_gen(
 
 
 def audio_gen(
-	genre, place, mood, title, story_content, cursors, cur_cursor, llm_type="PaLM"
+	llm_factory,
+	genre, place, mood, title, story_content, cursors, cur_cursor
 ):
 	# generate prompt for background music with LLM
 	for _ in range(3):
 		try:
-			prompt = bgm_maker.generate_prompt(genre, place, mood, title, "", story_content, llm_type)
+			prompt = bgm_maker.generate_prompt(
+				genre, place, mood, title, "", story_content, llm_factory=llm_factory
+			)
 			print(f"Music Prompt: {prompt}")
 			break
 		except Exception as e:

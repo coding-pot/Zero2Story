@@ -643,7 +643,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.image_gen,
 		inputs=[
-			genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
+			llm, genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
 		],
 		outputs=[
 			story_image, cursors, progress_comp,
@@ -673,7 +673,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.audio_gen,
 		inputs=[
-			genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
+			llm, genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
 		],
 		outputs=[story_audio, cursors, progress_comp]
 	).then(
