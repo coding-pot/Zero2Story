@@ -125,7 +125,7 @@ def generate_zip(
             img_filename = cursor["img"]
             img_filename_copy = f"{asset_foldername}/{os.path.basename(img_filename)}"
             shutil.copyfile(img_filename, img_filename_copy)
-            cursor["img"] = audio_filename_copy
+            cursor["img"] = img_filename_copy
 
     # save constructed HTML as file
     html_as_string = parser.gen_from_file(
