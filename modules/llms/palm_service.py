@@ -19,10 +19,13 @@ class PaLMFactory(LLMFactory):
     _palm_api_key = None
 
     def __init__(self, palm_api_key=None):
-        if not PaLMFactory._palm_api_key:
+        if not PaLMFactory._palm_api_key and (palm_api_key is None or palm_api_key == ""):
             PaLMFactory.load_palm_api_key()
             assert PaLMFactory._palm_api_key, "PaLM API Key is missing."
             palm_api.configure(api_key=PaLMFactory._palm_api_key)
+        
+        if palm_api_key and palm_api_key != "":
+            PaLMFactory._palm_api_key = palm_api_key
 
     def create_prompt_format(self):
         return PaLMChatPromptFmt()

@@ -1,10 +1,10 @@
 from modules.llms import *
 
-def get_llm_factory(llm_type: str) -> 'PaLM':
+def get_llm_factory(llm_type: str, api_key: str=None) -> 'PaLM':
     factory = None
     if llm_type.lower() == 'palm':
-        factory = PaLMFactory()
+        factory = PaLMFactory(palm_api_key=api_key)
     elif llm_type.lower() == 'llama2':
-        factory = LLaMAFactory()
+        factory = LLaMAFactory(hf_llama_api_key=api_key)
     
     return factory

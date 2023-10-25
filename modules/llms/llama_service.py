@@ -19,9 +19,12 @@ from modules.llms import (
 
 class LLaMAFactory(LLMFactory):
     def __init__(self, hf_llama_api_key=None):
-        if not LLaMAFactory._hf_llama_api_key:
+        if not LLaMAFactory._hf_llama_api_key and (hf_llama_api_key is None or hf_llama_api_key == ""):
             LLaMAFactory.load_hf_llama_api_key()
             assert LLaMAFactory._hf_llama_api_key, "Hugging Face LLaMA API Key is missing."
+
+        if hf_llama_api_key and hf_llama_api_key != "":
+            LLaMAFactory._hf_llama_api_key = hf_llama_api_key
 
     def create_prompt_format(self):
         return LLaMAChatPromptFmt()
