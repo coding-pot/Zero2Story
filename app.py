@@ -367,7 +367,7 @@ with gr.Blocks(css=STYLE) as demo:
 			export_html
 		]
 	)
-	export_download_file.click(
+	export_to_file_btn.click(
 		export_ui.generate_zip,
 		inputs=[
 			title_txt,
