@@ -30,8 +30,11 @@ class PaLMFactory(LLMFactory):
     def create_prompt_format(self):
         return PaLMChatPromptFmt()
 
-    def create_prompt_manager(self, prompts_path: str=None):
-        return PaLMPromptManager((prompts_path or Path('.') / 'prompts' / 'palm_prompts.toml'))
+    def create_prompt_manager(self, prompts_path: str=None, chat_prompts_path: str=None):
+        return PaLMPromptManager(
+            (prompts_path or Path('.') / 'prompts' / 'palm_prompts.toml'),
+            (chat_prompts_path or Path('.') / 'prompts' / 'palm_chat_prompts.toml'),
+        )
     
     def create_pp_manager(self):
         return PaLMChatPPManager()
@@ -104,37 +107,54 @@ class PaLMPromptManager(PromptManager):
     _instance = None
     _lock = threading.Lock()
     _prompts = None
+    _chat_prompts = None
 
-    def __new__(cls, prompts_path):
+    def __new__(cls, prompts_path, chat_prompts_path):
         if cls._instance is None:
             with cls._lock:
                 if not cls._instance:
                     cls._instance = super(PaLMPromptManager, cls).__new__(cls)
-                    cls._instance.load_prompts(prompts_path)
+                    cls._instance.prompts_path = prompts_path
+                    cls._instance.chat_prompts_path = chat_prompts_path
         return cls._instance
 
-    def load_prompts(self, prompts_path):
-        self._prompts_path = prompts_path
-        self.reload_prompts()
-
     def reload_prompts(self):
-        assert self.prompts_path, "Prompt path is missing."
-        self._prompts = toml.load(self.prompts_path)
+        assert self._prompts_path, "Prompt path is missing."
+        self._prompts = toml.load(self._prompts_path)
+
+    def reload_chat_prompts(self):
+        assert self._chat_prompts_path, "Chat prompt path is missing."
+        self._chat_prompts = toml.load(self._chat_prompts_path)
 
     @property
     def prompts_path(self):
         return self._prompts_path
+
+    @property
+    def chat_prompts_path(self):
+        return self._chat_prompts_path
     
     @prompts_path.setter
     def prompts_path(self, prompts_path):
         self._prompts_path = prompts_path
         self.reload_prompts()
 
+    @prompts_path.setter
+    def chat_prompts_path(self, chat_prompts_path):
+        self._chat_prompts_path = chat_prompts_path
+        self.reload_chat_prompts()
+
     @property
     def prompts(self):
         if self._prompts is None:
-            self.load_prompts()
+            self.reload_prompts()
         return self._prompts
+
+    @property
+    def chat_prompts(self):
+        if self._chat_prompts is None:
+            self.reload_chat_prompts()
+        return self._chat_prompts
 
 
 class PaLMChatPPManager(PPManager):
@@ -226,6 +246,8 @@ class PaLMService(LLMService):
         prompt,
         mode="chat", #chat or text
         parameters=None,
+        context=None, #chat only
+        examples=None, #chat only
         use_filter=True
     ):
         if parameters is None:
@@ -249,11 +271,12 @@ class PaLMService(LLMService):
                 parameters = {
                     'model': 'models/chat-bison-001',
                     'candidate_count': 1,
-                    'context': "",
+                    'context': context,
+                    'examples': examples,
                     'temperature': temperature,
                     'top_k': top_k,
                     'top_p': top_p,
-                    'safety_settings': safety_settings,
+                    # 'safety_settings': safety_settings,
                 }
             else:
                 parameters = {
