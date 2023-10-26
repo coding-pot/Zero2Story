@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 
 class LLMFactory(metaclass=ABCMeta):
     @abstractmethod
@@ -34,18 +34,23 @@ class PromptFmt(metaclass=ABCMeta):
         pass
 
 
-class PromptManager(metaclass=ABCMeta):
+class PromptManager(ABC):
     @abstractmethod
-    def load_prompts(self):
+    def reload_prompts(self):
         pass
 
     @abstractmethod
-    def reload_prompts(self):
+    def reload_chat_prompts(self):
         pass
     
     @property
     @abstractmethod
     def prompts_path(self):
+        pass
+
+    @property
+    @abstractmethod
+    def chat_prompts_path(self):
         pass
     
     @prompts_path.setter
@@ -53,9 +58,19 @@ class PromptManager(metaclass=ABCMeta):
     def prompts_path(self, prompts_path):
         pass
 
+    @prompts_path.setter
+    @abstractmethod
+    def chat_prompts_path(self, prompts_path):
+        pass
+
     @property
     @abstractmethod
     def prompts(self):
+        pass
+
+    @property
+    @abstractmethod
+    def chat_prompts(self):
         pass
     
 

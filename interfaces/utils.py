@@ -45,32 +45,49 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 def parse_first_json_code_snippet(code_snippet):
 	json_parsed_string = None
 	
-	try:
-		json_parsed_string = json.loads(code_snippet, strict=False)
-	except:
-		json_start_index = code_snippet.find('```json')
-		json_end_index = code_snippet.find('```', json_start_index + 6)
+	json_start_index = code_snippet.find('{')
+	json_end_index = code_snippet.rfind('}')
 
-		if json_start_index < 0 or json_end_index < 0:
-			raise ValueError('No JSON code snippet found in string.')
+	if json_start_index >= 0 and json_end_index >= 0:
+		json_code_snippet = code_snippet[json_start_index:json_end_index+1]
+		print(json_code_snippet)
+		try:
+			json_parsed_string = json.loads(json_code_snippet, strict=False)
+		except:
+			print("failed to parse string into JSON format")
+			print("---------------------------------------")
+			print(json_parsed_string)
+	else:
+		raise ValueError('No JSON code snippet found in string.')
+	
+	return json_parsed_string
 
-		json_code_snippet = code_snippet[json_start_index + 7:json_end_index]
-		json_parsed_string = json.loads(json_code_snippet, strict=False)
-	finally:
-		if json_parsed_string is None:
-			raise ValueError('No JSON code snippet found in string.')
-		return json_parsed_string
-
-async def retry_until_valid_json(prompt, parameters=None, llm_type="PaLM"):
+async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, context=None, examples=None, llm_type="PaLM", mode="text"):
 	response_json = None
-	factory = get_llm_factory(llm_type)
-	llm_service = factory.create_llm_service()
+	if llm_factory is None:
+		llm_factory = get_llm_factory(llm_type)
+	llm_service = llm_factory.create_llm_service()
 
 	for _ in range(3):
 		try:
-			response, response_txt = await asyncio.wait_for(llm_service.gen_text(prompt, mode="text", parameters=parameters),
-													  		timeout=10)
-
+			if mode == "text":
+				response, response_txt = await asyncio.wait_for(
+						llm_service.gen_text(
+							prompt, mode="text", 
+							parameters=parameters
+					),
+					timeout=10
+				)
+			else:
+				response, response_txt = await asyncio.wait_for(
+						llm_service.gen_text(
+							prompt, mode="chat", 
+							parameters=parameters,
+							context=context,
+							examples=examples
+					),
+					timeout=20
+				)
 			print(response_txt)
 		except asyncio.TimeoutError:
 			raise TimeoutError(f"The response time for {llm_type} API exceeded the limit.")
@@ -83,6 +100,8 @@ async def retry_until_valid_json(prompt, parameters=None, llm_type="PaLM"):
 			if not response_json:
 				print("Parsing JSON failed. Retrying...")
 				continue
+			else:
+				break
 		except:
 			print("Parsing JSON failed. Retrying...")
 			pass

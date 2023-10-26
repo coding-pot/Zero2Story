@@ -205,9 +205,11 @@ JSON output:
 """
 
 [image_gen]
-neg_prompt="nsfw, worst quality, low quality, lowres, bad anatomy, bad hands, text, watermark, signature, error, missing fingers, extra digit, fewer digits, cropped, worst quality, normal quality, blurry, username, extra limbs, twins, boring, jpeg artifacts"
+neg_prompt=""
+pos_prompt=""
 
 [image_gen.character]
+neg_prompt="nsfw, worst quality, low quality, lowres, bad anatomy, bad hands, text, watermark, signature, error, missing fingers, extra digit, fewer digits, cropped, worst quality, normal quality, blurry, username, extra limbs, twins, boring, jpeg artifacts"
 gen_prompt = """Based on my brief descriptions of the character, suggest a "primary descriptive sentence" and "concise descriptors" to visualize them. Ensure you consider elements like the character's gender, age, appearance, occupation, clothing, posture, facial expression, mood, among others.
 Once complete, please output only a single "primary descriptive sentence" and the "concise descriptors" in a syntactically valid JSON format.
 The output template is as follows: {{"primary_sentence":"primary descriptive sentence","descriptors":["concise descriptor 1","concise descriptor 2","concise descriptor 3"]}}.
@@ -259,6 +261,9 @@ Print out no more than 45 words in syntactically valid JSON format.
 """
 
 [image_gen.background]
+pos_prompt = "painting+++, anime+, catoon, watercolor, wallpaper, text---"
+neg_prompt = "realistic, human, character, people, photograph, 3d render, blurry, grayscale, oversaturated, nsfw, worst quality, low quality, lowres, bad anatomy, bad hands, text, watermark, signature, error, missing fingers, extra digit, fewer digits, cropped, worst quality, normal quality, blurry, username, extra limbs, twins, boring, jpeg artifacts"
+
 gen_prompt = """Based on my brief descriptions of the scene, suggest a "primary descriptive sentence" and "concise descriptors" to visualize it. Ensure you consider elements like the setting's time of day, atmosphere, prominent objects, mood, location, natural phenomena, architecture, among others.
 Once complete, please output only a single "primary descriptive sentence" and the "concise descriptors" in a syntactically valid JSON format.
 The output template is as follows: {{"primary_sentence":"primary descriptive sentence","descriptors":["concise descriptor 1","concise descriptor 2","concise descriptor 3"]}}.

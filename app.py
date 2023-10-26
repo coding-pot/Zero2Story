@@ -277,6 +277,7 @@ with gr.Blocks(css=STYLE) as demo:
 	with gr.Accordion("Control Panel") as control_panel:
 		with gr.Column(elem_classes=["group-border"]):
 			llm_type = gr.Radio(value="PaLM", choices=["PaLM", "ChatGPT", "LLaMA2"], interactive=True, label="LLM Model Type")
+			llm_mode = gr.Radio(value="text", choices=["chat", "text"], interactive=True, label="LLM Generation Mode")
 			llm_api_key = gr.Textbox(placeholder="enter authorized key for the chosen llm model", type="password", label="API Key")
 			llm_type_confirm_btn = gr.Button("update llm type", elem_classes=["control-button-green"])
 
@@ -594,25 +595,25 @@ with gr.Blocks(css=STYLE) as demo:
 	gen_char_btn1.click(
 		ui.gen_character_image,
 		inputs=[
-			llm, gallery_images1, name_txt1, age_dd1, personality_dd1, job_dd1, genre_dd, place_dd, mood_dd, creative_dd1],
+			llm, llm_mode, gallery_images1, name_txt1, age_dd1, personality_dd1, job_dd1, genre_dd, place_dd, mood_dd, creative_dd1],
 		outputs=[char_gallery1, gallery_images1, selected_main_char_image1]
 	)
 
 	gen_char_btn2.click(
 		ui.gen_character_image,
-		inputs=[llm, gallery_images2, name_txt2, age_dd2, personality_dd2, job_dd2, genre_dd, place_dd, mood_dd, creative_dd2],
+		inputs=[llm, llm_mode, gallery_images2, name_txt2, age_dd2, personality_dd2, job_dd2, genre_dd, place_dd, mood_dd, creative_dd2],
 		outputs=[char_gallery2, gallery_images2, selected_side_char_image1]
 	)
 
 	gen_char_btn3.click(
 		ui.gen_character_image,
-		inputs=[llm, gallery_images3, name_txt3, age_dd3, personality_dd3, job_dd3, genre_dd, place_dd, mood_dd, creative_dd3],
+		inputs=[llm, llm_mode, gallery_images3, name_txt3, age_dd3, personality_dd3, job_dd3, genre_dd, place_dd, mood_dd, creative_dd3],
 		outputs=[char_gallery3, gallery_images3, selected_side_char_image2]
 	)
 
 	gen_char_btn4.click(
 		ui.gen_character_image,
-		inputs=[llm, gallery_images4, name_txt4, age_dd4, personality_dd4, job_dd4, genre_dd, place_dd, mood_dd, creative_dd4],
+		inputs=[llm, llm_mode, gallery_images4, name_txt4, age_dd4, personality_dd4, job_dd4, genre_dd, place_dd, mood_dd, creative_dd4],
 		outputs=[char_gallery4, gallery_images4, selected_side_char_image3]
 	)
 
@@ -664,7 +665,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.image_gen,
 		inputs=[
-			llm, genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
+			llm, llm_mode, genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
 		],
 		outputs=[
 			story_image, cursors, progress_comp,
@@ -694,7 +695,7 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.audio_gen,
 		inputs=[
-			llm, genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
+			llm, llm_mode, genre_dd, place_dd, mood_dd, title, story_content, cursors, cur_cursor
 		],
 		outputs=[story_audio, cursors, progress_comp]
 	).then(

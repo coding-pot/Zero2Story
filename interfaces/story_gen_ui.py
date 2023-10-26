@@ -293,15 +293,16 @@ def video_gen(
 	)
 
 
-def image_gen(
-	llm_factory,
+async def image_gen(
+	llm_factory, llm_mode,
 	genre, place, mood, title, story_content, cursors, cur_cursor
 ):
 	# generate prompts for background image with LLM
 	for _ in range(3):
 		try:
-			prompt, neg_prompt = img_maker.generate_background_prompts(
-				genre, place, mood, title, "", story_content, llm_factory=llm_factory
+			prompt, neg_prompt = await img_maker.generate_background_prompts(
+				llm_factory, llm_mode,
+				genre, place, mood, title, "", story_content
 			)
 			print(f"Image Prompt: {prompt}")
 			print(f"Negative Prompt: {neg_prompt}")
@@ -329,15 +330,16 @@ def image_gen(
 	)
 
 
-def audio_gen(
-	llm_factory,
+async def audio_gen(
+	llm_factory, llm_mode,
 	genre, place, mood, title, story_content, cursors, cur_cursor
 ):
 	# generate prompt for background music with LLM
 	for _ in range(3):
 		try:
-			prompt = bgm_maker.generate_prompt(
-				genre, place, mood, title, "", story_content, llm_factory=llm_factory
+			prompt = await bgm_maker.generate_prompt(
+				llm_factory, llm_mode,
+				genre, place, mood, title, "", story_content
 			)
 			print(f"Music Prompt: {prompt}")
 			break

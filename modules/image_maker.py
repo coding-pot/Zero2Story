@@ -23,6 +23,8 @@ from diffusers import (
 
 from .utils import set_all_seeds
 from modules.llms import LLMFactory
+from interfaces.utils import retry_until_valid_json
+
 _gpus = 0
 
 class ImageMaker:
@@ -162,10 +164,10 @@ class ImageMaker:
         return str(output_filename.with_suffix('.png'))
     
 
-    def generate_character_prompts(self, character_name: str, age: str, job: str,
+    async def generate_character_prompts(self, llm_factory, mode,
+                                         character_name: str, age: str, job: str,
                                          keywords: list[str] = None, 
                                          creative_mode: Literal['sd character', 'cartoon', 'realistic'] = 'cartoon',
-                                         llm_factory: LLMFactory=None,
                                   ) -> tuple[str, str]:
         """Generate positive and negative prompts for a character based on given attributes.
 
@@ -183,46 +185,63 @@ class ImageMaker:
         prompt_manager = llm_factory.create_prompt_manager()
         llm_service = llm_factory.create_llm_service()
 
-        positive = "" # add static prompt for character if needed (e.g. "chibi, cute, anime")
-        negative = prompt_manager.prompts['image_gen']['neg_prompt']
+        if mode == "text":        
+            positive = "" # add static prompt for character if needed (e.g. "chibi, cute, anime")
+            negative = prompt_manager.prompts['image_gen']['character']['neg_prompt']
 
-        # Generate prompts with LLM
-        t = prompt_manager.prompts['image_gen']['character']['gen_prompt']
-        q = prompt_manager.prompts['image_gen']['character']['query']
-        query_string = t.format(input=q.format(character_name=character_name,
-                                               job=job,
-                                               age=age,
-                                               keywords=', '.join(keywords) if keywords else 'Nothing'))
-        try:
-            response, response_txt = asyncio.run(asyncio.wait_for(
-                                                    llm_service.gen_text(query_string, mode="text", use_filter=False),
-                                                    timeout=10)
-                                                )
-        except asyncio.TimeoutError:
-            raise TimeoutError("The response time for PaLM API exceeded the limit.")
-        except:
-            raise Exception("PaLM API is not available.")
-        
-        try: 
-            res_json = json.loads(response_txt)
-            positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
-            gender_keywords = ['1man', '1woman', '1boy', '1girl', '1male', '1female', '1gentleman', '1lady']
-            positive += ', '.join([w if w not in gender_keywords else w + '+++' for w in res_json['descriptors']])
-            positive = f'{job.lower()}+'.join(positive.split(job.lower()))
-        except:
-            print("=== PaLM Response ===")
-            print(response.filters)
-            print(response_txt)
-            print("=== PaLM Response ===")            
-            raise ValueError("The response from PaLM API is not in the expected format.")
-            
-        return (positive.lower(), negative.lower())
+            # Generate prompts with LLM
+            t = prompt_manager.prompts['image_gen']['character']['gen_prompt']
+            q = prompt_manager.prompts['image_gen']['character']['query']
 
+            query_string = t.format(input=q.format(character_name=character_name,
+                                                job=job,
+                                                age=age,
+                                                keywords=', '.join(keywords) if keywords else 'Nothing'))
 
-    def generate_background_prompts(self, genre:str, place:str, mood:str,
-                                          title:str, chapter_title:str, chapter_plot:str,
-                                          llm_factory: LLMFactory=None,
-                                    ) -> tuple[str, str]:
+            try: 
+                res_json = await retry_until_valid_json(
+                    prompt=query_string, llm_factory=llm_factory, mode="text"
+                )
+                positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
+                gender_keywords = ['1man', '1woman', '1boy', '1girl', '1male', '1female', '1gentleman', '1lady']
+                positive += ', '.join([w if w not in gender_keywords else w + '+++' for w in res_json['descriptors']])
+                positive = f'{job.lower()}+'.join(positive.split(job.lower()))
+            except:    
+                raise ValueError("The response from PaLM API is not in the expected format.")
+                
+            return (positive.lower(), negative.lower())
+        else:
+            positive = "" # add static prompt for character if needed (e.g. "chibi, cute, anime")
+            negative = prompt_manager.chat_prompts['image_gen']['character']['neg_prompt']
+
+            # Generate prompts with LLM
+            c = prompt_manager.chat_prompts['image_gen']['character']['context']
+            e = prompt_manager.chat_prompts['image_gen']['character']['examples']
+            q = prompt_manager.chat_prompts['image_gen']['character']['query']
+
+            query_string = q.format(character_name=character_name,
+                                    job=job,
+                                    age=age,
+                                    keywords=', '.join(keywords) if keywords else 'Nothing')
+
+            try: 
+                res_json = await retry_until_valid_json(
+                    prompt=query_string, llm_factory=llm_factory, 
+                    context=c, examples=e, mode="chat"
+                )
+                positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
+                gender_keywords = ['1man', '1woman', '1boy', '1girl', '1male', '1female', '1gentleman', '1lady']
+                positive += ', '.join([w if w not in gender_keywords else w + '+++' for w in res_json['descriptors']])
+                positive = f'{job.lower()}+'.join(positive.split(job.lower()))
+            except:    
+                raise ValueError("The response from PaLM API is not in the expected format.")
+                
+            return (positive.lower(), negative.lower())
+
+    async def generate_background_prompts(self, llm_factory, mode,
+                                    genre:str, place:str, mood:str,
+                                    title:str, chapter_title:str, chapter_plot:str
+                                ) -> tuple[str, str]:
         """Generate positive and negative prompts for a background image based on given attributes.
 
         Args:
@@ -240,41 +259,58 @@ class ImageMaker:
         prompt_manager = llm_factory.create_prompt_manager()
         llm_service = llm_factory.create_llm_service()
 
-        positive = "painting+++, anime+, catoon, watercolor, wallpaper, text---" # add static prompt for background if needed (e.g. "chibi, cute, anime")
-        negative = "realistic, human, character, people, photograph, 3d render, blurry, grayscale, oversaturated, " + prompt_manager.prompts['image_gen']['neg_prompt']
+        if mode == "text":
+            positive = prompt_manager.prompts['image_gen']['background']['pos_prompt']
+            negative = prompt_manager.prompts['image_gen']['background']['neg_prompt']
 
-        # Generate prompts with PaLM
-        t = prompt_manager.prompts['image_gen']['background']['gen_prompt']
-        q = prompt_manager.prompts['image_gen']['background']['query']
-        query_string = t.format(input=q.format(genre=genre,
-                                               place=place,
-                                               mood=mood,
-                                               title=title,
-                                               chapter_title=chapter_title,
-                                               chapter_plot=chapter_plot))
-        try:
-            response, response_txt = asyncio.run(asyncio.wait_for(
-                                                    llm_service.gen_text(query_string, mode="text", use_filter=False),
-                                                    timeout=10)
-                                                )
-        except asyncio.TimeoutError:
-            raise TimeoutError("The response time for PaLM API exceeded the limit.")
-        except:
-            raise Exception("PaLM API is not available.")
-        
-        try: 
-            res_json = json.loads(response_txt)
-            positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
-            positive += ', '.join(res_json['descriptors'])
-        except:
-            print("=== PaLM Response ===")
-            print(response.filters)
-            print(response_txt)
-            print("=== PaLM Response ===")            
-            raise ValueError("The response from PaLM API is not in the expected format.")
-            
-        return (positive.lower(), negative.lower())
+            # Generate prompts with LLM
+            t = prompt_manager.prompts['image_gen']['background']['gen_prompt']
+            q = prompt_manager.prompts['image_gen']['background']['query']
 
+            query_string = t.format(input=q.format(genre=genre,
+                                                place=place,
+                                                mood=mood,
+                                                title=title,
+                                                chapter_title=chapter_title,
+                                                chapter_plot=chapter_plot))
+
+            try: 
+                res_json = await retry_until_valid_json(
+                    prompt=query_string, llm_factory=llm_factory, mode="text"
+                )
+                positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
+                positive += ', '.join(res_json['descriptors'])
+            except:    
+                raise ValueError("The response from PaLM API is not in the expected format.")
+                
+            return (positive.lower(), negative.lower())
+        else:
+            positive = prompt_manager.chat_prompts['image_gen']['background']['pos_prompt']
+            negative = prompt_manager.chat_prompts['image_gen']['background']['neg_prompt']
+
+            # Generate prompts with LLM
+            c = prompt_manager.chat_prompts['image_gen']['background']['context']
+            e = prompt_manager.chat_prompts['image_gen']['background']['examples']
+            q = prompt_manager.chat_prompts['image_gen']['background']['query']
+
+            query_string = q.format(genre=genre,
+                                    place=place,
+                                    mood=mood,
+                                    title=title,
+                                    chapter_title=chapter_title,
+                                    chapter_plot=chapter_plot)
+
+            try: 
+                res_json = await retry_until_valid_json(
+                    prompt=query_string, llm_factory=llm_factory, 
+                    context=c, examples=e, mode="chat"
+                )
+                positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
+                positive += ', '.join(res_json['descriptors'])
+            except:    
+                raise ValueError("The response from PaLM API is not in the expected format.")
+                
+            return (positive.lower(), negative.lower())
 
     def __get_pipeline_embeds(self, prompt:str, negative_prompt:str) -> tuple[torch.Tensor, torch.Tensor]:
         """

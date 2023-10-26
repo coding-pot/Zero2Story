@@ -16,6 +16,7 @@ from pydub import AudioSegment
 
 from .utils import set_all_seeds
 from modules.llms import LLMFactory
+from interfaces.utils import retry_until_valid_json
 
 class MusicMaker:
     # TODO: DocString...
@@ -87,10 +88,10 @@ class MusicMaker:
         return str(output_filename.with_suffix('.mp3' if self.output_format == 'mp3' else '.wav'))
 
 
-    def generate_prompt(self, genre:str, place:str, mood:str,
-                              title:str, chapter_title:str, chapter_plot:str,
-                              llm_factory: LLMFactory=None,
-                        ) -> str:
+    async def generate_prompt(self, llm_factory, mode, 
+                        genre:str, place:str, mood:str,
+                        title:str, chapter_title:str, chapter_plot:str,
+                    ) -> str:
         """Generate a prompt for a background music based on given attributes.
 
         Args:
@@ -107,36 +108,47 @@ class MusicMaker:
         prompt_manager = llm_factory.create_prompt_manager()
         llm_service = llm_factory.create_llm_service()
 
-        # Generate prompts with PaLM
-        t = prompt_manager.prompts['music_gen']['gen_prompt']
-        q = prompt_manager.prompts['music_gen']['query']
-        query_string = t.format(input=q.format(genre=genre,
-                                               place=place,
-                                               mood=mood,
-                                               title=title,
-                                               chapter_title=chapter_title,
-                                               chapter_plot=chapter_plot))
-        try:
-            response, response_txt = asyncio.run(asyncio.wait_for(
-                                                    llm_service.gen_text(query_string, mode="text", use_filter=False),
-                                                    timeout=10)
-                                                )
-        except asyncio.TimeoutError:
-            raise TimeoutError("The response time for PaLM API exceeded the limit.")
-        except:
-            raise Exception("PaLM API is not available.")
-        
-        try: 
-            res_json = json.loads(response_txt)
-        except:
-            print("=== PaLM Response ===")
-            print(response.filters)
-            print(response_txt)
-            print("=== PaLM Response ===")            
-            raise ValueError("The response from PaLM API is not in the expected format.")
-            
-        return res_json['primary_sentence']
+        if mode == "text":
+            # Generate prompts with PaLM
+            t = prompt_manager.prompts['music_gen']['gen_prompt']
+            q = prompt_manager.prompts['music_gen']['query']
 
+            query_string = t.format(input=q.format(genre=genre,
+                                                place=place,
+                                                mood=mood,
+                                                title=title,
+                                                chapter_title=chapter_title,
+                                                chapter_plot=chapter_plot))
+            try: 
+                res_json = await retry_until_valid_json(
+                    prompt=query_string, llm_factory=llm_factory, mode="text"
+                )
+            except:    
+                raise ValueError("The response from PaLM API is not in the expected format.")
+                
+            return res_json['primary_sentence']
+        else:
+            # Generate prompts with PaLM
+            c = prompt_manager.chat_prompts['music_gen']['context']
+            e = prompt_manager.chat_prompts['music_gen']['examples']
+            q = prompt_manager.chat_prompts['music_gen']['query']
+
+            query_string = q.format(genre=genre,
+                                    place=place,
+                                    mood=mood,
+                                    title=title,
+                                    chapter_title=chapter_title,
+                                    chapter_plot=chapter_plot)
+
+            try: 
+                res_json = await retry_until_valid_json(
+                    prompt=query_string, llm_factory=llm_factory, 
+                    context=c, examples=e, mode="chat"
+                )
+            except:    
+                raise ValueError("The response from PaLM API is not in the expected format.")
+                
+            return res_json['primary_sentence']
 
     @property
     def model_size(self):
