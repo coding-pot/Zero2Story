@@ -104,7 +104,7 @@ def parse_first_json_code_snippet(code_snippet):
 		except:
 			print("failed to parse string into JSON format")
 			print("---------------------------------------")
-			print(json_parsed_string)
+			print(json_code_snippet)
 	else:
 		raise ValueError('No JSON code snippet found in string.')
 	
