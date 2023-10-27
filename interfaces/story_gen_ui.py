@@ -211,11 +211,9 @@ async def first_story_gen(
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	cur_cursor_idx=None,
-):
-    prompt_manager = llm_factory.create_prompt_manager()
-    
+):  
     context, prompt = utils.build_first_story_gen_prompts(
-		llm_mode, prompt_manager,
+		llm_mode, llm_factory,
 		genre, place, mood,
 		main_char_name, main_char_age, main_char_personality, main_char_job,
 		side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,

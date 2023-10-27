@@ -40,7 +40,7 @@ def add_side_character(prompts, enable, name, age, personality, job):
 
 def build_first_story_gen_prompts(
     llm_mode,
-	prompt_manager,
+	llm_factory,
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
 	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
@@ -48,9 +48,9 @@ def build_first_story_gen_prompts(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
 	if llm_mode == "text":
-		prompts = prompt_manager.prompts
+		prompts = llm_factory.create_prompt_manager().prompts
 	else:
-		prompts = prompt_manager.chat_prompts
+		prompts = llm_factory.create_prompt_manager().chat_prompts
     
 	side_char_prompt = add_side_character(
 		prompts,
@@ -82,7 +82,7 @@ def build_first_story_gen_prompts(
   		
 		query = prompts['story_gen']['query']['first_prompt']
 		pingpong = PingPong(query, "")
-		ppm = prompt_manager.to_ppm(context, [pingpong])
+		ppm = llm_factory.to_ppm(context, [pingpong])
 		prompt = ppm.build_prompts()
 		del ppm
  
