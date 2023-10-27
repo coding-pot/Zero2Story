@@ -132,9 +132,9 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 							prompt, mode="chat", 
 							parameters=parameters,
 							context=context,
-							examples=examples
+							examples=[] if examples is None else examples
 					),
-					timeout=20
+					timeout=30
 				)
 		except asyncio.TimeoutError:
 			raise TimeoutError(f"The response time for {llm_type} API exceeded the limit.")

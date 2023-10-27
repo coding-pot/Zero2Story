@@ -266,11 +266,6 @@ class PaLMService(LLMService):
                     safety_settings[idx]['threshold'] = 4
 
             if mode == "chat":
-                temperature = 1.0
-                top_k = 40
-                top_p = 0.95
-                max_output_tokens = 1024
-                
                 parameters = {
                     'model': 'models/chat-bison-001',
                     'candidate_count': 1,
