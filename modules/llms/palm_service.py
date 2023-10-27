@@ -45,6 +45,13 @@ class PaLMFactory(LLMFactory):
     def create_llm_service(self):
         return PaLMService()
     
+    def to_ppm(self, context, pingpongs):
+        ppm = PaLMChatPPManager()
+        ppm.ctx = context
+        ppm.pingpongs = pingpongs
+        
+        return ppm
+    
     @classmethod
     def load_palm_api_key(cls, palm_api_key: str=None):
         if palm_api_key:
@@ -158,11 +165,7 @@ class PaLMPromptManager(PromptManager):
 
 
 class PaLMChatPPManager(PPManager):
-    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=None, truncate_size: int=None):
-        if fmt is None:
-            factory = PaLMFactory()
-            fmt = factory.create_prompt_format()
-        
+    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=PaLMChatPromptFmt, truncate_size: int=None):
         results = []
         
         if to_idx == -1 or to_idx >= len(self.pingpongs):

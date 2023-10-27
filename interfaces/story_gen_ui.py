@@ -1,5 +1,6 @@
 import re
 import copy
+import json
 import random
 import gradio as gr
 from gradio_client import Client
@@ -23,7 +24,7 @@ video_gen_client_url = None # e.g. "https://0447df3cf5f7c49c46.gradio.live"
 
 
 async def update_story_gen(
-	llm_factory,
+	llm_factory, llm_mode,
 	cursors, cur_cursor_idx,
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -34,6 +35,7 @@ async def update_story_gen(
     if len(cursors) == 1:
         return await first_story_gen(
 			llm_factory,
+			llm_mode,
 			cursors,
 			genre, place, mood,
 			main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -200,7 +202,8 @@ async def actions_gen(
 	)
 
 async def first_story_gen(
-	llm_factory,
+	llm_factory, 
+	llm_mode,
 	cursors,
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -209,49 +212,55 @@ async def first_story_gen(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	cur_cursor_idx=None,
 ):
-	prompts = llm_factory.create_prompt_manager().prompts
-	llm_service = llm_factory.create_llm_service()
-
-	cur_side_chars = 1
-
-	side_char_prompt = utils.add_side_character(
-		[side_char_enable1, side_char_enable2, side_char_enable3],
-		[side_char_name1, side_char_name2, side_char_name3],
-		[side_char_job1, side_char_job2, side_char_job3],
-		[side_char_age1, side_char_age2, side_char_age3],
-		[side_char_personality1, side_char_personality2, side_char_personality3],
+    prompt_manager = llm_factory.create_prompt_manager()
+    
+    context, prompt = utils.build_first_story_gen_prompts(
+		llm_mode, prompt_manager,
+		genre, place, mood,
+		main_char_name, main_char_age, main_char_personality, main_char_job,
+		side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+		side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+		side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	)
-	prompt = prompts['story_gen']['first_story_gen'].format(
-		genre=genre, place=place, mood=mood,
-		main_char_name=main_char_name,
-		main_char_job=main_char_job,
-		main_char_age=main_char_age,
-		main_char_personality=main_char_personality,
-		side_char_placeholder=side_char_prompt,
-	)
+    
+    if llm_mode == "text":
+        parsing_key = "paragraphs"
+        try:
+            res_json = await utils.retry_until_valid_json(
+				prompt=prompt, llm_factory=llm_factory, mode="text"
+			)
+        except Exception as e:
+            raise gr.Error(e)
 
-	print(f"generated prompt:\n{prompt}")
-	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
-	try:
-		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
-	except Exception as e:
-		print(e)
-		raise gr.Error(e)
+        story = res_json["paragraphs"]
 
-	story = response_json["paragraphs"]
-	if isinstance(story, list):
-		story = "\n\n".join(story)
-  
-	if cur_cursor_idx is None:
-		cursors.append({
+    else:
+        parsing_key = "text"
+        try: 
+            res_json = await utils.retry_until_valid_json(
+				prompt=prompt, llm_factory=llm_factory, context=context, mode="chat"
+			)
+        except Exception as e:
+            raise gr.Error(e)
+        
+    # post processings
+    print(res_json)
+    story = res_json[parsing_key]
+    if isinstance(story, list):
+        story = "\n\n".join(story)
+
+    if cur_cursor_idx is None:
+        cursors.append({
 			"title": "",
 			"story": story
 		})
-	else:
-		cursors[cur_cursor_idx]["story"] = story
+    else:
+        cursors[cur_cursor_idx]["story"] = story    
 
-	return (
-		cursors, len(cursors)-1,
+    return (
+        [] if llm_mode == "text" else [PingPong(prompt, json.dumps(res_json))],
+		cursors, 
+		len(cursors)-1,
 		story,
 		gr.update(
 			maximum=len(cursors), value=len(cursors),
@@ -262,7 +271,7 @@ async def first_story_gen(
 		gr.update(interactive=True),
 		gr.update(value=None, visible=False, interactive=True),
 		gr.update(value=None, visible=False, interactive=True),	
-  		gr.update(value=None, visible=False, interactive=True),
+		gr.update(value=None, visible=False, interactive=True),
 	)
 
 def video_gen(

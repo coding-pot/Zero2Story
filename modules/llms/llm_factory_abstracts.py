@@ -20,6 +20,10 @@ class LLMFactory(metaclass=ABCMeta):
     @abstractmethod
     def create_llm_service(self):
         pass
+    
+    @abstractmethod
+    def to_ppm(self, context, pingpongs):
+        pass
 
 
 class PromptFmt(metaclass=ABCMeta):

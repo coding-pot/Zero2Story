@@ -19,6 +19,8 @@ with gr.Blocks(css=STYLE) as demo:
 	ui_pp_manager = factory.create_ui_pp_manager()
 	
 	llm = gr.State(get_llm_factory("PaLM"))
+	story_chat_history = gr.State([])
+
 	chat_mode = gr.State("setting_chat")
 	chat_state = gr.State({
 		"setting_chat": ui_pp_manager,
@@ -461,7 +463,8 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.first_story_gen,
 		inputs=[
-			llm,	
+			llm,
+			llm_mode,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -470,8 +473,8 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			cursors, cur_cursor, story_content, story_progress, image_gen_btn, audio_gen_btn,
-			story_image, story_audio, story_video
+			story_chat_history, cursors, cur_cursor, story_content, story_progress, 
+			image_gen_btn, audio_gen_btn, story_image, story_audio, story_video
 		]
 	).then(
 		story_gen_ui.actions_gen,
@@ -549,6 +552,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.update_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors, cur_cursor,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -557,7 +561,8 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,			
 		],
 		outputs=[
-			cursors, cur_cursor, story_content, story_progress, image_gen_btn, audio_gen_btn
+   			story_chat_history, cursors, cur_cursor, story_content, story_progress, 
+			image_gen_btn, audio_gen_btn, story_image, story_audio, story_video
 		]
 	).then(
 		story_gen_ui.actions_gen,

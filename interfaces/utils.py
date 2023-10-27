@@ -6,6 +6,7 @@ import asyncio
 
 from modules.llms import get_llm_factory
 
+from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
 
 def add_side_character_to_export(
@@ -22,9 +23,7 @@ def add_side_character_to_export(
 
 	return characters
 
-def add_side_character(enable, name, age, personality, job, llm_type="PaLM"):
-	prompts = get_llm_factory(llm_type).create_prompt_manager().prompts
-
+def add_side_character(prompts, enable, name, age, personality, job):
 	cur_side_chars = 1
 	prompt = ""
 	for idx in range(len(enable)):
@@ -38,6 +37,56 @@ def add_side_character(enable, name, age, personality, job, llm_type="PaLM"):
 									)
 			cur_side_chars += 1
 	return "\n" + prompt if prompt else ""
+
+def build_first_story_gen_prompts(
+    llm_mode,
+	prompt_manager,
+	genre, place, mood,
+	main_char_name, main_char_age, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
+):
+	if llm_mode == "text":
+		prompts = prompt_manager.prompts
+	else:
+		prompts = prompt_manager.chat_prompts
+    
+	side_char_prompt = add_side_character(
+		prompts,
+		[side_char_enable1, side_char_enable2, side_char_enable3],
+		[side_char_name1, side_char_name2, side_char_name3],
+		[side_char_job1, side_char_job2, side_char_job3],
+		[side_char_age1, side_char_age2, side_char_age3],
+		[side_char_personality1, side_char_personality2, side_char_personality3],
+	)
+ 
+	if llm_mode == "text":
+		prompt = prompts['story_gen']['first_story_gen'].format(
+			genre=genre, place=place, mood=mood,
+			main_char_name=main_char_name,
+			main_char_job=main_char_job,
+			main_char_age=main_char_age,
+			main_char_personality=main_char_personality,
+			side_char_placeholder=side_char_prompt,
+		)
+	else:
+		context = prompts['story_gen']['context'].format(
+			genre=genre, place=place, mood=mood,
+			main_char_name=main_char_name,
+			main_char_job=main_char_job,
+			main_char_age=main_char_age,
+			main_char_personality=main_char_personality,
+			side_char_placeholder=side_char_prompt,
+		)
+  		
+		query = prompts['story_gen']['query']['first_prompt']
+		pingpong = PingPong(query, "")
+		ppm = prompt_manager.to_ppm(context, [pingpong])
+		prompt = ppm.build_prompts()
+		del ppm
+ 
+	return context, prompt
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
