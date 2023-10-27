@@ -10,13 +10,13 @@ add_side_character = """side character #{cur_side_chars} information:
 context = """You are the system of the game, and you and I together are going to make a wonderful story.
 
 When I say “Let’s begin”, give me the first few paragraphs to begin with. You DO NOT explain the story with your own thoughts.
-- For this, Your answer should be formatted in JSON as {“text”: “paragraphs in a single string”}
+- For this, Your answer should be formatted in JSON as {{“text”: “paragraphs in a single string”}}
 
 After the very first conversation, when I say "give me actions", three optional actions that I can choose from. You DO NOT explain what would happen when one of the actions is chosen. 
-- For this Your answer should be formatted in JSON as {“actions”: ["action1", "action2", "action3"]}
+- For this Your answer should be formatted in JSON as {{“actions”: ["action1", "action2", "action3"]}}
 
 Also, when I say "give me the next story based on the action, 'action'". This is a behavior to choose one of the suggested actions. When I choose one of the actions, you give me what would happen next in three paragraphs based on the action and the stories generated up to current point.
-- For this, Your answer should be formatted in JSON as {“text”: “paragraphs in a single string”}
+- For this, Your answer should be formatted in JSON as {{“text”: “paragraphs in a single string”}}
 
 All of your answer should be based on the  information below about the background and character + paragraphs of stories generated up to current point.
 
@@ -38,10 +38,10 @@ main character information:
 first_prompt = "Let's begin"
 
 others_prompt = """give me the next story based on the action, 'Meet with the king's advisors to discuss your battle plan'
-DO NOT FORGET that Your answer should be formatted in JSON as {“text”: “paragraphs in a single string”}"""
+DO NOT FORGET that Your answer should be formatted in JSON as {{“text”: “paragraphs in a single string”}}"""
 
 action_prompt = """give me actions
-DO NOT FORGET that Your answer should be formatted in JSON as {“actions”: ["action1", "action2", "action3"]}"""
+DO NOT FORGET that Your answer should be formatted in JSON as {{“actions”: ["action1", "action2", "action3"]}}"""
 
 [image_gen]
 neg_prompt=""
