@@ -254,11 +254,6 @@ class PaLMService(LLMService):
         use_filter=True
     ):
         if parameters is None:
-            temperature = 1.0
-            top_k = 40
-            top_p = 0.95
-            max_output_tokens = 1024
-            
             # default safety settings
             safety_settings = [{"category":"HARM_CATEGORY_DEROGATORY","threshold":1},
                             {"category":"HARM_CATEGORY_TOXICITY","threshold":1},
@@ -271,24 +266,29 @@ class PaLMService(LLMService):
                     safety_settings[idx]['threshold'] = 4
 
             if mode == "chat":
+                temperature = 1.0
+                top_k = 40
+                top_p = 0.95
+                max_output_tokens = 1024
+                
                 parameters = {
                     'model': 'models/chat-bison-001',
                     'candidate_count': 1,
                     'context': context,
                     'examples': examples,
-                    'temperature': temperature,
-                    'top_k': top_k,
-                    'top_p': top_p,
+                    'temperature': 0.25,
+                    'top_k': 40,
+                    'top_p': 0.95,
                     # 'safety_settings': safety_settings,
                 }
-            else:
+                
                 parameters = {
                     'model': 'models/text-bison-001',
                     'candidate_count': 1,
-                    'temperature': temperature,
-                    'top_k': top_k,
-                    'top_p': top_p,
-                    'max_output_tokens': max_output_tokens,
+                    'temperature': 1.0,
+                    'top_k': 40,
+                    'top_p': 0.95,
+                    'max_output_tokens': 4096,
                     'safety_settings': safety_settings,
                 }
 
