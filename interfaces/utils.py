@@ -47,6 +47,8 @@ def build_first_story_gen_prompts(
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
+	context = ""
+    
 	if llm_mode == "text":
 		prompts = llm_factory.create_prompt_manager().prompts
 	else:
@@ -104,7 +106,7 @@ def parse_first_json_code_snippet(code_snippet):
 		except:
 			print("failed to parse string into JSON format")
 			print("---------------------------------------")
-			print(json_code_snippet)
+			print(repr(json_code_snippet))
 	else:
 		raise ValueError('No JSON code snippet found in string.')
 	
