@@ -276,7 +276,7 @@ class PaLMService(LLMService):
                     'top_p': 0.95,
                     # 'safety_settings': safety_settings,
                 }
-                
+            else:
                 parameters = {
                     'model': 'models/text-bison-001',
                     'candidate_count': 1,
