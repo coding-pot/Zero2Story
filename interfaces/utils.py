@@ -229,7 +229,7 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 		llm_factory = get_llm_factory(llm_type)
 	llm_service = llm_factory.create_llm_service()
 
-	for _ in range(3):
+	for _ in range(10):
 		try:
 			if mode == "text":
 				response, response_txt = await asyncio.wait_for(
