@@ -188,11 +188,11 @@ async def actions_gen(
 	print(f"generated prompt:\n{prompt}")
 	if llm_mode == "text":
 		try:
-			response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+			res_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 		except Exception as e:
 			print(e)
 			raise gr.Error(e)
-		actions = response_json["options"]
+		actions = res_json["options"]
 		actions = random.sample(actions, 3)
 	else:
 		try:
