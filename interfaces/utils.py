@@ -5,6 +5,7 @@ import random
 import asyncio
 
 from modules.llms import get_llm_factory
+from modules.llms.palm_service import PaLMChatPPManager
 
 from pingpong import PingPong
 from pingpong.context import CtxLastWindowStrategy
@@ -46,6 +47,9 @@ def build_actions_gen_prompts(
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
+	dummy = PaLMChatPPManager()
+	dummy.add_pingpong(PingPong("h", "l"))
+    
 	ppm = llm_factory.to_ppm("", story_chat_history)
 	print(story_chat_history)
 	print(ppm)

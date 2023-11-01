@@ -272,7 +272,10 @@ async def first_story_gen(
 			"story": story
 		})
     else:
-        cursors[cur_cursor_idx]["story"] = story    
+        cursors[cur_cursor_idx]["story"] = story
+        
+    if llm_mode != "text":
+        ppm.replace_last_pong(story)
 
     return (
         [] if llm_mode == "text" else ppm.pingpongs,
