@@ -194,7 +194,12 @@ async def actions_gen(
 		actions = random.sample(actions, 3)
 	else:
 		ppm, context, prompt = utils.build_actions_gen_prompts(
-			llm_factory, story_chat_history
+			llm_factory, story_chat_history,
+			genre, place, mood,
+			main_char_name, main_char_age, main_char_personality, main_char_job,
+			side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+			side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+			side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 		)
 		print(f"generated prompt:\n{prompt}")
 
