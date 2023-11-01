@@ -231,7 +231,7 @@ async def first_story_gen(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	cur_cursor_idx=None,
 ):  
-    context, prompt = utils.build_first_story_gen_prompts(
+    context, prompt, ppm = utils.build_first_story_gen_prompts(
 		llm_mode, llm_factory,
 		genre, place, mood,
 		main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -275,7 +275,7 @@ async def first_story_gen(
         cursors[cur_cursor_idx]["story"] = story    
 
     return (
-        [] if llm_mode == "text" else [PingPong(prompt, story)],
+        [] if llm_mode == "text" else ppm.pingpongs,
 		cursors, 
 		len(cursors)-1,
 		story,

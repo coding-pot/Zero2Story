@@ -84,6 +84,7 @@ def build_first_story_gen_prompts(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
 	context = ""
+	ppm = None
     
 	if llm_mode == "text":
 		prompts = llm_factory.create_prompt_manager().prompts
@@ -122,9 +123,8 @@ def build_first_story_gen_prompts(
 		pingpong = PingPong(query, "")
 		ppm = llm_factory.to_ppm(context, [pingpong])
 		prompt = ppm.build_prompts()
-		del ppm
  
-	return context, prompt
+	return context, prompt, ppm
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
