@@ -275,7 +275,7 @@ async def first_story_gen(
         cursors[cur_cursor_idx]["story"] = story    
 
     return (
-        [] if llm_mode == "text" else [PingPong(prompt, json.dumps(res_json))],
+        [] if llm_mode == "text" else [PingPong(prompt, story)],
 		cursors, 
 		len(cursors)-1,
 		story,
