@@ -71,6 +71,8 @@ def build_actions_gen_prompts(
 	)
  
 	prompt = prompts['story_gen']['query']['action_prompt']
+	print(f"prompt => {prompt}")
+	print(f"pingpong => {PingPong(prompt, "")}")
 	ppm.add_pingpong(PingPong(prompt, ""))
 
 	return ppm, context, ppm.build_prompts()

@@ -76,19 +76,6 @@ class PromptManager(ABC):
     @abstractmethod
     def chat_prompts(self):
         pass
-    
-
-class PPManager(metaclass=ABCMeta):
-    @abstractmethod
-    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=None, truncate_size: int=None):
-        pass
-
-
-class UIPPManager(PPManager, metaclass=ABCMeta):
-    @abstractmethod
-    def build_uis(self, from_idx: int=0, to_idx: int=-1):
-        pass
-
 
 class LLMService(metaclass=ABCMeta):
     @abstractmethod
