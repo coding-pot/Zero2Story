@@ -72,6 +72,30 @@ class LLaMAChatPromptFmt(PromptFmt):
         pong = "" if pingpong.pong is None else pingpong.pong[:truncate_size]
         return f"""[INST] {ping} [/INST] {pong}"""
 
+class LLaMAChatPPManager(PPManager):
+    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=LLaMAChatPromptFmt, truncate_size: int=None):
+        if to_idx == -1 or to_idx >= len(self.pingpongs):
+            to_idx = len(self.pingpongs)
+
+        results = fmt.ctx(self.ctx)
+
+        for idx, pingpong in enumerate(self.pingpongs[from_idx:to_idx]):
+            results += fmt.prompt(pingpong, truncate_size=truncate_size)
+
+        return results
+
+class GradioLLaMAChatPPManager(LLaMAChatPPManager):
+    def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
+        if to_idx == -1 or to_idx >= len(self.pingpongs):
+            to_idx = len(self.pingpongs)
+
+        results = []
+
+        for pingpong in self.pingpongs[from_idx:to_idx]:
+            results.append(fmt.ui(pingpong))
+
+        return results
+
 class LLaMAPromptManager(PromptManager):
     _instance = None
     _lock = threading.Lock()
@@ -107,31 +131,6 @@ class LLaMAPromptManager(PromptManager):
         if self._prompts is None:
             self.load_prompts()
         return self._prompts
-
-
-class LLaMAChatPPManager(PPManager):
-    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=LLaMAChatPromptFmt, truncate_size: int=None):
-        if to_idx == -1 or to_idx >= len(self.pingpongs):
-            to_idx = len(self.pingpongs)
-
-        results = fmt.ctx(self.ctx)
-
-        for idx, pingpong in enumerate(self.pingpongs[from_idx:to_idx]):
-            results += fmt.prompt(pingpong, truncate_size=truncate_size)
-
-        return results
-
-class GradioLLaMAChatPPManager(UIPPManager, LLaMAChatPPManager):
-    def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
-        if to_idx == -1 or to_idx >= len(self.pingpongs):
-            to_idx = len(self.pingpongs)
-
-        results = []
-
-        for pingpong in self.pingpongs[from_idx:to_idx]:
-            results.append(fmt.ui(pingpong))
-
-        return results
 
 class LLaMAService(LLMService):
     def __init__(self, hf_llama_api_key: str=None):
