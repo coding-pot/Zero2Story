@@ -251,7 +251,7 @@ class PaLMService(LLMService):
         parameters=None,
         context=None, #chat only
         examples=None, #chat only
-        use_filter=True
+        use_filter=True,
     ):
         if parameters is None:
             # default safety settings

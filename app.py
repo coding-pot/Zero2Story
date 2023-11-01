@@ -480,6 +480,8 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
+			story_chat_history,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -516,6 +518,8 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
+			story_chat_history,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -568,6 +572,8 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
+			story_chat_history,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -791,6 +797,8 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
+			story_chat_history,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -845,6 +853,8 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
+			story_chat_history,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -899,6 +909,8 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
+			story_chat_history,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -953,6 +965,8 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
+			story_chat_history,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,

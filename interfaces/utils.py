@@ -38,6 +38,18 @@ def add_side_character(prompts, enable, name, age, personality, job):
 			cur_side_chars += 1
 	return "\n" + prompt if prompt else ""
 
+def build_actions_gen_prompts(
+	llm_factory, story_chat_history
+):
+	ppm = llm_factory.create_pp_manager()
+	ppm.pingpongs = story_chat_history
+ 
+	prompts = llm_factory.create_prompt_manager().chat_prompts
+	prompt = prompts['story_gen']['query']['action_prompt']
+	ppm.add_pingpong(PingPong(prompt, ""))
+
+	return ppm.build_prompts()
+
 def build_first_story_gen_prompts(
     llm_mode,
 	llm_factory,

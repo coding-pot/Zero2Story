@@ -137,6 +137,8 @@ async def next_story_gen(
 
 async def actions_gen(
 	llm_factory,
+	llm_mode,
+	story_chat_history,
 	cursors,
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -149,55 +151,65 @@ async def actions_gen(
 	llm_service = llm_factory.create_llm_service()
 
 	stories = ""
-	cur_side_chars = 1
 	end_idx = len(cursors) if cur_cursor_idx is None else len(cursors)-1
 
-	for cursor in cursors[:end_idx]:
-		stories = stories + cursor["story"]
+	if llm_mode == "text":
+		for cursor in cursors[:end_idx]:
+			stories = stories + cursor["story"]
+  
+		summary_prompt = prompts['story_gen']['summarize'].format(stories=stories)
+		print(f"generated prompt:\n{summary_prompt}")
+  
+		try:
+			parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
+			_, summary = await llm_service.gen_text(summary_prompt, mode="text", parameters=parameters)
+		except Exception as e:
+			print(e)
+			raise gr.Error(e)
 
-	summary_prompt = prompts['story_gen']['summarize'].format(stories=stories)
+		side_char_prompt = utils.add_side_character(
+			[side_char_enable1, side_char_enable2, side_char_enable3],
+			[side_char_name1, side_char_name2, side_char_name3],
+			[side_char_job1, side_char_job2, side_char_job3],
+			[side_char_age1, side_char_age2, side_char_age3],
+			[side_char_personality1, side_char_personality2, side_char_personality3],
+		)
+		prompt = prompts['story_gen']['actions_gen'].format(
+			genre=genre, place=place, mood=mood,
+			main_char_name=main_char_name,
+			main_char_job=main_char_job,
+			main_char_age=main_char_age,
+			main_char_personality=main_char_personality,
+			side_char_placeholder=side_char_prompt,
+			summary=summary,
+		)
 
-	print(f"generated prompt:\n{summary_prompt}")
-	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
+		print(f"generated prompt:\n{prompt}")
+		try:
+			response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+		except Exception as e:
+			print(e)
+			raise gr.Error(e)
+		actions = response_json["options"]
+		actions = random.sample(actions, 3)
+	else:
+		prompt = utils.build_actions_gen_prompts(
+			llm_factory, story_chat_history
+		)
+		print(f"generated prompt:\n{prompt}")
 
-	try:
-		_, summary = await llm_service.gen_text(summary_prompt, mode="text", parameters=parameters)
-	except Exception as e:
-		print(e)
-		raise gr.Error(e)
-
-	side_char_prompt = utils.add_side_character(
-		[side_char_enable1, side_char_enable2, side_char_enable3],
-		[side_char_name1, side_char_name2, side_char_name3],
-		[side_char_job1, side_char_job2, side_char_job3],
-		[side_char_age1, side_char_age2, side_char_age3],
-		[side_char_personality1, side_char_personality2, side_char_personality3],
-	)
-	prompt = prompts['story_gen']['actions_gen'].format(
-		genre=genre, place=place, mood=mood,
-		main_char_name=main_char_name,
-		main_char_job=main_char_job,
-		main_char_age=main_char_age,
-		main_char_personality=main_char_personality,
-		side_char_placeholder=side_char_prompt,
-		summary=summary,
-	)
-
-	print(f"generated prompt:\n{prompt}")
-	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
-	try:
-		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
-	except Exception as e:
-		print(e)
-		raise gr.Error(e)
-	actions = response_json["options"]
-
-	random_actions = random.sample(actions, 3)
+		try:
+			response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+		except Exception as e:
+			print(e)
+			raise gr.Error(e)
+		actions = response_json["actions"]
+		print(f"actions\n{actions}")
 
 	return (
-		gr.update(value=random_actions[0], interactive=True),
-		gr.update(value=random_actions[1], interactive=True),
-		gr.update(value=random_actions[2], interactive=True),
+		gr.update(value=actions[0], interactive=True),
+		gr.update(value=actions[1], interactive=True),
+		gr.update(value=actions[2], interactive=True),
 		"   "
 	)
 
