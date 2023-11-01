@@ -47,10 +47,7 @@ def build_actions_gen_prompts(
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
-	ppm = llm_factory.to_ppm("", story_chat_history)
-	print(story_chat_history)
-	print(repr(ppm))
- 
+	ppm = llm_factory.to_ppm("", story_chat_history) 
 	prompts = llm_factory.create_prompt_manager().chat_prompts
 
 	side_char_prompt = add_side_character(
@@ -71,8 +68,6 @@ def build_actions_gen_prompts(
 	)
  
 	prompt = prompts['story_gen']['query']['action_prompt']
-	print(f"prompt => {prompt}")
-	print(f"pingpong => {PingPong(prompt, "")}")
 	ppm.add_pingpong(PingPong(prompt, ""))
 
 	return ppm, context, ppm.build_prompts()
