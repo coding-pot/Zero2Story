@@ -48,6 +48,7 @@ def build_actions_gen_prompts(
 ):
 	ppm = llm_factory.create_pp_manager()
 	ppm.pingpongs = story_chat_history
+	print(ppm)
  
 	prompts = llm_factory.create_prompt_manager().chat_prompts
 
