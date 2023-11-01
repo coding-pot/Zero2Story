@@ -40,15 +40,24 @@ def add_side_character(prompts, enable, name, age, personality, job):
 	return "\n" + prompt if prompt else ""
 
 def build_actions_gen_prompts(
-	llm_factory, story_chat_history,
+	llm_mode,
+	llm_factory,
+	summary, #only for test
+	story_chat_history, #only for chat
+	to_idx, #only for chat
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
 	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
 	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
-	ppm = llm_factory.to_ppm("", story_chat_history) 
-	prompts = llm_factory.create_prompt_manager().chat_prompts
+	context = None
+	ppm = None
+
+	if llm_mode == "text":
+		prompts = llm_factory.create_prompt_manager().prompts
+	else:
+		prompts = llm_factory.create_prompt_manager().chat_prompts
 
 	side_char_prompt = add_side_character(
 		prompts,
@@ -58,19 +67,86 @@ def build_actions_gen_prompts(
 		[side_char_age1, side_char_age2, side_char_age3],
 		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
-	context = prompts['story_gen']['context'].format(
-		genre=genre, place=place, mood=mood,
-		main_char_name=main_char_name,
-		main_char_job=main_char_job,
-		main_char_age=main_char_age,
-		main_char_personality=main_char_personality,
-		side_char_placeholder=side_char_prompt,
+
+	if llm_mode == "text": 
+		prompt = prompts['story_gen']['actions_gen'].format(
+					genre=genre, place=place, mood=mood,
+					main_char_name=main_char_name,
+					main_char_job=main_char_job,
+					main_char_age=main_char_age,
+					main_char_personality=main_char_personality,
+					side_char_placeholder=side_char_prompt,
+					summary=summary,
+				)
+	else:
+		context = prompts['story_gen']['context'].format(
+			genre=genre, place=place, mood=mood,
+			main_char_name=main_char_name,
+			main_char_job=main_char_job,
+			main_char_age=main_char_age,
+			main_char_personality=main_char_personality,
+			side_char_placeholder=side_char_prompt,
+		)
+		ppm = llm_factory.to_ppm(context, story_chat_history)
+	
+		prompt = prompts['story_gen']['query']['action_prompt']
+		ppm.add_pingpong(PingPong(prompt, ""))
+		prompt = ppm.build_prompts(to_idx=to_idx)
+
+	return ppm, context, prompt
+
+def build_next_story_gen_prompts(
+    llm_mode, llm_factory,
+	story_chat_history, #only for chat
+	to_idx, #only for chat
+	action, stories, 
+	genre, place, mood,
+	main_char_name, main_char_age, main_char_personality, main_char_job,
+	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+	side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,	
+):
+	context = ""
+	ppm = None
+ 
+	if llm_mode == "text":
+		prompts = llm_factory.create_prompt_manager().prompts
+	else:
+		prompts = llm_factory.create_prompt_manager().chat_prompts
+
+	side_char_prompt = add_side_character(
+		[side_char_enable1, side_char_enable2, side_char_enable3],
+		[side_char_name1, side_char_name2, side_char_name3],
+		[side_char_job1, side_char_job2, side_char_job3],
+		[side_char_age1, side_char_age2, side_char_age3],
+		[side_char_personality1, side_char_personality2, side_char_personality3],
 	)
  
-	prompt = prompts['story_gen']['query']['action_prompt']
-	ppm.add_pingpong(PingPong(prompt, ""))
-
-	return ppm, context, ppm.build_prompts()
+	if llm_mode == "text":
+		prompt = prompts['story_gen']['next_story_gen'].format(
+			genre=genre, place=place, mood=mood,
+			main_char_name=main_char_name,
+			main_char_job=main_char_job,
+			main_char_age=main_char_age,
+			main_char_personality=main_char_personality,
+			side_char_placeholder=side_char_prompt,
+			stories=stories, action=action,
+		)
+	else:
+		context = prompts['story_gen']['context'].format(
+			genre=genre, place=place, mood=mood,
+			main_char_name=main_char_name,
+			main_char_job=main_char_job,
+			main_char_age=main_char_age,
+			main_char_personality=main_char_personality,
+			side_char_placeholder=side_char_prompt,
+		)
+		ppm = llm_factory.to_ppm(context, story_chat_history)
+		prompt = prompts['story_gen']['query']['next_prompt'].format(action=action)
+		ppm.add_pingpong(PingPong(prompt, ""))
+		prompt = ppm.build_prompts(to_idx=to_idx)
+  
+	return context, prompt, ppm
 
 def build_first_story_gen_prompts(
     llm_mode,

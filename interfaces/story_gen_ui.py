@@ -59,6 +59,8 @@ async def update_story_gen(
 
 async def next_story_gen(
 	llm_factory,
+	llm_mode,
+	story_chat_history, 
 	cursors,
 	action,
 	genre, place, mood,
@@ -68,11 +70,7 @@ async def next_story_gen(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,	
 	cur_cursor_idx=None,
 ):
-	prompts = llm_factory.create_prompt_manager().prompts
-	llm_service = llm_factory.create_llm_service()
-
 	stories = ""
-	cur_side_chars = 1
 
 	action = cursors[cur_cursor_idx]["action"] if cur_cursor_idx is not None else action
 	end_idx = len(cursors) if cur_cursor_idx is None else len(cursors)-1
@@ -80,33 +78,38 @@ async def next_story_gen(
 	for cursor in cursors[:end_idx]:
 		stories = stories + cursor["story"]
 
-	side_char_prompt = utils.add_side_character(
-		[side_char_enable1, side_char_enable2, side_char_enable3],
-		[side_char_name1, side_char_name2, side_char_name3],
-		[side_char_job1, side_char_job2, side_char_job3],
-		[side_char_age1, side_char_age2, side_char_age3],
-		[side_char_personality1, side_char_personality2, side_char_personality3],
-	)
-
-	prompt = prompts['story_gen']['next_story_gen'].format(
-		genre=genre, place=place, mood=mood,
-		main_char_name=main_char_name,
-		main_char_job=main_char_job,
-		main_char_age=main_char_age,
-		main_char_personality=main_char_personality,
-		side_char_placeholder=side_char_prompt,
-		stories=stories, action=action,
+	context, prompt, ppm = utils.build_next_story_gen_prompts(
+		llm_mode, llm_factory,
+		story_chat_history, end_idx,
+		stories, action, 
+		genre, place, mood,
+		main_char_name, main_char_age, main_char_personality, main_char_job,
+		side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+		side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+		side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	)
 
 	print(f"generated prompt:\n{prompt}")
-	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=0.9, max_output_tokens=4096)
-	try:
-		response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
-	except Exception as e:
-		print(e)
-		raise gr.Error(e)
+	if llm_mode == "text":
+		parsing_key = "paragraphs"
+		try:
+			res_json = await utils.retry_until_valid_json(
+				prompt=prompt, llm_factory=llm_factory, mode="text"
+			)
+		except Exception as e:
+			raise gr.Error(e)
 
-	story = response_json["paragraphs"]
+		story = res_json["paragraphs"]
+	else:
+		parsing_key = "text"
+		try: 
+			res_json = await utils.retry_until_valid_json(
+				prompt=prompt, llm_factory=llm_factory, context=context, mode="chat"
+			)
+		except Exception as e:
+			raise gr.Error(e)
+
+	story = res_json[parsing_key]
 	if isinstance(story, list):
 		story = "\n\n".join(story)
   
@@ -120,7 +123,11 @@ async def next_story_gen(
 		cursors[cur_cursor_idx]["story"] = story
 		cursors[cur_cursor_idx]["action"] = action
 
+	if llm_mode != "text":
+		ppm.replace_last_pong(story)
+
 	return (
+		[] if llm_mode == "text" else ppm.pingpongs,
 		cursors, len(cursors)-1,
 		story,
 		gr.update(
@@ -149,6 +156,7 @@ async def actions_gen(
 ):
 	prompts = llm_factory.create_prompt_manager().prompts
 	llm_service = llm_factory.create_llm_service()
+	summary = None
 
 	stories = ""
 	end_idx = len(cursors) if cur_cursor_idx is None else len(cursors)-1
@@ -167,24 +175,18 @@ async def actions_gen(
 			print(e)
 			raise gr.Error(e)
 
-		side_char_prompt = utils.add_side_character(
-			[side_char_enable1, side_char_enable2, side_char_enable3],
-			[side_char_name1, side_char_name2, side_char_name3],
-			[side_char_job1, side_char_job2, side_char_job3],
-			[side_char_age1, side_char_age2, side_char_age3],
-			[side_char_personality1, side_char_personality2, side_char_personality3],
-		)
-		prompt = prompts['story_gen']['actions_gen'].format(
-			genre=genre, place=place, mood=mood,
-			main_char_name=main_char_name,
-			main_char_job=main_char_job,
-			main_char_age=main_char_age,
-			main_char_personality=main_char_personality,
-			side_char_placeholder=side_char_prompt,
-			summary=summary,
-		)
+	ppm, context, prompt = utils.build_actions_gen_prompts(
+		llm_mode, llm_factory, 
+		summary, story_chat_history, end_idx,
+		genre, place, mood,
+		main_char_name, main_char_age, main_char_personality, main_char_job,
+		side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
+		side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
+		side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
+	)
 
-		print(f"generated prompt:\n{prompt}")
+	print(f"generated prompt:\n{prompt}")
+	if llm_mode == "text":
 		try:
 			response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 		except Exception as e:
@@ -193,16 +195,6 @@ async def actions_gen(
 		actions = response_json["options"]
 		actions = random.sample(actions, 3)
 	else:
-		ppm, context, prompt = utils.build_actions_gen_prompts(
-			llm_factory, story_chat_history,
-			genre, place, mood,
-			main_char_name, main_char_age, main_char_personality, main_char_job,
-			side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
-			side_char_enable2, side_char_name2, side_char_age2, side_char_personality2, side_char_job2,
-			side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
-		)
-		print(f"generated prompt:\n{prompt}")
-
 		try:
 			res_json = await utils.retry_until_valid_json(
 				prompt=prompt, llm_factory=llm_factory, context=context, mode="chat"
@@ -211,9 +203,10 @@ async def actions_gen(
 			print(e)
 			raise gr.Error(e)
 		actions = res_json["actions"]
-		print(f"actions\n{actions}")
+		ppm.replace_last_pong(json.dumps(res_json))
 
 	return (
+		[] if llm_mode == "text" else ppm.pingpongs,
 		gr.update(value=actions[0], interactive=True),
 		gr.update(value=actions[1], interactive=True),
 		gr.update(value=actions[2], interactive=True),

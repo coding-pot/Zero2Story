@@ -490,7 +490,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			action_btn1, action_btn2, action_btn3, progress_comp
+			story_chat_history, action_btn1, action_btn2, action_btn3, progress_comp
 		]
 	).then(
 		story_gen_ui.enable_btns,
@@ -528,7 +528,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			action_btn1, action_btn2, action_btn3, progress_comp
+			story_chat_history, action_btn1, action_btn2, action_btn3, progress_comp
 		]		
 	).then(
 		story_gen_ui.enable_btns,
@@ -582,7 +582,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			action_btn1, action_btn2, action_btn3, progress_comp
+			story_chat_history, action_btn1, action_btn2, action_btn3, progress_comp
 		]
 	).then(
 		story_gen_ui.enable_btns,
@@ -779,7 +779,9 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
+			story_chat_history,
 			action_btn1,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -788,6 +790,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,	
 		],
 		outputs=[
+			story_chat_history,
 			cursors, cur_cursor,
 			story_content, story_progress,
 			image_gen_btn, audio_gen_btn,
@@ -807,7 +810,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			action_btn1, action_btn2, action_btn3, progress_comp
+			story_chat_history, action_btn1, action_btn2, action_btn3, progress_comp
 		]
 	).then(
 		story_gen_ui.enable_btns,
@@ -835,7 +838,9 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
+			story_chat_history,
 			action_btn2,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -844,6 +849,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,	
 		],
 		outputs=[
+			story_chat_history,
 			cursors, cur_cursor,
 			story_content, story_progress,
 			image_gen_btn, audio_gen_btn,
@@ -863,7 +869,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			action_btn1, action_btn2, action_btn3, progress_comp
+			story_chat_history, action_btn1, action_btn2, action_btn3, progress_comp
 		]
 	).then(
 		story_gen_ui.enable_btns,
@@ -891,7 +897,9 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
+			story_chat_history,
 			action_btn3,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -900,6 +908,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,	
 		],
 		outputs=[
+			story_chat_history,
 			cursors, cur_cursor,
 			story_content, story_progress,
 			image_gen_btn, audio_gen_btn,
@@ -919,7 +928,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			action_btn1, action_btn2, action_btn3, progress_comp
+			story_chat_history, action_btn1, action_btn2, action_btn3, progress_comp
 		]
 	).then(
 		story_gen_ui.enable_btns,
@@ -947,7 +956,9 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
+			story_chat_history,
 			custom_action_txt,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -956,6 +967,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,	
 		],
 		outputs=[
+			story_chat_history,
 			cursors, cur_cursor,
 			story_content, story_progress,
 			image_gen_btn, audio_gen_btn,
@@ -975,7 +987,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			action_btn1, action_btn2, action_btn3, progress_comp
+			story_chat_history, action_btn1, action_btn2, action_btn3, progress_comp
 		]
 	).then(
 		story_gen_ui.enable_btns,
