@@ -193,17 +193,19 @@ async def actions_gen(
 		actions = response_json["options"]
 		actions = random.sample(actions, 3)
 	else:
-		prompt = utils.build_actions_gen_prompts(
+		ppm, context, prompt = utils.build_actions_gen_prompts(
 			llm_factory, story_chat_history
 		)
 		print(f"generated prompt:\n{prompt}")
 
 		try:
-			response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+			res_json = await utils.retry_until_valid_json(
+				prompt=prompt, llm_factory=llm_factory, context=context, mode="chat"
+			)
 		except Exception as e:
 			print(e)
 			raise gr.Error(e)
-		actions = response_json["actions"]
+		actions = res_json["actions"]
 		print(f"actions\n{actions}")
 
 	return (
