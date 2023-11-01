@@ -11,8 +11,7 @@ from pingpong.pingpong import UIFmt
 from pingpong.gradio import GradioChatUIFmt
 
 from modules.llms import (
-    LLMFactory,
-    PromptFmt, PromptManager, PPManager, UIPPManager, LLMService
+    LLMFactory, PromptManager, LLMService
 )
 
 class PaLMFactory(LLMFactory):
@@ -109,6 +108,30 @@ class PaLMChatPromptFmt(PromptFmt):
                 },
             ]
 
+class PaLMChatPPManager(PPManager):
+    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=PaLMChatPromptFmt, truncate_size: int=None):
+        results = []
+        
+        if to_idx == -1 or to_idx >= len(self.pingpongs):
+            to_idx = len(self.pingpongs)
+
+        for idx, pingpong in enumerate(self.pingpongs[from_idx:to_idx]):
+            results += fmt.prompt(pingpong, truncate_size=truncate_size)
+
+        return results
+
+
+class GradioPaLMChatPPManager(PaLMChatPPManager):
+    def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
+        if to_idx == -1 or to_idx >= len(self.pingpongs):
+            to_idx = len(self.pingpongs)
+
+        results = []
+
+        for pingpong in self.pingpongs[from_idx:to_idx]:
+            results.append(fmt.ui(pingpong))
+
+        return results 
 
 class PaLMPromptManager(PromptManager):
     _instance = None
@@ -162,32 +185,6 @@ class PaLMPromptManager(PromptManager):
         if self._chat_prompts is None:
             self.reload_chat_prompts()
         return self._chat_prompts
-
-
-class PaLMChatPPManager(PPManager):
-    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=PaLMChatPromptFmt, truncate_size: int=None):
-        results = []
-        
-        if to_idx == -1 or to_idx >= len(self.pingpongs):
-            to_idx = len(self.pingpongs)
-
-        for idx, pingpong in enumerate(self.pingpongs[from_idx:to_idx]):
-            results += fmt.prompt(pingpong, truncate_size=truncate_size)
-
-        return results
-
-
-class GradioPaLMChatPPManager(UIPPManager, PaLMChatPPManager):
-    def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
-        if to_idx == -1 or to_idx >= len(self.pingpongs):
-            to_idx = len(self.pingpongs)
-
-        results = []
-
-        for pingpong in self.pingpongs[from_idx:to_idx]:
-            results.append(fmt.ui(pingpong))
-
-        return results 
 
 class PaLMService(LLMService):
     def __init__(self):
