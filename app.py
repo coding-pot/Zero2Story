@@ -278,7 +278,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 	with gr.Accordion("Control Panel") as control_panel:
 		with gr.Column(elem_classes=["group-border"]):
-			llm_type = gr.Radio(value="PaLM", choices=["PaLM", "ChatGPT", "LLaMA2"], interactive=True, label="LLM Model Type")
+			llm_type = gr.Radio(value="PaLM", choices=["PaLM", "ChatGPT", "LLaMA2"], interactive=False, label="LLM Model Type")
 			llm_mode = gr.Radio(value="text", choices=["chat", "text"], interactive=True, label="LLM Generation Mode")
 			llm_api_key = gr.Textbox(placeholder="enter authorized key for the chosen llm model", type="password", label="API Key")
 			llm_type_confirm_btn = gr.Button("update llm type", elem_classes=["control-button-green"])
