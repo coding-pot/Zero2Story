@@ -24,6 +24,27 @@ def add_side_character_to_export(
 
 	return characters
 
+def build_title_gen_prompts(
+	llm_mode, llm_factory, stories
+):
+	examples = None
+
+	if llm_mode == "text":
+		prompts = llm_factory.create_prompt_manager().prompts
+	else:
+		prompts = llm_factory.create_prompt_manager().chat_prompts
+
+	if llm_mode == "text": 
+		prompt = prompts['story_gen']['title'].format(stories=stories)
+	else:
+		examples =  prompts['story_gen']['examples']
+		prompt = prompts['story_gen']['query']['title_prompt'].format(stories=stories)
+  
+		ppm = llm_factory.to_ppm("", [PingPong(prompt, "")])
+		prompt = ppm.build_prompts()
+
+	return examples, prompt
+
 def add_side_character(prompts, enable, name, age, personality, job):
 	cur_side_chars = 1
 	prompt = ""

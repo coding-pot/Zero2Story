@@ -9,18 +9,30 @@ from modules.llms import get_llm_factory
 template_file = "templates/basic.jinja"
 export_template_file = "templates/basic_export.jinja"
 
-async def title_gen(llm_factory, cursors):
+async def title_gen(
+    llm_factory, llm_mode, cursors
+):
     stories = ""
     for cursor in cursors:
         stories = stories + cursor["story"]
     
-    prompts = llm_factory.create_prompt_manager().prompts
-    llm_service = llm_factory.create_llm_service()
+    examples, prompt = utils.build_title_gen_prompts(llm_mode, llm_factory, stories)
+    print(f"generated prompt:\n{prompt}")
 
-    prompt = prompts['story_gen']['title'].format(stories=stories)
+    try:
+        if llm_mode == "text":
+            llm_service = llm_factory.create_llm_service()
+            _, title = await llm_service.gen_text(prompt, mode="text")
+        else:
+            parsing_key = "title"
+            res_json = await utils.retry_until_valid_json(
+				prompt=prompt, llm_factory=llm_factory, examples=examples, mode="chat", candidate=8,
+            )
+            title = res_json[parsing_key]
 
-    parameters = llm_service.make_params(mode="text", temperature=0.7, top_k=40, top_p=1.0, max_output_tokens=4096)
-    _, title = await llm_service.gen_text(prompt, mode="text", parameters=parameters)
+    except Exception as e:
+        raise gr.Error(e)    
+    
     return title
 
 def export(
