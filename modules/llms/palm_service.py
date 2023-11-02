@@ -269,7 +269,7 @@ class PaLMService(LLMService):
                     'candidate_count': num_candidate,
                     'context': context,
                     'examples': examples,
-                    'temperature': 0.25,
+                    'temperature': 1.0,
                     'top_k': 40,
                     'top_p': 0.95,
                     # 'safety_settings': safety_settings,
