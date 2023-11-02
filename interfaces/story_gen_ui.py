@@ -149,11 +149,11 @@ async def actions_gen(
 
 	stories = ""
 	end_idx = len(cursors) if cur_cursor_idx is None else len(cursors)-1
+ 
+	for cursor in cursors[:end_idx]:
+		stories = stories + cursor["story"]
 
 	if llm_mode == "text":
-		for cursor in cursors[:end_idx]:
-			stories = stories + cursor["story"]
-  
 		summary_prompt = prompts['story_gen']['summarize'].format(stories=stories)
 		print(f"generated prompt:\n{summary_prompt}")
   
