@@ -218,6 +218,7 @@ def parse_first_json_code_snippet(code_snippet):
 
 	if json_start_index >= 0 and json_end_index >= 0:
 		json_code_snippet = code_snippet[json_start_index:json_end_index+1]
+		print(json_code_snippet)
 		try:
 			json_parsed_string = json.loads(json_code_snippet, strict=False)
 		except:
