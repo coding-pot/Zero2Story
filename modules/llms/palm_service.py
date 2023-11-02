@@ -264,6 +264,7 @@ class PaLMService(LLMService):
                     safety_settings[idx]['threshold'] = 4
 
             if mode == "chat":
+                print(f"context: {context}")
                 parameters = {
                     'model': 'models/chat-bison-001',
                     'candidate_count': num_candidate,
