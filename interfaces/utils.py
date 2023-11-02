@@ -118,6 +118,7 @@ def build_next_story_gen_prompts(
 		prompts = llm_factory.create_prompt_manager().chat_prompts
 
 	side_char_prompt = add_side_character(
+		prompts,
 		[side_char_enable1, side_char_enable2, side_char_enable3],
 		[side_char_name1, side_char_name2, side_char_name3],
 		[side_char_job1, side_char_job2, side_char_job3],
