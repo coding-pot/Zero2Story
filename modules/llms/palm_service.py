@@ -288,7 +288,7 @@ class PaLMService(LLMService):
         try:
             if mode == "chat":
                 response = await palm_api.chat_async(**parameters, messages=prompt)
-                if candidate > 1:
+                if num_candidate > 1:
                     print("==========================================")
                     print(response)
                     print("==========================================")
