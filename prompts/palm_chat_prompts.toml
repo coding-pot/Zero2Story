@@ -7,14 +7,10 @@ add_side_character = """side character #{cur_side_chars} information:
 
 """
 
-context = """You are the system of the game, and you and I together are going to make a wonderful story.
+context = """You are the system of the {genre} game, and you and I together are going to write a wonderful story.
+Our storytelling journey will be taken in the place of {place}, and the mood of this story is {mood}.
 
-Your answer should be based on the  information below about the background and characters.
-
-background information:
-- genre: {genre}
-- where: {place}
-- mood: {mood}
+Other than that, your answer should be based on the information below about the characters.
 
 main character information:
 - name: {main_char_name}
