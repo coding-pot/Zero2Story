@@ -88,24 +88,17 @@ async def next_story_gen(
 	)
 
 	print(f"generated prompt:\n{prompt}")
-	if llm_mode == "text":
-		parsing_key = "paragraphs"
-		try:
-			res_json = await utils.retry_until_valid_json(
-				prompt=prompt, llm_factory=llm_factory, mode="text"
-			)
-		except Exception as e:
-			raise gr.Error(e)
-
-		story = res_json["paragraphs"]
-	else:
-		parsing_key = "text"
-		try: 
+	try:
+		if llm_mode == "text":
+			parsing_key = "paragraphs"
+			res_json = await utils.retry_until_valid_json(prompt=prompt, llm_factory=llm_factory, mode="text")
+		else:
+			parsing_key = "text"
 			res_json = await utils.retry_until_valid_json(
 				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat", candidate=8,
 			)
-		except Exception as e:
-			raise gr.Error(e)
+	except Exception as e:
+		raise gr.Error(e)
 
 	story = res_json[parsing_key]
 	if isinstance(story, list):
@@ -182,24 +175,21 @@ async def actions_gen(
 	)
 
 	print(f"generated prompt:\n{prompt}")
-	if llm_mode == "text":
-		try:
+	try:
+		if llm_mode == "text":
+			parsing_key = "options"
 			res_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
-		except Exception as e:
-			print(e)
-			raise gr.Error(e)
-		actions = res_json["options"]
-		actions = random.sample(actions, 3)
-	else:
-		try:
+		else:
+			parsing_key = "actions"
 			res_json = await utils.retry_until_valid_json(
 				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat", candidate=8,
 			)
-		except Exception as e:
-			print(e)
-			raise gr.Error(e)
-		actions = res_json["actions"]
-		ppm.replace_last_pong(json.dumps(res_json))
+	except Exception as e:
+		print(e)
+		raise gr.Error(e)
+
+	actions = res_json[parsing_key]
+	actions = random.sample(actions, 3)
 
 	return (
 		[] if llm_mode == "text" else ppm.pingpongs,
@@ -229,28 +219,19 @@ async def first_story_gen(
 		side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	)
     
-    if llm_mode == "text":
-        parsing_key = "paragraphs"
-        try:
+    try:
+        if llm_mode == "text":
+            parsing_key = "paragraphs"
+            res_json = await utils.retry_until_valid_json(prompt=prompt, llm_factory=llm_factory, mode="text")
+        else:
+            parsing_key = "text"
             res_json = await utils.retry_until_valid_json(
-				prompt=prompt, llm_factory=llm_factory, mode="text"
-			)
-        except Exception as e:
-            raise gr.Error(e)
-
-        story = res_json["paragraphs"]
-
-    else:
-        parsing_key = "text"
-        try: 
-            res_json = await utils.retry_until_valid_json(
-				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat", candidate=8,
-			)
-        except Exception as e:
-            raise gr.Error(e)
-        
-    # post processings
-    print(res_json)
+                prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat", candidate=8,
+            )
+    except Exception as e:
+        raise gr.Error(e)
+    
+	# post processings
     story = res_json[parsing_key]
     if isinstance(story, list):
         story = "\n\n".join(story)
