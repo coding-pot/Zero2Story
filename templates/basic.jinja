@@ -20,8 +20,8 @@ audio {
 }
 
 #story-body {
-	padding-top: 20px;
-	width: 50%;
+	padding-top: 10px;
+	width: 85%;
 	margin: auto;
 }
 
@@ -48,7 +48,7 @@ audio {
 
 .paragraphs {
 	text-align: justify;
-	padding-top: 50px;
+	padding-top: 30px;
 }
 
 </style>
@@ -90,7 +90,11 @@ audio {
 	{% endif %}
 
 	<p class="paragraphs">
-	{{ item['story'] }}
+	{% set stories = item['story'].split('\n') %}
+	{% for story in stories %}
+    	{{ story }}
+		<br>
+	{% endfor %} 
 	</p>
 	</div>
 	{% endfor %}
