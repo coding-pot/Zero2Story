@@ -59,10 +59,10 @@ DO NOT include any additional field except "actions".
 DO NOT express each action other than a single string.
 DO NOT explain the actions with your own thoughts."""
 
-title_prompt = """suggest the title of the story below. Fill the title in a JSON field of "title". It should be expressed ONLY in a single string without any additional field except "title".
-DO NOT explain the story with your own thoughts.
+title_prompt = """{stories}
 --------------------------------------------
-{stories}
+give me the title of the story above. Fill the title in a JSON field of "title". It should be expressed ONLY in a single string without any additional field except "title".
+DO NOT explain the story with your own thoughts.
 """
 
 [image_gen]
