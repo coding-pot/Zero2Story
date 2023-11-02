@@ -47,6 +47,7 @@ async def update_story_gen(
     else:
         return await next_story_gen(
 			llm_factory,
+			llm_mode,
 			cursors,
 			None,
 			genre, place, mood,
