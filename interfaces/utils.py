@@ -218,7 +218,6 @@ def parse_first_json_code_snippet(code_snippet):
 
 	if json_start_index >= 0 and json_end_index >= 0:
 		json_code_snippet = code_snippet[json_start_index:json_end_index+1]
-		print(json_code_snippet)
 		try:
 			json_parsed_string = json.loads(json_code_snippet, strict=False)
 		except:
@@ -227,6 +226,9 @@ def parse_first_json_code_snippet(code_snippet):
 			print(json_code_snippet)
 			print(repr(json_code_snippet))
 	else:
+		print("failed to find valid JSON string")
+		print("---------------------------------------")
+		print(json_code_snippet)
 		raise ValueError('No JSON code snippet found in string.')
 	
 	return json_parsed_string
@@ -267,12 +269,12 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 		try:
 			response_json = parse_first_json_code_snippet(response_txt)
 			if not response_json:
-				print("Parsing JSON failed. Retrying...")
+				print("1. Parsing JSON failed. Retrying...")
 				continue
 			else:
 				break
 		except:
-			print("Parsing JSON failed. Retrying...")
+			print("2. Parsing JSON failed. Retrying...")
 			pass
 	
 	if len(response.filters) > 0:
