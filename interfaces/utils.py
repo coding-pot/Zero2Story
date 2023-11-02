@@ -231,12 +231,11 @@ def parse_first_json_code_snippet(code_snippet):
 	json_parsed_string = None
     
 	if isinstance(code_snippet, list):
-		count = 0
+		print("there are more than 1 candidate responses")
 		for code_snippet_piece in code_snippet:
 			try:
-				count = count + 1
 				json_parsed_string = find_json_code_snippet(code_snippet_piece)
-				break
+				return json_parsed_string
 			except:
 				pass
 	else:
