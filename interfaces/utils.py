@@ -233,7 +233,7 @@ def parse_first_json_code_snippet(code_snippet):
 	
 	return json_parsed_string
 
-async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, context=None, examples=None, llm_type="PaLM", mode="text"):
+async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, context=None, examples=None, candidate=1, llm_type="PaLM", mode="text"):
 	response_json = None
 	if llm_factory is None:
 		llm_factory = get_llm_factory(llm_type)
@@ -255,6 +255,7 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 							prompt, mode="chat", 
 							parameters=parameters,
 							context=context,
+							candidate=candidate,
 							examples=[] if examples is None else examples
 					),
 					timeout=30
