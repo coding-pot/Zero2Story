@@ -473,7 +473,7 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			story_chat_history, cursors, cur_cursor, story_content, story_progress, 
+			cursors, cur_cursor, story_content, story_progress, 
 			image_gen_btn, audio_gen_btn, story_image, story_audio, story_video
 		]
 	).then(

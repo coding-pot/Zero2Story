@@ -43,8 +43,7 @@ def build_actions_gen_prompts(
 	llm_mode,
 	llm_factory,
 	summary, #only for test
-	story_chat_history, #only for chat
-	to_idx, #only for chat
+	stories, #only for chat
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
 	side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
@@ -89,18 +88,20 @@ def build_actions_gen_prompts(
 			side_char_placeholder=side_char_prompt,
 		)
 		examples =  prompts['story_gen']['examples']
+		first_conversation = PingPong(
+			prompts['story_gen']['query']['first_prompt'], 
+			f"""{{"text": "{stories}"}}"""
+		)
   
-		ppm = llm_factory.to_ppm(context, story_chat_history)	
+		ppm = llm_factory.to_ppm(context, [first_conversation])	
 		prompt = prompts['story_gen']['query']['action_prompt']
 		ppm.add_pingpong(PingPong(prompt, ""))
-		prompt = ppm.build_prompts(to_idx=to_idx+1)
+		prompt = ppm.build_prompts()
 
 	return ppm, context, examples, prompt
 
 def build_next_story_gen_prompts(
     llm_mode, llm_factory,
-	story_chat_history, #only for chat
-	to_idx, #only for chat
 	action, stories, 
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -146,11 +147,14 @@ def build_next_story_gen_prompts(
 			side_char_placeholder=side_char_prompt,
 		)
 		examples =  prompts['story_gen']['examples']
+		first_conversation = PingPong(
+			prompts['story_gen']['query']['first_prompt'], 
+			f"""{{"text": "{stories}"}}"""
+		)
   
-		ppm = llm_factory.to_ppm(context, story_chat_history)
+		ppm = llm_factory.to_ppm(context, [first_conversation])
 		prompt = prompts['story_gen']['query']['next_prompt'].format(action=action)
 		ppm.add_pingpong(PingPong(prompt, ""))
-		prompt = ppm.build_prompts(to_idx=to_idx+2)
   
 	return context, examples, prompt, ppm
 

@@ -60,7 +60,6 @@ async def update_story_gen(
 async def next_story_gen(
 	llm_factory,
 	llm_mode,
-	story_chat_history, 
 	cursors,
 	action,
 	genre, place, mood,
@@ -80,7 +79,6 @@ async def next_story_gen(
 
 	context, examples, prompt, ppm = utils.build_next_story_gen_prompts(
 		llm_mode, llm_factory,
-		story_chat_history, end_idx,
 		stories, action, 
 		genre, place, mood,
 		main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -145,7 +143,6 @@ async def next_story_gen(
 async def actions_gen(
 	llm_factory,
 	llm_mode,
-	story_chat_history,
 	cursors,
 	genre, place, mood,
 	main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -177,7 +174,7 @@ async def actions_gen(
 
 	ppm, context, examples, prompt = utils.build_actions_gen_prompts(
 		llm_mode, llm_factory, 
-		summary, story_chat_history, end_idx,
+		summary, stories,
 		genre, place, mood,
 		main_char_name, main_char_age, main_char_personality, main_char_job,
 		side_char_enable1, side_char_name1, side_char_age1, side_char_personality1, side_char_job1,
@@ -271,7 +268,6 @@ async def first_story_gen(
         ppm.replace_last_pong(story)
 
     return (
-        [] if llm_mode == "text" else ppm.pingpongs,
 		cursors, 
 		len(cursors)-1,
 		story,
