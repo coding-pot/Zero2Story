@@ -248,6 +248,7 @@ class PaLMService(LLMService):
         parameters=None,
         context=None, #chat only
         examples=None, #chat only
+        candidate=1, #chat only
         use_filter=True,
     ):
         if parameters is None:
@@ -265,7 +266,7 @@ class PaLMService(LLMService):
             if mode == "chat":
                 parameters = {
                     'model': 'models/chat-bison-001',
-                    'candidate_count': 1,
+                    'candidate_count': candidate,
                     'context': context,
                     'examples': examples,
                     'temperature': 0.25,
@@ -287,6 +288,10 @@ class PaLMService(LLMService):
         try:
             if mode == "chat":
                 response = await palm_api.chat_async(**parameters, messages=prompt)
+                if candidate > 0:
+                    print("==========================================")
+                    print(response)
+                    print("==========================================")
             else:
                 response = palm_api.generate_text(**parameters, prompt=prompt)
         except:
