@@ -125,7 +125,6 @@ async def next_story_gen(
 		ppm.replace_last_pong(story)
 
 	return (
-		[] if llm_mode == "text" else ppm.pingpongs,
 		cursors, len(cursors)-1,
 		story,
 		gr.update(
