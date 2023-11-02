@@ -11,8 +11,7 @@ from pingpong.pingpong import UIFmt
 from pingpong.gradio import GradioChatUIFmt
 
 from modules.llms import (
-    LLMFactory,
-    PromptFmt, PromptManager, PPManager, UIPPManager, LLMService
+    LLMFactory, PromptManager, LLMService
 )
 
 class PaLMFactory(LLMFactory):
@@ -44,6 +43,13 @@ class PaLMFactory(LLMFactory):
     
     def create_llm_service(self):
         return PaLMService()
+    
+    def to_ppm(self, context, pingpongs):
+        ppm = PaLMChatPPManager()
+        ppm.ctx = context
+        ppm.pingpongs = pingpongs
+        
+        return ppm
     
     @classmethod
     def load_palm_api_key(cls, palm_api_key: str=None):
@@ -102,6 +108,30 @@ class PaLMChatPromptFmt(PromptFmt):
                 },
             ]
 
+class PaLMChatPPManager(PPManager):
+    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=PaLMChatPromptFmt, truncate_size: int=None):
+        results = []
+        
+        if to_idx == -1 or to_idx >= len(self.pingpongs):
+            to_idx = len(self.pingpongs)
+
+        for idx, pingpong in enumerate(self.pingpongs[from_idx:to_idx]):
+            results += fmt.prompt(pingpong, truncate_size=truncate_size)
+
+        return results
+
+
+class GradioPaLMChatPPManager(PaLMChatPPManager):
+    def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
+        if to_idx == -1 or to_idx >= len(self.pingpongs):
+            to_idx = len(self.pingpongs)
+
+        results = []
+
+        for pingpong in self.pingpongs[from_idx:to_idx]:
+            results.append(fmt.ui(pingpong))
+
+        return results 
 
 class PaLMPromptManager(PromptManager):
     _instance = None
@@ -155,36 +185,6 @@ class PaLMPromptManager(PromptManager):
         if self._chat_prompts is None:
             self.reload_chat_prompts()
         return self._chat_prompts
-
-
-class PaLMChatPPManager(PPManager):
-    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=None, truncate_size: int=None):
-        if fmt is None:
-            factory = PaLMFactory()
-            fmt = factory.create_prompt_format()
-        
-        results = []
-        
-        if to_idx == -1 or to_idx >= len(self.pingpongs):
-            to_idx = len(self.pingpongs)
-
-        for idx, pingpong in enumerate(self.pingpongs[from_idx:to_idx]):
-            results += fmt.prompt(pingpong, truncate_size=truncate_size)
-
-        return results
-
-
-class GradioPaLMChatPPManager(UIPPManager, PaLMChatPPManager):
-    def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
-        if to_idx == -1 or to_idx >= len(self.pingpongs):
-            to_idx = len(self.pingpongs)
-
-        results = []
-
-        for pingpong in self.pingpongs[from_idx:to_idx]:
-            results.append(fmt.ui(pingpong))
-
-        return results 
 
 class PaLMService(LLMService):
     def __init__(self):
@@ -248,14 +248,10 @@ class PaLMService(LLMService):
         parameters=None,
         context=None, #chat only
         examples=None, #chat only
-        use_filter=True
+        num_candidate=1, #chat only
+        use_filter=True,
     ):
         if parameters is None:
-            temperature = 1.0
-            top_k = 40
-            top_p = 0.95
-            max_output_tokens = 1024
-            
             # default safety settings
             safety_settings = [{"category":"HARM_CATEGORY_DEROGATORY","threshold":1},
                             {"category":"HARM_CATEGORY_TOXICITY","threshold":1},
@@ -270,22 +266,22 @@ class PaLMService(LLMService):
             if mode == "chat":
                 parameters = {
                     'model': 'models/chat-bison-001',
-                    'candidate_count': 1,
+                    'candidate_count': num_candidate,
                     'context': context,
                     'examples': examples,
-                    'temperature': temperature,
-                    'top_k': top_k,
-                    'top_p': top_p,
+                    'temperature': 1.0,
+                    'top_k': 40,
+                    'top_p': 0.95,
                     # 'safety_settings': safety_settings,
                 }
             else:
                 parameters = {
                     'model': 'models/text-bison-001',
                     'candidate_count': 1,
-                    'temperature': temperature,
-                    'top_k': top_k,
-                    'top_p': top_p,
-                    'max_output_tokens': max_output_tokens,
+                    'temperature': 1.0,
+                    'top_k': 40,
+                    'top_p': 0.95,
+                    'max_output_tokens': 4096,
                     'safety_settings': safety_settings,
                 }
 
@@ -301,7 +297,12 @@ class PaLMService(LLMService):
             raise Exception("PaLM API has withheld a response due to content safety concerns.")
         else:
             if mode == "chat":
-                response_txt = response.last
+                if num_candidate > 1:
+                    response_txt = []
+                    for candidate in response.candidates:
+                        response_txt.append(candidate["content"])
+                else:
+                    response_txt = response.last    
             else:
                 response_txt = response.result
         

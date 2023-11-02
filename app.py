@@ -19,6 +19,8 @@ with gr.Blocks(css=STYLE) as demo:
 	ui_pp_manager = factory.create_ui_pp_manager()
 	
 	llm = gr.State(get_llm_factory("PaLM"))
+	story_chat_history = gr.State([])
+
 	chat_mode = gr.State("setting_chat")
 	chat_state = gr.State({
 		"setting_chat": ui_pp_manager,
@@ -276,7 +278,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 	with gr.Accordion("Control Panel") as control_panel:
 		with gr.Column(elem_classes=["group-border"]):
-			llm_type = gr.Radio(value="PaLM", choices=["PaLM", "ChatGPT", "LLaMA2"], interactive=True, label="LLM Model Type")
+			llm_type = gr.Radio(value="PaLM", choices=["PaLM", "ChatGPT", "LLaMA2"], interactive=False, label="LLM Model Type")
 			llm_mode = gr.Radio(value="text", choices=["chat", "text"], interactive=True, label="LLM Generation Mode")
 			llm_api_key = gr.Textbox(placeholder="enter authorized key for the chosen llm model", type="password", label="API Key")
 			llm_type_confirm_btn = gr.Button("update llm type", elem_classes=["control-button-green"])
@@ -461,7 +463,8 @@ with gr.Blocks(css=STYLE) as demo:
 	).then(
 		story_gen_ui.first_story_gen,
 		inputs=[
-			llm,	
+			llm,
+			llm_mode,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -470,13 +473,14 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,
 		],
 		outputs=[
-			cursors, cur_cursor, story_content, story_progress, image_gen_btn, audio_gen_btn,
-			story_image, story_audio, story_video
+			cursors, cur_cursor, story_content, story_progress, 
+			image_gen_btn, audio_gen_btn, story_image, story_audio, story_video
 		]
 	).then(
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -513,6 +517,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -549,6 +554,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.update_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors, cur_cursor,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -557,12 +563,14 @@ with gr.Blocks(css=STYLE) as demo:
 			side_char_enable_ckb3, name_txt4, age_dd4, personality_dd4, job_dd4,			
 		],
 		outputs=[
-			cursors, cur_cursor, story_content, story_progress, image_gen_btn, audio_gen_btn
+   			story_chat_history, cursors, cur_cursor, story_content, story_progress, 
+			image_gen_btn, audio_gen_btn, story_image, story_audio, story_video
 		]
 	).then(
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -768,6 +776,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			action_btn1,
 			genre_dd, place_dd, mood_dd, 
@@ -786,6 +795,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -822,6 +832,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			action_btn2,
 			genre_dd, place_dd, mood_dd, 
@@ -840,6 +851,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -876,6 +888,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			action_btn3,
 			genre_dd, place_dd, mood_dd, 
@@ -894,6 +907,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -930,6 +944,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.next_story_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			custom_action_txt,
 			genre_dd, place_dd, mood_dd, 
@@ -948,6 +963,7 @@ with gr.Blocks(css=STYLE) as demo:
 		story_gen_ui.actions_gen,
 		inputs=[
 			llm,
+			llm_mode,
 			cursors,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
