@@ -248,7 +248,7 @@ class PaLMService(LLMService):
         parameters=None,
         context=None, #chat only
         examples=None, #chat only
-        candidate=1, #chat only
+        num_candidate=1, #chat only
         use_filter=True,
     ):
         if parameters is None:
@@ -266,7 +266,7 @@ class PaLMService(LLMService):
             if mode == "chat":
                 parameters = {
                     'model': 'models/chat-bison-001',
-                    'candidate_count': candidate,
+                    'candidate_count': num_candidate,
                     'context': context,
                     'examples': examples,
                     'temperature': 0.25,
@@ -288,7 +288,7 @@ class PaLMService(LLMService):
         try:
             if mode == "chat":
                 response = await palm_api.chat_async(**parameters, messages=prompt)
-                if candidate > 0:
+                if candidate > 1:
                     print("==========================================")
                     print(response)
                     print("==========================================")
@@ -301,7 +301,12 @@ class PaLMService(LLMService):
             raise Exception("PaLM API has withheld a response due to content safety concerns.")
         else:
             if mode == "chat":
-                response_txt = response.last
+                if num_candidate > 1:
+                    response_txt = []
+                    for candidate in response.candidates:
+                        response_txt.append(candidate["content"])
+                else:
+                    response_txt = response.last    
             else:
                 response_txt = response.result
         

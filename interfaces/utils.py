@@ -210,26 +210,41 @@ def build_first_story_gen_prompts(
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
 
-def parse_first_json_code_snippet(code_snippet):
+def find_json_code_snippet(raw_code_snippet):
 	json_parsed_string = None
-	
-	json_start_index = code_snippet.find('{')
-	json_end_index = code_snippet.rfind('}')
+    
+	json_start_index = raw_code_snippet.find('{')
+	json_end_index = raw_code_snippet.rfind('}')
 
 	if json_start_index >= 0 and json_end_index >= 0:
-		json_code_snippet = code_snippet[json_start_index:json_end_index+1]
+		json_code_snippet = raw_code_snippet[json_start_index:json_end_index+1]
 		try:
 			json_parsed_string = json.loads(json_code_snippet, strict=False)
 		except:
-			print("failed to parse string into JSON format")
-			print("---------------------------------------")
-			print(json_code_snippet)
-			print(repr(json_code_snippet))
+			raise ValueError('failed to parse string into JSON format')
 	else:
-		print("failed to find valid JSON string")
-		print("---------------------------------------")
-		print(code_snippet)
 		raise ValueError('No JSON code snippet found in string.')
+
+	return json_parsed_string
+
+def parse_first_json_code_snippet(code_snippet):
+	json_parsed_string = None
+    
+	if isinstance(code_snippet, list):
+		count = 0
+		for code_snippet_piece in code_snippet:
+			try:
+				count = count + 1
+				json_parsed_string = find_json_code_snippet(code_snippet_piece)
+				break
+			except:
+				pass
+	else:
+		try:
+			json_parsed_string = find_json_code_snippet(code_snippet)
+		except Exception as e:
+			print(e)
+			raise ValueError()
 	
 	return json_parsed_string
 
