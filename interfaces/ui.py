@@ -178,4 +178,6 @@ def reset(llm_type="PaLM"):
 		'Your Own Story', # title_txt
 
 		"", # export_html
+  
+		gr.update(visible=False) # invisible exported downloader
 	)
