@@ -32,7 +32,7 @@ examples = [
     ],
     [
         """give me three possible actions to continue the story in different paths. Fill the paragraphs in a JSON field of "actions".\n\nDO NOT include any additional field except "actions".\nDO NOT express each action other than a single string.\nDO NOT explain the actions with your own thoughts. """,
-        """{"actions", "blahblah", "blahblah", "blahblah"}"""
+        """{"actions": ["blahblah", "blahblah", "blahblah"]}"""
     ],
     [
         """give me the next few paragraphs based on user choice "Aron rides to the east to confront the Dark Lord.". Fill the paragraphs in a JSON field of "text". It should be expressed ONLY in a single string without any additional field except "text".\n\nDO NOT explain the story with your own thoughts. """,
