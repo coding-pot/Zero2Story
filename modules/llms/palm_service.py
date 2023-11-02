@@ -288,10 +288,6 @@ class PaLMService(LLMService):
         try:
             if mode == "chat":
                 response = await palm_api.chat_async(**parameters, messages=prompt)
-                if num_candidate > 1:
-                    print("==========================================")
-                    print(response)
-                    print("==========================================")
             else:
                 response = palm_api.generate_text(**parameters, prompt=prompt)
         except:
@@ -305,6 +301,7 @@ class PaLMService(LLMService):
                     response_txt = []
                     for candidate in response.candidates:
                         response_txt.append(candidate["content"])
+                    print(response_txt)
                 else:
                     response_txt = response.last    
             else:
