@@ -52,6 +52,7 @@ def build_actions_gen_prompts(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
 	context = None
+	examples = None
 	ppm = None
 
 	if llm_mode == "text":
@@ -87,13 +88,14 @@ def build_actions_gen_prompts(
 			main_char_personality=main_char_personality,
 			side_char_placeholder=side_char_prompt,
 		)
-		ppm = llm_factory.to_ppm(context, story_chat_history)
-	
+		examples =  prompts['story_gen']['examples']
+  
+		ppm = llm_factory.to_ppm(context, story_chat_history)	
 		prompt = prompts['story_gen']['query']['action_prompt']
 		ppm.add_pingpong(PingPong(prompt, ""))
 		prompt = ppm.build_prompts(to_idx=to_idx)
 
-	return ppm, context, prompt
+	return ppm, context, examples, prompt
 
 def build_next_story_gen_prompts(
     llm_mode, llm_factory,
@@ -107,6 +109,7 @@ def build_next_story_gen_prompts(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,	
 ):
 	context = ""
+	examples = None
 	ppm = None
  
 	if llm_mode == "text":
@@ -141,12 +144,14 @@ def build_next_story_gen_prompts(
 			main_char_personality=main_char_personality,
 			side_char_placeholder=side_char_prompt,
 		)
+		examples =  prompts['story_gen']['examples']
+  
 		ppm = llm_factory.to_ppm(context, story_chat_history)
 		prompt = prompts['story_gen']['query']['next_prompt'].format(action=action)
 		ppm.add_pingpong(PingPong(prompt, ""))
 		prompt = ppm.build_prompts(to_idx=to_idx)
   
-	return context, prompt, ppm
+	return context, examples, prompt, ppm
 
 def build_first_story_gen_prompts(
     llm_mode,
@@ -158,6 +163,7 @@ def build_first_story_gen_prompts(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 ):
 	context = ""
+	examples = None
 	ppm = None
     
 	if llm_mode == "text":
@@ -192,13 +198,14 @@ def build_first_story_gen_prompts(
 			main_char_personality=main_char_personality,
 			side_char_placeholder=side_char_prompt,
 		)
+		examples =  prompts['story_gen']['examples']
   		
 		query = prompts['story_gen']['query']['first_prompt']
 		pingpong = PingPong(query, "")
 		ppm = llm_factory.to_ppm(context, [pingpong])
 		prompt = ppm.build_prompts()
  
-	return context, prompt, ppm
+	return context, examples, prompt, ppm
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))

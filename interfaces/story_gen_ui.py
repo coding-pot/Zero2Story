@@ -78,7 +78,7 @@ async def next_story_gen(
 	for cursor in cursors[:end_idx]:
 		stories = stories + cursor["story"]
 
-	context, prompt, ppm = utils.build_next_story_gen_prompts(
+	context, examples, prompt, ppm = utils.build_next_story_gen_prompts(
 		llm_mode, llm_factory,
 		story_chat_history, end_idx,
 		stories, action, 
@@ -104,7 +104,7 @@ async def next_story_gen(
 		parsing_key = "text"
 		try: 
 			res_json = await utils.retry_until_valid_json(
-				prompt=prompt, llm_factory=llm_factory, context=context, mode="chat"
+				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat"
 			)
 		except Exception as e:
 			raise gr.Error(e)
@@ -175,7 +175,7 @@ async def actions_gen(
 			print(e)
 			raise gr.Error(e)
 
-	ppm, context, prompt = utils.build_actions_gen_prompts(
+	ppm, context, examples, prompt = utils.build_actions_gen_prompts(
 		llm_mode, llm_factory, 
 		summary, story_chat_history, end_idx,
 		genre, place, mood,
@@ -197,7 +197,7 @@ async def actions_gen(
 	else:
 		try:
 			res_json = await utils.retry_until_valid_json(
-				prompt=prompt, llm_factory=llm_factory, context=context, mode="chat"
+				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat"
 			)
 		except Exception as e:
 			print(e)
@@ -224,7 +224,7 @@ async def first_story_gen(
 	side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	cur_cursor_idx=None,
 ):  
-    context, prompt, ppm = utils.build_first_story_gen_prompts(
+    context, examples, prompt, ppm = utils.build_first_story_gen_prompts(
 		llm_mode, llm_factory,
 		genre, place, mood,
 		main_char_name, main_char_age, main_char_personality, main_char_job,
@@ -248,7 +248,7 @@ async def first_story_gen(
         parsing_key = "text"
         try: 
             res_json = await utils.retry_until_valid_json(
-				prompt=prompt, llm_factory=llm_factory, context=context, mode="chat"
+				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat"
 			)
         except Exception as e:
             raise gr.Error(e)
