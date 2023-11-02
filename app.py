@@ -346,7 +346,7 @@ with gr.Blocks(css=STYLE) as demo:
 
 	title_gen_btn.click(
 		export_ui.title_gen,
-		inputs=[llm, cursors],
+		inputs=[llm, llm_mode, cursors],
 		outputs=[title_txt]
 	)
 
