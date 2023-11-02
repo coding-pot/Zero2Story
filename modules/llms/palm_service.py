@@ -301,7 +301,6 @@ class PaLMService(LLMService):
                     response_txt = []
                     for candidate in response.candidates:
                         response_txt.append(candidate["content"])
-                    print(response_txt)
                 else:
                     response_txt = response.last    
             else:
