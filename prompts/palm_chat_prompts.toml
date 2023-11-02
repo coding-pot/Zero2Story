@@ -45,7 +45,7 @@ first_prompt = """Let's begin. give me the first few paragraphs to begin with. F
 
 DO NOT explain the story with your own thoughts."""
 
-next_prompt = """give me the next few paragraphs based on user choice "Aron rides to the east to confront the Dark Lord.". Fill the paragraphs in a JSON field of "text". It should be expressed ONLY in a single string without any additional field except "text".
+next_prompt = """give me the next few paragraphs based on user choice "{action}". Fill the paragraphs in a JSON field of "text". It should be expressed ONLY in a single string without any additional field except "text".
 
 DO NOT explain the story with your own thoughts."""
 
