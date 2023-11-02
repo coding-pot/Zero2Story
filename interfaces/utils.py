@@ -270,7 +270,7 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 							prompt, mode="chat", 
 							parameters=parameters,
 							context=context,
-							candidate=candidate,
+							num_candidate=candidate,
 							examples=[] if examples is None else examples
 					),
 					timeout=30
