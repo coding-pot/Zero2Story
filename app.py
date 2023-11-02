@@ -780,8 +780,8 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[
 			llm,
 			llm_mode,
-			cursors,
 			story_chat_history,
+			cursors,
 			action_btn1,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -839,8 +839,8 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[
 			llm,
 			llm_mode,
-			cursors,
 			story_chat_history,
+			cursors,
 			action_btn2,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -898,8 +898,8 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[
 			llm,
 			llm_mode,
-			cursors,
 			story_chat_history,
+			cursors,
 			action_btn3,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,
@@ -957,8 +957,8 @@ with gr.Blocks(css=STYLE) as demo:
 		inputs=[
 			llm,
 			llm_mode,
-			cursors,
 			story_chat_history,
+			cursors,
 			custom_action_txt,
 			genre_dd, place_dd, mood_dd, 
 			name_txt1, age_dd1, personality_dd1, job_dd1,

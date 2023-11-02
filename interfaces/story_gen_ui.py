@@ -104,7 +104,7 @@ async def next_story_gen(
 		parsing_key = "text"
 		try: 
 			res_json = await utils.retry_until_valid_json(
-				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat"
+				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat", candidate=8,
 			)
 		except Exception as e:
 			raise gr.Error(e)
