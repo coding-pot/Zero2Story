@@ -228,7 +228,7 @@ def parse_first_json_code_snippet(code_snippet):
 	else:
 		print("failed to find valid JSON string")
 		print("---------------------------------------")
-		print(json_code_snippet)
+		print(code_snippet)
 		raise ValueError('No JSON code snippet found in string.')
 	
 	return json_parsed_string
