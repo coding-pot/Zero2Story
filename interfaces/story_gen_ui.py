@@ -192,7 +192,6 @@ async def actions_gen(
 	actions = random.sample(actions, 3)
 
 	return (
-		[] if llm_mode == "text" else ppm.pingpongs,
 		gr.update(value=actions[0], interactive=True),
 		gr.update(value=actions[1], interactive=True),
 		gr.update(value=actions[2], interactive=True),
