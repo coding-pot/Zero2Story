@@ -1,5 +1,7 @@
 # Zero2Story
 
+**The paper about this project has been accepted at [NeurIPS 2023 Workshop on Machine Learning for Creativity and Design](https://neuripscreativityworkshop.github.io/2023/). Please find more information at the [NeurIPS page](https://nips.cc/virtual/2023/75059)**.
+
 ![](assets/overview.png)
 
 Zero2Story is a framework built on top of [PaLM API](https://developers.generativeai.google), [Stable Diffusion](https://en.wikipedia.org/wiki/Stable_Diffusion), [MusicGen](https://audiocraft.metademolab.com/musicgen.html) for ordinary people to create their own stories. This framework consists of the **background setup**, **character setup**, and **interative story generation** phases.
