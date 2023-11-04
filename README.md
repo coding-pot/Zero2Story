@@ -1,6 +1,7 @@
 # Zero2Story
 
-**The paper about this project has been accepted at [NeurIPS 2023 Workshop on Machine Learning for Creativity and Design](https://neuripscreativityworkshop.github.io/2023/). Please find more information at the [NeurIPS page](https://nips.cc/virtual/2023/75059)**.
+- **The paper about this project has been accepted at [NeurIPS 2023 Workshop on Machine Learning for Creativity and Design](https://neuripscreativityworkshop.github.io/2023/). Please find more information at the [NeurIPS page](https://nips.cc/virtual/2023/75059)**.
+- This project is currently running on [Hugging Face Space](https://huggingface.co/spaces/chansung/zero2story).
 
 ![](assets/overview.png)
 
