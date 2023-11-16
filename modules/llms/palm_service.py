@@ -306,43 +306,4 @@ class PaLMService(LLMService):
             else:
                 response_txt = response.result
 
-        file_path = '.chatgpt_api_key.txt'
-        try:
-            with open(file_path, 'r') as file:
-                chatgpt_api_key = file.read().strip()
-        except FileNotFoundError:
-            chatgpt_api_key = ""
-
-        if chatgpt_api_key == "":
-            return response, response_txt
-        else:
-            from openai import OpenAI
-
-            client = OpenAI(api_key=chatgpt_api_key, )
-
-            response_chatgpt = client.chat.completions.create(
-                model="gpt-3.5-turbo-1106",
-                stream=False,
-                temperature=1.0,
-                top_p=1.0,
-                frequency_penalty=0.0,
-                presence_penalty=0.0,
-                max_tokens=1000,
-                response_format={"type": "json_object"},
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
-                    {"role": "user", "content": prompt}
-                ]
-            )
-
-            # print("-------------------------------------")
-            # print("-------------------------------------")
-            # print(response_chatgpt.choices[0].message.content)
-            # print("-------------------------------------")
-            # print(response)
-            # print("-------------------------------------")
-            # print(response_txt)
-            # print("-------------------------------------")
-            # print("-------------------------------------")
-
-            return response, response_chatgpt.choices[0].message.content
+        return response, response_txt
