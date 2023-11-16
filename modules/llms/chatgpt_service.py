@@ -15,6 +15,7 @@ from modules.llms import (
     LLMFactory, PromptManager, LLMService
 )
 
+
 class ChatGPTFactory(LLMFactory):
     _openai_api_key = None
     _client = None
@@ -24,39 +25,39 @@ class ChatGPTFactory(LLMFactory):
             ChatGPTFactory.load_openai_api_key()
             assert ChatGPTFactory._openai_api_key, "OpenAI API Key is missing."
             ChatGPTFactory._client = OpenAI(api_key=ChatGPTFactory._openai_api_key, )
-        
+
         if openai_api_key and openai_api_key != "":
             ChatGPTFactory._openai_api_key = openai_api_key
 
     def create_prompt_format(self):
         return ChatGPTPromptFmt()
 
-    def create_prompt_manager(self, prompts_path: str=None, chat_prompts_path: str=None):
+    def create_prompt_manager(self, prompts_path: str = None, chat_prompts_path: str = None):
         return ChatGPTPromptManager(
             (prompts_path or Path('.') / 'prompts' / 'palm_prompts.toml'),
             (chat_prompts_path or Path('.') / 'prompts' / 'palm_chat_prompts.toml'),
         )
-    
+
     def create_pp_manager(self):
         return ChatGPTPPManager()
 
     def create_ui_pp_manager(self):
         return GradioChatGPTPPManager()
-    
+
     def create_llm_service(self):
         llm_service = ChatGPTService()
         llm_service.client = ChatGPTFactory._client
         return llm_service
-    
+
     def to_ppm(self, context, pingpongs):
         ppm = ChatGPTPPManager()
         ppm.ctx = context
         ppm.pingpongs = pingpongs
-        
+
         return ppm
-    
+
     @classmethod
-    def load_openai_api_key(cls, openai_api_key: str=None):
+    def load_openai_api_key(cls, openai_api_key: str = None):
         if openai_api_key:
             cls._openai_api_key = openai_api_key
         else:
@@ -64,21 +65,22 @@ class ChatGPTFactory(LLMFactory):
 
             if openai_api_key is None:
                 with open('.openai_api_key.txt', 'r') as file:
-                    chatgpt_api_key = file.read().strip()
+                    openai_api_key = file.read().strip()
 
             if not openai_api_key:
                 raise ValueError("OpenAI API Key is missing.")
             cls._openai_api_key = openai_api_key
-    
+
     @property
     def openai_api_key(self):
         return ChatGPTFactory._openai_api_key
-    
+
     @openai_api_key.setter
     def openai_api_key(self, openai_api_key: str):
         assert openai_api_key, "OpenAI API Key is missing."
         ChatGPTFactory._openai_api_key = openai_api_key
         ChatGPTFactory._client = OpenAI(api_key=ChatGPTFactory._openai_api_key, )
+
 
 class ChatGPTPromptManager(PromptManager):
     _instance = None
@@ -110,7 +112,7 @@ class ChatGPTPromptManager(PromptManager):
     @property
     def chat_prompts_path(self):
         return self._chat_prompts_path
-    
+
     @prompts_path.setter
     def prompts_path(self, prompts_path):
         self._prompts_path = prompts_path
@@ -133,6 +135,7 @@ class ChatGPTPromptManager(PromptManager):
             self.reload_chat_prompts()
         return self._chat_prompts
 
+
 class ChatGPTPromptFmt(PromptFmt):
     @classmethod
     def ctx(cls, context):
@@ -142,7 +145,7 @@ class ChatGPTPromptFmt(PromptFmt):
     def prompt(cls, pingpong, truncate_size):
         ping = pingpong.ping[:truncate_size]
         pong = pingpong.pong
-        
+
         if pong is None or pong.strip() == "":
             return [
                 {
@@ -164,10 +167,12 @@ class ChatGPTPromptFmt(PromptFmt):
                 },
             ]
 
+
 class ChatGPTPPManager(PPManager):
-    def build_prompts(self, from_idx: int=0, to_idx: int=-1, fmt: PromptFmt=ChatGPTPromptFmt, truncate_size: int=None):
+    def build_prompts(self, from_idx: int = 0, to_idx: int = -1, fmt: PromptFmt = ChatGPTPromptFmt,
+                      truncate_size: int = None):
         results = [fmt.ctx(self.ctx)]
-        
+
         if to_idx == -1 or to_idx >= len(self.pingpongs):
             to_idx = len(self.pingpongs)
 
@@ -176,8 +181,9 @@ class ChatGPTPPManager(PPManager):
 
         return results
 
+
 class GradioChatGPTPPManager(ChatGPTPPManager):
-    def build_uis(self, from_idx: int=0, to_idx: int=-1, fmt: UIFmt=GradioChatUIFmt):
+    def build_uis(self, from_idx: int = 0, to_idx: int = -1, fmt: UIFmt = GradioChatUIFmt):
         if to_idx == -1 or to_idx >= len(self.pingpongs):
             to_idx = len(self.pingpongs)
 
@@ -186,23 +192,24 @@ class GradioChatGPTPPManager(ChatGPTPPManager):
         for pingpong in self.pingpongs[from_idx:to_idx]:
             results.append(fmt.ui(pingpong))
 
-        return results 
+        return results
+
 
 class ChatGPTService(LLMService):
     def __init__(self):
         self._default_parameters_text = None
         self._default_parameters_chat = {
-                'model': "gpt-3.5-turbo-1106",
-                'candidate_count': num_candidate,
-                'temperature': 1.0,
-                'top_p': 0.95,
-                'max_tokens': 1000,
-                'stream': False
-            }
-        
+            'model': "gpt-3.5-turbo-1106",
+            # 'candidate_count': num_candidate,
+            'temperature': 1.0,
+            'top_p': 0.95,
+            'max_tokens': 1000,
+            'stream': False
+        }
+
     def make_params(self, mode="chat",
                     temperature=None,
-                    candidate_count=None,
+                    # candidate_count=None,
                     top_k=None,
                     top_p=None,
                     max_output_tokens=None,
@@ -213,11 +220,11 @@ class ChatGPTService(LLMService):
             parameters = self._default_parameters_chat.copy()
         elif mode == "text":
             parameters = self._default_parameters_text.copy()
-        
+
         if temperature is not None:
             parameters['temperature'] = temperature
-        if candidate_count is not None:
-            parameters['candidate_count'] = candidate_count
+        # if candidate_count is not None:
+        # parameters['candidate_count'] = candidate_count
         if top_k is not None:
             parameters['top_k'] = top_k
         if max_output_tokens is not None and mode == "text":
@@ -227,29 +234,30 @@ class ChatGPTService(LLMService):
                 parameters['safety_settings'][idx]['threshold'] = 4
 
         return parameters
-    
+
     async def gen_text(
-        self,
-        prompt,
-        mode="chat", #chat or text
-        parameters=None,
-        context=None, #chat only
-        examples=None, #chat only
-        num_candidate=1, #chat only
-        use_filter=True,
+            self,
+            prompt,
+            mode="chat",  # chat or text
+            parameters=None,
+            context=None,  # chat only
+            examples=None,  # chat only
+            num_candidate=1,  # chat only
+            use_filter=True,
     ):
         if parameters is None:
             # if mode == "chat":
             parameters = {
                 'model': "gpt-3.5-turbo-1106",
-                'candidate_count': num_candidate,
+                # 'candidate_count': num_candidate,
                 'temperature': 1.0,
                 'top_p': 0.95,
                 'max_tokens': 1000,
                 'stream': False
             }
 
-        print(prompt)
+        # print('run chatgpt api')
+        # print(prompt)
 
         response_chatgpt = await self.client.chat.completions.create(
             model=parameters['model'],
@@ -262,5 +270,7 @@ class ChatGPTService(LLMService):
             response_format={"type": "json_object"},
             messages=prompt
         )
-        
-        return response, response_chatgpt.choices[0].message.content
+
+        pirnt(response_chatgpt.choices[0].message.content)
+
+        return response_chatgpt, response_chatgpt.choices[0].message.content
