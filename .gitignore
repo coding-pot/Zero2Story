@@ -100,3 +100,5 @@ venv.bak/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 .vscode/
+modules/.chatgpt_api_key.txt
+.chatgpt_api_key.txt
