@@ -66,7 +66,7 @@ class ChatGPTFactory(LLMFactory):
                 with open('.openai_api_key.txt', 'r') as file:
                     chatgpt_api_key = file.read().strip()
 
-            if not palm_api_key:
+            if not openai_api_key:
                 raise ValueError("OpenAI API Key is missing.")
             cls._openai_api_key = openai_api_key
     
