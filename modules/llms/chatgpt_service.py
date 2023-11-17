@@ -245,6 +245,7 @@ class ChatGPTService(LLMService):
             num_candidate=1,  # chat only
             use_filter=True,
     ):
+        print("run chatgpt gen_text")
         if parameters is None:
             # if mode == "chat":
             parameters = {
@@ -256,10 +257,10 @@ class ChatGPTService(LLMService):
                 'stream': False
             }
 
-        # print('run chatgpt api')
-        # print(prompt)
+        print('run chatgpt api')
+        print(prompt)
 
-        response_chatgpt = await self.client.chat.completions.create(
+        response_chatgpt = self.client.chat.completions.create(
             model=parameters['model'],
             stream=parameters['stream'],
             temperature=parameters['temperature'],
@@ -271,6 +272,8 @@ class ChatGPTService(LLMService):
             messages=prompt
         )
 
-        pirnt(response_chatgpt.choices[0].message.content)
+        print("------------------------------")
+        print(response_chatgpt.choices[0].message.content)
+        print("------------------------------")
 
         return response_chatgpt, response_chatgpt.choices[0].message.content
