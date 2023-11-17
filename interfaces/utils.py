@@ -275,6 +275,7 @@ def parse_first_json_code_snippet(code_snippet):
 async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, context=None, examples=None, candidate=1, llm_type="PaLM", mode="text"):
 	response_json = None
 	if llm_factory is None:
+		print("not exist factory.")
 		llm_factory = get_llm_factory(llm_type)
 	llm_service = llm_factory.create_llm_service()
 
@@ -300,10 +301,10 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 					timeout=30
 				)
 		except asyncio.TimeoutError:
-			raise TimeoutError(f"The response time for {llm_type} API exceeded the limit.")
+			raise TimeoutError(f"The response time for {llm_factory} API exceeded the limit.")
 		except Exception as e:
 			print(e)
-			print(f"{llm_type} API has encountered an error. Retrying...")
+			print(f"{llm_factory} API has encountered an error. Retrying...")
 			continue
 		
 		try:
@@ -317,9 +318,9 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 			print("2. Parsing JSON failed. Retrying...")
 			pass
 	
-	if len(response.filters) > 0:
-		raise ValueError(f"{llm_type} API has withheld a response due to content safety concerns.")
-	elif response_json is None:
+	# if len(response.filters) > 0:
+		# raise ValueError(f"{llm_type} API has withheld a response due to content safety concerns.")
+	if response_json is None:
 		print("=== Failed to generate valid JSON response. ===")
 		print(response_txt)
 		raise ValueError("Failed to generate valid JSON response.")
