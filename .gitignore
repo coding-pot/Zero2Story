@@ -102,3 +102,4 @@ venv.bak/
 .vscode/
 modules/.chatgpt_api_key.txt
 .chatgpt_api_key.txt
+.openai_api_key.txt
