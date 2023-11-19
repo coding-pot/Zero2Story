@@ -93,15 +93,12 @@ async def next_story_gen(
 		if llm_mode == "text":
 			parsing_key = "paragraphs"
 			res_json = await utils.retry_until_valid_json(prompt=prompt, llm_factory=llm_factory, mode="text")
-			print("check error point 1")
 		else:
 			parsing_key = "text"
 			res_json = await utils.retry_until_valid_json(
 				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat", candidate=8,
 			)
-			print("check error point 2")
 	except Exception as e:
-		print("check error point 3")
 		raise gr.Error(e)
 
 	story = res_json[parsing_key]
@@ -184,23 +181,19 @@ async def actions_gen(
 		if llm_mode == "text":
 			parsing_key = "options"
 			res_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
-			print("check error point 3")
 		else:
 			parsing_key = "actions"
 			res_json = await utils.retry_until_valid_json(
 				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat", candidate=8,
 			)
-			print("check error point 4")
 	except Exception as e:
 		
 		print(e)
-		print("check error point 5")
 		raise gr.Error(e)
 
 	actions = res_json[parsing_key]
 	actions = random.sample(actions, 3)
 
-	print("check error point 6")
 
 	return (
 		gr.update(value=actions[0], interactive=True),
