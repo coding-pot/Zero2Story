@@ -17,7 +17,7 @@ async def title_gen(
         stories = stories + cursor["story"]
     
     examples, prompt = utils.build_title_gen_prompts(llm_mode, llm_factory, stories)
-    print(f"generated prompt:\n{prompt}")
+    print(f"generated prompt export_ui:\n{prompt}")
 
     try:
         if llm_mode == "text":

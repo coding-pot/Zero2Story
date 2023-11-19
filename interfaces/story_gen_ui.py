@@ -88,17 +88,20 @@ async def next_story_gen(
 		side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	)
 
-	print(f"generated prompt:\n{prompt}")
+	print(f"generated prompt story_gen_ui next_story_gen:\n{prompt}")
 	try:
 		if llm_mode == "text":
 			parsing_key = "paragraphs"
 			res_json = await utils.retry_until_valid_json(prompt=prompt, llm_factory=llm_factory, mode="text")
+			print("check error point 1")
 		else:
 			parsing_key = "text"
 			res_json = await utils.retry_until_valid_json(
 				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat", candidate=8,
 			)
+			print("check error point 2")
 	except Exception as e:
+		print("check error point 3")
 		raise gr.Error(e)
 
 	story = res_json[parsing_key]
@@ -156,11 +159,12 @@ async def actions_gen(
 
 	if llm_mode == "text":
 		summary_prompt = prompts['story_gen']['summarize'].format(stories=stories)
-		print(f"generated prompt:\n{summary_prompt}")
+		print(f"generated prompt story_gen_ui actions_gen:\n{summary_prompt}")
   
 		try:
 			parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
 			_, summary = await llm_service.gen_text(summary_prompt, mode="text", parameters=parameters)
+			
 		except Exception as e:
 			print(e)
 			raise gr.Error(e)
@@ -175,22 +179,28 @@ async def actions_gen(
 		side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	)
 
-	print(f"generated prompt:\n{prompt}")
+	print(f"generated prompt story_gen_ui actions_gen2:\n{prompt}")
 	try:
 		if llm_mode == "text":
 			parsing_key = "options"
 			res_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
+			print("check error point 3")
 		else:
 			parsing_key = "actions"
 			res_json = await utils.retry_until_valid_json(
 				prompt=prompt, llm_factory=llm_factory, context=context, examples=examples, mode="chat", candidate=8,
 			)
+			print("check error point 4")
 	except Exception as e:
+		
 		print(e)
+		print("check error point 5")
 		raise gr.Error(e)
 
 	actions = res_json[parsing_key]
 	actions = random.sample(actions, 3)
+
+	print("check error point 6")
 
 	return (
 		gr.update(value=actions[0], interactive=True),
