@@ -175,7 +175,9 @@ def build_next_story_gen_prompts(
   
 		ppm = llm_factory.to_ppm(context, [first_conversation])
 		prompt = prompts['story_gen']['query']['next_prompt'].format(action=action)
+		print("check here:", prompt)
 		ppm.add_pingpong(PingPong(prompt, ""))
+		prompt = ppm.build_prompts()
   
 	return context, examples, prompt, ppm
 
@@ -300,6 +302,8 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 					),
 					timeout=30
 				)
+
+			print("response_txt:", response_txt)
 		except asyncio.TimeoutError:
 			raise TimeoutError(f"The response time for {llm_factory} API exceeded the limit.")
 		except Exception as e:
@@ -317,7 +321,7 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 		except:
 			print("2. Parsing JSON failed. Retrying...")
 			pass
-	
+
 	if hasattr(response, 'filters') and len(response.filters) > 0:
 		raise ValueError(f"{llm_type} API has withheld a response due to content safety concerns.")
 	if response_json is None:

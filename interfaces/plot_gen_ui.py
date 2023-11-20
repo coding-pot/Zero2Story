@@ -33,7 +33,7 @@ async def plot_gen(
 		side_char_placeholder=side_char_prompt,
 	)
 	
-	print(f"generated prompt:\n{prompt}")
+	print(f"generated prompt plot_gen_ui:\n{prompt}")
 	parameters = llm_service.make_params(mode="text", temperature=temperature, top_k=40, top_p=1.0, max_output_tokens=4096)
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
@@ -86,7 +86,7 @@ async def first_story_gen(
 		denouement=denouement,
 	)
 
-	print(f"generated prompt:\n{prompt}")
+	print(f"generated prompt plot_gen_ui:\n{prompt}")
 	parameters = llm_service.make_params(mode="text", temperature=1.0, top_k=40, top_p=1.0, max_output_tokens=4096)
 	response_json = await utils.retry_until_valid_json(prompt, parameters=parameters)
 
