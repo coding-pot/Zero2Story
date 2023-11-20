@@ -27,7 +27,7 @@ This project heavily depends on [PaLM API](https://developers.generativeai.googl
 
 ### ChatGPT API Key (Optional)
 
-This project already includes integration with the PaLM API. Optionally, you can also add support for the [ChatGPT API](https://platform.openai.com/api-keys) to enhance chat capabilities. If you wish to use the ChatGPT chat mode in your environment, it requires obtaining a ChatGPT API key. Once you have the key, create a file named `.openai_api_key.txt` in the project's root directory and insert your ChatGPT API key there. This step is optional and only needed if you want to enable the additional chat functionalities provided by the ChatGPT API.
+Optionally, you can also add support for the [ChatGPT API](https://platform.openai.com/api-keys) to enhance chat capabilities. If you wish to use the ChatGPT chat mode in your environment, it requires obtaining a ChatGPT API key. Once you have the key, create a file named `.openai_api_key.txt` in the project's root directory and insert your ChatGPT API key there. This step is optional and only needed if you want to enable the additional chat functionalities provided by the ChatGPT API.
 
 
 
