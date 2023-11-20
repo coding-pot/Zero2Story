@@ -257,6 +257,15 @@ class ChatGPTService(LLMService):
                 'stream': False
             }
 
+        print('run chatgpt prompt:')
+        print(prompt)
+
+        if not isinstance(prompt, list):
+            prompt = [
+                        {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+                        {"role": "user", "content": str(prompt)}  # Convert the input data to string
+                    ]
+
         response_chatgpt = self.client.chat.completions.create(
             model=parameters['model'],
             stream=parameters['stream'],

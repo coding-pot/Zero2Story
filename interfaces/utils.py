@@ -321,9 +321,9 @@ async def retry_until_valid_json(prompt, llm_factory=None, parameters=None, cont
 		except:
 			print("2. Parsing JSON failed. Retrying...")
 			pass
-
 	if hasattr(response, 'filters') and len(response.filters) > 0:
 		raise ValueError(f"{llm_type} API has withheld a response due to content safety concerns.")
+
 	if response_json is None:
 		print("=== Failed to generate valid JSON response. ===")
 		print(response_txt)
