@@ -34,8 +34,8 @@ class ChatGPTFactory(LLMFactory):
 
     def create_prompt_manager(self, prompts_path: str = None, chat_prompts_path: str = None):
         return ChatGPTPromptManager(
-            (prompts_path or Path('.') / 'prompts' / 'palm_prompts.toml'),
-            (chat_prompts_path or Path('.') / 'prompts' / 'palm_chat_prompts.toml'),
+            (prompts_path or Path('.') / 'prompts' / 'chatgpt_prompts.toml'),
+            (chat_prompts_path or Path('.') / 'prompts' / 'chatgpt_chat_prompts.toml'),
         )
 
     def create_pp_manager(self):
@@ -257,8 +257,10 @@ class ChatGPTService(LLMService):
                 'stream': False
             }
 
-        print('run chatgpt api')
+        print('run chatgpt prompt:')
         print(prompt)
+        print('run chatgpt parameters:')
+        print(parameters)
 
         response_chatgpt = self.client.chat.completions.create(
             model=parameters['model'],
