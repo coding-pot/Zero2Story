@@ -25,6 +25,8 @@ toml = "^0.10.2"
 compel = "^2.0.2"
 jinja2 = "^3.1.2"
 sseclient-py = "^1.8.0"
+aiohttp = "^3.8.6"
+openai= "^1.2.4"
 
 [[tool.poetry.source]]
 name = "pytorch"

@@ -12,4 +12,9 @@ from .llama_service import (
     LLaMAChatPromptFmt, LLaMAPromptManager, LLaMAChatPPManager, GradioLLaMAChatPPManager, LLaMAService
 )
 
+from .chatgpt_service import (
+    ChatGPTFactory,
+    ChatGPTPromptFmt, ChatGPTPromptManager, ChatGPTPPManager, GradioChatGPTPPManager, ChatGPTService
+)
+
 from .utils import get_llm_factory

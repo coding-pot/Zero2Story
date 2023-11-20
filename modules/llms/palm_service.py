@@ -305,5 +305,5 @@ class PaLMService(LLMService):
                     response_txt = response.last    
             else:
                 response_txt = response.result
-        
+
         return response, response_txt

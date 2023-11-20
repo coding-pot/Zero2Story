@@ -10,6 +10,8 @@ import toml
 import torch
 from compel import Compel
 
+from modules.llms import get_llm_factory
+
 from diffusers import (
     DiffusionPipeline,
     StableDiffusionPipeline,
@@ -200,7 +202,7 @@ class ImageMaker:
 
             try: 
                 res_json = await retry_until_valid_json(
-                    prompt=query_string, llm_factory=llm_factory, mode="text"
+                    prompt=query_string, llm_factory=get_llm_factory("Palm"), mode="text"
                 )
                 positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
                 gender_keywords = ['1man', '1woman', '1boy', '1girl', '1male', '1female', '1gentleman', '1lady']
@@ -226,7 +228,7 @@ class ImageMaker:
 
             try: 
                 res_json = await retry_until_valid_json(
-                    prompt=query_string, llm_factory=llm_factory, 
+                    prompt=query_string, llm_factory=get_llm_factory("Palm"), 
                     context=c, examples=e, mode="chat"
                 )
                 positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
@@ -276,7 +278,7 @@ class ImageMaker:
 
             try: 
                 res_json = await retry_until_valid_json(
-                    prompt=query_string, llm_factory=llm_factory, mode="text"
+                    prompt=query_string, llm_factory=get_llm_factory("Palm"), mode="text"
                 )
                 positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "
                 positive += ', '.join(res_json['descriptors'])
@@ -302,7 +304,7 @@ class ImageMaker:
 
             try: 
                 res_json = await retry_until_valid_json(
-                    prompt=query_string, llm_factory=llm_factory, 
+                    prompt=query_string, llm_factory=get_llm_factory("Palm"), 
                     context=c, examples=e, mode="chat"
                 )
                 positive = (res_json['primary_sentence'] if not positive else f"{positive}, {res_json['primary_sentence']}") + ", "

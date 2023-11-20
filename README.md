@@ -23,6 +23,14 @@ Zero2Story is a framework built on top of [PaLM API](https://developers.generati
 
 This project heavily depends on [PaLM API](https://developers.generativeai.google). If you want to run it on your own environment, you need to get [PaLM API key](https://developers.generativeai.google/tutorials/setup) and paste it in `.palm_api_key.txt` file within the root directory.
 
+
+
+### ChatGPT API Key (Optional)
+
+Optionally, you can also add support for the [ChatGPT API](https://platform.openai.com/api-keys) to enhance chat capabilities. If you wish to use the ChatGPT chat mode in your environment, it requires obtaining a ChatGPT API key. Once you have the key, create a file named `.openai_api_key.txt` in the project's root directory and insert your ChatGPT API key there. This step is optional and only needed if you want to enable the additional chat functionalities provided by the ChatGPT API.
+
+
+
 ### Packages
 
 Make sure you have installed all of the following prerequisites on your development machine:

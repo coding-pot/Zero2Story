@@ -49,7 +49,7 @@ next_prompt = """give me the next few paragraphs based on user choice "{action}"
 
 DO NOT explain the story with your own thoughts."""
 
-action_prompt = """give me 20 possible actions to continue the story in different paths. Fill the paragraphs in a JSON field of "actions". 
+action_prompt = """give me 5 possible actions to continue the story in different paths. Fill the paragraphs in a JSON field of "actions". 
 
 DO NOT include any additional field except "actions".
 DO NOT express each action other than a single string.
