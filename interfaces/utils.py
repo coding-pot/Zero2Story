@@ -176,6 +176,7 @@ def build_next_story_gen_prompts(
 		ppm = llm_factory.to_ppm(context, [first_conversation])
 		prompt = prompts['story_gen']['query']['next_prompt'].format(action=action)
 		ppm.add_pingpong(PingPong(prompt, ""))
+		prompt = ppm.build_prompts()
   
 	return context, examples, prompt, ppm
 
