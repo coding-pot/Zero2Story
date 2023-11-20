@@ -88,7 +88,7 @@ async def next_story_gen(
 		side_char_enable3, side_char_name3, side_char_age3, side_char_personality3, side_char_job3,
 	)
 
-	print(f"generated prompt story_gen_ui next_story_gen:\n{prompt}")
+	print(f"generated prompt story_gen_ui next_story_gen:\n{prompt} \n{llm_mode}")
 	try:
 		if llm_mode == "text":
 			parsing_key = "paragraphs"
