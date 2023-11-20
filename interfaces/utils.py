@@ -177,6 +177,7 @@ def build_next_story_gen_prompts(
 		prompt = prompts['story_gen']['query']['next_prompt'].format(action=action)
 		print("check here:", prompt)
 		ppm.add_pingpong(PingPong(prompt, ""))
+		prompt = ppm.build_prompts()
   
 	return context, examples, prompt, ppm
 
